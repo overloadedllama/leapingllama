@@ -15,7 +15,7 @@ public class ScreenMainMenu implements Screen {
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 400);
+        camera.setToOrtho(false, 1000, 500);
     }
 
     @Override
@@ -27,13 +27,13 @@ public class ScreenMainMenu implements Screen {
 
         game.batch.begin();
         game.font.setColor(0 , 255, 0, 1);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 20, 300);
-        game.batch.draw((new Texture(Gdx.files.internal("logo.png"))),20, 20 );
+        game.font.draw(game.batch, "Tap anywhere to begin!", (int) (camera.viewportWidth*0.1), (int) (camera.viewportHeight*0.1));
+        game.batch.draw((new Texture(Gdx.files.internal("logo.png"))),20, (int) (camera.viewportHeight*0.2), 600, 300 );
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
            // game.setScreen(new Space(game));
-            dispose();
+          //  dispose();
         }
 
 
