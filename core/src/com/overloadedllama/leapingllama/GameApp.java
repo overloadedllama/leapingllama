@@ -12,9 +12,13 @@ public class GameApp extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
 
+	public final static float WIDTH = 1280f;
+	public final static float HEIGHT = 720f;
+
 	public void create() {
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("vcrosdmono.fnt")); // using a free font downloaded from dafont.com and then converted into a .fnt (32bit, white text with alpha) using a free tool called bmfont.
+
 		this.setScreen(new ScreenMainMenu(this));
 	}
 
