@@ -1,4 +1,4 @@
-package com.overloadedllama.leapingllama;
+package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -7,16 +7,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.overloadedllama.leapingllama.GameApp;
 
-public class ScreenMainMenu extends Stage implements Screen {
+public class LoadScreen extends Stage implements Screen {
 
     final GameApp game;
     OrthographicCamera camera;
     ExtendViewport viewport;
 
+    private Texture logo;
 
-    public ScreenMainMenu(final GameApp game) {
+
+    public LoadScreen(final GameApp game) {
         this.game = game;
 
         camera = new OrthographicCamera();
@@ -35,21 +37,20 @@ public class ScreenMainMenu extends Stage implements Screen {
 
         game.batch.begin();
         game.font.setColor(0 , 255, 0, 1);
-        game.font.draw(game.batch, "Tap anywhere to begin!", 2, 50);
-        Texture logo = new Texture(Gdx.files.internal("logo.png"));
+        game.font.draw(game.batch, "(in case we need to load anything?)", 2, 50);
+        logo = new Texture(Gdx.files.internal("logo.png"));
         game.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/4, GameApp.HEIGHT/2 - (float) logo.getHeight()/4, (float) logo.getWidth()/2, (float) logo.getHeight()/2);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
-           // game.setScreen(new Space(game));
-          //  dispose();
+            // ad esempio parte subito la schermata di gioco?
+            game.setScreen(new MainMenuScreen(game));
 
+            // game.setScreen(new Space(game));
+            dispose();
         }
-
-
-
-    }
+   }
 
 
 
@@ -70,7 +71,7 @@ public class ScreenMainMenu extends Stage implements Screen {
 
     @Override
     public void resume() {
-
+        logo.dispose();
     }
 
     @Override
@@ -80,6 +81,6 @@ public class ScreenMainMenu extends Stage implements Screen {
 
     @Override
     public void dispose() {
-
+        logo.dispose();
     }
 }
