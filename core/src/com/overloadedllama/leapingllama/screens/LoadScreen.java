@@ -4,12 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
-public class LoadScreen extends Stage implements Screen {
+public class LoadScreen implements Screen {
 
     final GameApp game;
     OrthographicCamera camera;
@@ -44,7 +43,7 @@ public class LoadScreen extends Stage implements Screen {
         game.batch.end();
 
         if (Gdx.input.isTouched()) {
-            // ad esempio parte subito la schermata di gioco?
+            // ad esempio parte il menu di gioco? o subito il gioco vero e proprio?
             game.setScreen(new MainMenuScreen(game));
 
             // game.setScreen(new Space(game));
