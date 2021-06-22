@@ -1,2 +1,0 @@
-com/overloadedllama/leapingllama/desktop/DesktopLauncher.java
- com.overloadedllama.leapingllama.desktop.DesktopLauncher

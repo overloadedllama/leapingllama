@@ -1,4 +1,0 @@
-com/overloadedllama/leapingllama/BuildConfig.java
- com.overloadedllama.leapingllama.BuildConfig
-com/overloadedllama/leapingllama/AndroidLauncher.java
- com.overloadedllama.leapingllama.AndroidLauncher

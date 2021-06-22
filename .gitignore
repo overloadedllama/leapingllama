@@ -106,3 +106,12 @@ fabric.properties
 .idea/codestream.xml
 
 # End of https://www.toptal.com/developers/gitignore/api/intellij
+
+
+.idea/
+.gradle/
+local.properties
+
+android/build/
+desktop/build/
+core/build/
