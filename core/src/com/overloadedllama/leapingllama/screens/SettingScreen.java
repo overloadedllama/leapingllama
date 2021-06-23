@@ -60,6 +60,7 @@ public class SettingScreen implements Screen {
 
         settingTable = new Table();
 
+        /*
         try {
             if (getIsOn()) {
                 musicButton = new TextButton("ON", musicSkin);
@@ -68,13 +69,14 @@ public class SettingScreen implements Screen {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
+        }*/
 
         settingsStage.addActor(settingTable);
 
         Gdx.input.setInputProcessor(settingsStage);
 
 
+        /*
         musicButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 try {
@@ -97,7 +99,9 @@ public class SettingScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
             }
-        });
+        });*/
+
+
     }
 
     @Override
@@ -111,6 +115,10 @@ public class SettingScreen implements Screen {
         game.font.setColor(0 , 255, 0, 1);
         game.batch.end();
 
+        if (Gdx.input.isTouched()) {
+            game.setScreen(new MainMenuScreen(game));
+            dispose();
+        }
     }
 
     @Override
@@ -138,6 +146,6 @@ public class SettingScreen implements Screen {
     @Override
     public void dispose() {
         settingsStage.dispose();
-        musicSkin.dispose();
+        //musicSkin.dispose();
     }
 }
