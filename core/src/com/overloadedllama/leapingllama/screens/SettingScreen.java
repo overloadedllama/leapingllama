@@ -45,12 +45,12 @@ public class SettingScreen implements Screen {
 
         camera.update();
 
-        /*
+
         try {
             new ScoreSettingsManager();
         } catch (SQLException e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     @Override

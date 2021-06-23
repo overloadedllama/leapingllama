@@ -1,0 +1,19 @@
+commands.png
+size: 135, 280
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+down
+  rotate: false
+  xy: 0, 0
+  size: 135, 145
+  orig: 135, 145
+  offset: 0, 0
+  index: -1
+up
+  rotate: false
+  xy: 0, 145
+  size: 135, 135
+  orig: 135, 135
+  offset: 0, 0
+  index: -1
