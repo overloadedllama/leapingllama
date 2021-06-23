@@ -85,7 +85,10 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        
+
+        implementation "androidx.sqlite:sqlite:2.1.0"
+        implementation 'org.xerial:sqlite-jdbc:3.32.3.2'
+
     }
 }
 
@@ -100,6 +103,13 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-core:$gdxControllersVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
-        
+        implementation 'org.jetbrains:annotations:19.0.0'
+        implementation 'org.slf4j:slf4j-api:1.7.30'
+        implementation 'org.slf4j:slf4j-simple:1.7.26'
+        implementation "androidx.sqlite:sqlite:2.1.0"
+        implementation 'org.xerial:sqlite-jdbc:3.32.3.2'
+
+
     }
 }
+
