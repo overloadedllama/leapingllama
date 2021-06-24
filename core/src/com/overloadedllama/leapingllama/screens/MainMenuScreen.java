@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -27,20 +28,20 @@ public class MainMenuScreen implements Screen {
 
     private Stage mainmenuStage;
 
-    private ImageButton mainmenuimagebuttonPlay;
-    private Table mainmenuTablePlay;
-    private Skin mainmenuSkinPlay;
+    private Table mainMenuTable;
 
-    private ImageButton settingButton;
-    private Table settingTable;
-    private Skin settingSkin;
+    private TextButton settingButton;
+    private Skin settingButtonSkin;
 
-    private ImageButton quitButton;
-    private Table quitTable;
-    private Skin quitSkin;
+    private TextButton playButton;
+    private Skin playButtonSkin;
+
+    private TextButton creditsButton;
+    private Skin creditsButtonSkin;
 
     public MainMenuScreen(final GameApp game) {
         this.game = game;
+        ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
@@ -57,6 +58,47 @@ public class MainMenuScreen implements Screen {
 
         mainmenuStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
 
+        mainMenuTable = new Table();
+
+        // creation of Play Button
+        playButtonSkin = new Skin(Gdx.files.internal("text_button/text_button.json"),
+                                   new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
+        playButton = new TextButton("play", playButtonSkin);
+
+        // creation of creditsButton
+        creditsButtonSkin = playButtonSkin;
+        creditsButton = new TextButton("credits", creditsButtonSkin);
+
+        // creation of Settings Button
+        settingButtonSkin = playButtonSkin;
+        settingButton = new TextButton("settings", settingButtonSkin);
+
+        // add the button to the mainMenuTable and next it to the mainMenuStage
+        mainMenuTable.add(playButton).width(260F).height(120F);
+        mainMenuTable.row();
+        mainMenuTable.add(creditsButton).width(260F).height(120F).padTop(10F);
+        mainMenuTable.row();
+        mainMenuTable.add(settingButton).width(260F).height(120F).padTop(10F);
+
+        mainmenuStage.addActor(mainMenuTable);
+
+        Gdx.input.setInputProcessor(mainmenuStage);
+
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
+            }
+        });
+
+        settingButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingScreen(game));
+            }
+        });
+
+        /*
         // create the play button
         mainmenuTablePlay = new Table();
         mainmenuSkinPlay = new Skin(Gdx.files.internal("skins/play.json"), new TextureAtlas(Gdx.files.internal("mainMenu/mainMenuPack.atlas")));
@@ -71,14 +113,6 @@ public class MainMenuScreen implements Screen {
         settingTable.bottom().add(settingButton).size(152F, 164F).padBottom(550F).padLeft(2200F);
         mainmenuStage.addActor(settingTable);
 
-        /*
-        // create the quit button
-        quitTable = new Table();
-        quitSkin = new Skin(Gdx.files.internal("skins/quit.json"), new TextureAtlas(Gdx.files.internal("quit/quitPack.atlas")));
-        quitButton = new ImageButton(quitSkin);
-        quitTable.bottom().add(quitButton).size(152F, 164F).padBottom(20F);
-        mainmenuStage.addActor(quitTable);
-*/
         Gdx.input.setInputProcessor(mainmenuStage);
 
         mainmenuimagebuttonPlay.addListener(new ClickListener() {
@@ -94,14 +128,10 @@ public class MainMenuScreen implements Screen {
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new SettingScreen(game));
             }
         });
+        */
 
-        /*
-        quitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                // close the app (is this really necessary?)
-            }
-        });*/
+
+
     }
 
     @Override
@@ -113,6 +143,7 @@ public class MainMenuScreen implements Screen {
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+
 
         game.batch.begin();
 
@@ -131,13 +162,16 @@ public class MainMenuScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+
+        mainMenuTable.invalidateHierarchy();
+        mainMenuTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+
+        /*
         mainmenuTablePlay.invalidateHierarchy();
         mainmenuTablePlay.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
         settingTable.invalidateHierarchy();
-        //settingTable.setSize(1280, 720);
-
-        //quitTable.invalidateHierarchy();
+        */
     }
 
     @Override
@@ -157,12 +191,12 @@ public class MainMenuScreen implements Screen {
     @Override
     public void dispose() {
         logo.dispose();
+
         mainmenuStage.dispose();
 
+        /*
         mainmenuSkinPlay.dispose();
-
         settingSkin.dispose();
-
-       // quitSkin.dispose();
+        */
     }
 }

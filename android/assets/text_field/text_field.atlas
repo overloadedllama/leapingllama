@@ -1,0 +1,27 @@
+
+text_field.png
+size: 1024, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+Dream MMA(1)
+  rotate: false
+  xy: 1, 645
+  size: 506, 120
+  orig: 506, 120
+  offset: 0, 0
+  index: -1
+backButtonUp
+  rotate: false
+  xy: 1, 1
+  size: 480, 320
+  orig: 480, 320
+  offset: 0, 0
+  index: -1
+base
+  rotate: false
+  xy: 1, 323
+  size: 480, 320
+  orig: 480, 320
+  offset: 0, 0
+  index: -1

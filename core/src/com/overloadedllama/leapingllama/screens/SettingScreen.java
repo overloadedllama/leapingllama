@@ -14,7 +14,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
-import java.sql.SQLException;
+
 
 public class SettingScreen implements Screen {
     private final OrthographicCamera camera;
@@ -25,11 +25,18 @@ public class SettingScreen implements Screen {
     private Table settingTable;
 
     private TextButton musicButton;
-    private Skin musicSkin;
-    private TextField musicText;
+    private Skin musicButtonSkin;
+
+    private TextField musicTextField;
+    private Skin musicTextFieldSkin;
 
     private ImageButton backButton;
-    private Skin backSkin;
+    private Skin backButtonSkin;
+
+    private final String ON = "on";
+    private final String OFF = "off";
+
+    private boolean MUSIC_ON = true;
 
     public SettingScreen(GameApp game) {
         this.game = game;
@@ -48,56 +55,70 @@ public class SettingScreen implements Screen {
     public void show() {
 
         settingsStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
-
         settingTable = new Table();
 
-        /*
-        try {
-            if (getIsOn()) {
-                musicButton = new TextButton("ON", musicSkin);
-            } else {
-                musicButton = new TextButton("OFF", musicSkin);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }*/
+
+        // creation of the musicTextField
+        musicTextFieldSkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
+                                        new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
+        musicTextField = new TextField("music: ", musicTextFieldSkin);
+
+        // disable the modifiability
+        musicTextField.setDisabled(true);
+
+        // creation of the musicButton
+        musicButtonSkin = new Skin(Gdx.files.internal("text_button/text_button.json"),
+                                        new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
+        musicButton = new TextButton(ON, musicButtonSkin);
+
+        musicButton.setDisabled(false);
+
+        // creation of the backButton
+        backButtonSkin = new Skin(Gdx.files.internal("backButton/backButton.json"),
+                                        new TextureAtlas(Gdx.files.internal("backButton/backButton.atlas")));
+        backButton = new ImageButton(backButtonSkin);
+
+        settingTable.add(musicTextField).width(160F).height(120F);
+        settingTable.add(musicButton).width(120F).height(120F).padRight(100F);
+        settingTable.row();
+        settingTable.add(backButton).width(160F).height(120F).padTop(10F);
+
+
 
         settingsStage.addActor(settingTable);
 
         Gdx.input.setInputProcessor(settingsStage);
 
-
-        /*
-        musicButton.addListener(new ClickListener() {
+        backButton.addListener(new ClickListener() {
+            @Override
             public void clicked(InputEvent event, float x, float y) {
-                try {
-                    if (getIsOn()) {
-                        setIsOn(0);
-                        musicButton.setText("OFF");
-                        // call methods to shut down music...
-                    } else {
-                        setIsOn(1);
-                        musicButton.setText("ON");
-                        // call methods to restart music...
-                    }
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
+                System.out.println("BACK BUTTON PRESSED");
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
             }
         });
 
-        backButton.addListener(new ClickListener() {
+
+        musicButton.addListener(new ClickListener() {
+            @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
+                System.out.println("musicButton: " + musicButton.getText());
+                if (MUSIC_ON) {
+                    MUSIC_ON = false;
+                    musicButton.getLabel().setText(OFF);
+                } else {
+                    MUSIC_ON = true;
+                    musicButton.getLabel().setText(ON);
+                }
             }
-        });*/
-
-
+        });
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+
+        settingsStage.act();
+        settingsStage.draw();
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
@@ -106,17 +127,14 @@ public class SettingScreen implements Screen {
         game.font.setColor(0 , 255, 0, 1);
         game.batch.end();
 
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
-        }
+
     }
 
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        settingTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
         settingTable.invalidateHierarchy();
+        settingTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
@@ -131,12 +149,16 @@ public class SettingScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
     public void dispose() {
         settingsStage.dispose();
-        //musicSkin.dispose();
+
+        backButtonSkin.dispose();
+        musicButtonSkin.dispose();
+        musicTextFieldSkin.dispose();
+
     }
 }
