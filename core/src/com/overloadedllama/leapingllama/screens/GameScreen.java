@@ -1,6 +1,7 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -11,9 +12,8 @@ import com.badlogic.gdx.physics.box2d.Box2D;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -30,8 +30,10 @@ public class GameScreen extends ApplicationAdapter implements Screen {
     private Viewport viewport;
     GameApp game;
 
+    //private ImageButton buttonJump;
     private TextButton buttonJump;
-
+    private Skin buttonJumpSkin;
+    private Table buttonJumpTable;
 
     private Stage stage;
     private Llama llama;
@@ -49,7 +51,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
         llamaImage = new Texture(Gdx.files.internal("llamaphoto.png"));
 
-        buttonJump = new TextButton("Jump", new Skin(new TextureAtlas(Gdx.files.internal("settings/settingIconPack.atlas"))));
+
         Box2D.init();
         world = new World(new Vector2(0, -10), true);
 
@@ -68,15 +70,30 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
         stage = new Stage(viewport);
         llama = new Llama(llamaImage, 200,50,200,400);
-        buttonJump.setBounds(2,2,100, 50);
+
+        //buttonJumpSkin = new Skin(Gdx.files.internal("button/button_prova.json"), new TextureAtlas(Gdx.files.internal("button/button_prova.atlas")));
+        //buttonJump = new ImageButton(buttonJumpSkin);
+
+        buttonJumpSkin = new Skin(Gdx.files.internal("text_button/text_button.json"), new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
+        buttonJump = new TextButton("jump!", buttonJumpSkin);
+
+        buttonJumpTable = new Table();
+
+        buttonJumpTable.bottom().add(buttonJump).size(152F, 164F).padBottom(20F);
+        stage.addActor(buttonJumpTable);
 
 
+        //buttonJump.setBounds(2,2,100, 50);
 
         stage.addActor(llama);
-        stage.addActor(buttonJump);
 
+        Gdx.input.setInputProcessor(stage);
 
-
+        buttonJump.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Tasto premuto");
+            }
+        });
     }
 
     @Override
@@ -91,7 +108,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
         //camera.update();
-        stage.act(delta);
+        stage.act();
         stage.draw();
         stepWorld();
 
@@ -119,6 +136,9 @@ public class GameScreen extends ApplicationAdapter implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+
+        buttonJumpTable.invalidateHierarchy();
+        buttonJumpTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override

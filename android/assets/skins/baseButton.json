@@ -1,9 +1,9 @@
 {
-  "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
+  "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
 
     "default": {
 
-      "up": "baseButton"
+      "up": "settings"
     }
   }
 }

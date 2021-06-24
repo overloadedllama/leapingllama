@@ -13,12 +13,8 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.database.ScoreSettingsManager;
 
 import java.sql.SQLException;
-
-import static com.overloadedllama.leapingllama.database.ScoreSettingsManager.getIsOn;
-import static com.overloadedllama.leapingllama.database.ScoreSettingsManager.setIsOn;
 
 public class SettingScreen implements Screen {
     private final OrthographicCamera camera;
@@ -46,11 +42,6 @@ public class SettingScreen implements Screen {
         camera.update();
 
 
-        try {
-            new ScoreSettingsManager();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
