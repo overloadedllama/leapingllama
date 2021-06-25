@@ -5,8 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -19,20 +17,19 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.GameObject;
-import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
 
 
 //this is the screen of the gameplay, i start to set up the environment.
 
 
-public class GameScreen  implements Screen{
+public class GameScreenOld  implements Screen{
 
     OrthographicCamera camera;
     Viewport viewport;
     GameApp game;
 
-    Stage stage;
+    Stage buttonsStage;
 
     World world;
 
@@ -43,8 +40,13 @@ public class GameScreen  implements Screen{
 
 
     Llama llama;
-    Ground ground;
+    Body llamaBody;
+    Texture llamaTexture;
 
+
+    GameObject ground;
+    Body groundBody;
+    Texture groundTexture;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -93,7 +95,7 @@ public class GameScreen  implements Screen{
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
 
-        stage = new Stage(viewport);
+        buttonsStage = new Stage(viewport);
 
         buttonJumpSkin = new Skin(Gdx.files.internal("text_button/text_button.json"), new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
         buttonJump = new TextButton("jump!", buttonJumpSkin);
@@ -101,10 +103,15 @@ public class GameScreen  implements Screen{
         //buttonJumpTable.bottom().add(buttonJump).size(metersToUnits(2f), metersToUnits(2f)).padBottom(metersToUnits(3f)).padLeft(metersToUnits(3f));
         buttonJump.setBounds(300, 100, 20, 20);
         buttonJump.getLabel().setFontScale(0.2f);
-        stage.addActor(buttonJump);
+        buttonsStage.addActor(buttonJump);
 
 
-        Gdx.input.setInputProcessor(stage);
+
+        llamaTexture = new Texture(Gdx.files.internal("llamaphoto.png"));
+        llama = new Llama(llamaTexture,  metersToUnits(1f),metersToUnits(2f),metersToUnits(0.5f),metersToUnits(2f));
+        buttonsStage.addActor(llama);
+
+        Gdx.input.setInputProcessor(buttonsStage);
         buttonJump.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Jump button pressed");
@@ -112,15 +119,59 @@ public class GameScreen  implements Screen{
             }
         });
 
-
-        llama = new Llama(new Texture(Gdx.files.internal("llamaphoto.png")), metersToUnits(1f),metersToUnits(2f),metersToUnits(0.5f),metersToUnits(2f), world);
-
-
-
-        ground = new Ground(new Texture(Gdx.files.internal("wall.jpg")), 0, 0, 3000, metersToUnits(0.3f), world);
-
+        groundTexture = new Texture(Gdx.files.internal("wall.jpg"));
+        ground = new GameObject(groundTexture, 0, 0, viewport.getScreenWidth(), metersToUnits(0.3f));
+        //ground.setPosition(0, 0);
+        //ground.setBounds(0,0, metersToUnits(1f), metersToUnits(0.3f));
+        buttonsStage.addActor(ground);
 
 
+        // Now create a BodyDefinition. This defines the physics objects type and position in the simulation
+        BodyDef llamaBodyDef = new BodyDef();
+        BodyDef groundBodyDef = new BodyDef();
+
+
+        llamaBodyDef.type = BodyDef.BodyType.DynamicBody;
+        groundBodyDef.type = BodyDef.BodyType.StaticBody;
+
+
+
+        llamaBodyDef.position.set(llama.getX(), llama.getY());
+        groundBodyDef.position.set(ground.getX(), ground.getY());
+
+        // Create a body in the world using our definition
+        llamaBody = world.createBody(llamaBodyDef);
+        groundBody = world.createBody(groundBodyDef);
+
+
+        // Now define the dimensions of the physics shape
+        PolygonShape llamaShape = new PolygonShape();
+        PolygonShape groundShape = new PolygonShape();
+        // We are a box, so this makes sense, no?
+        // Basically set the physics polygon to a box with the same dimensions as our sprite
+        llamaShape.setAsBox(llama.getWidth()/2, llama.getHeight()/2);
+        groundShape.setAsBox(ground.getWidth()/2, ground.getHeight()/2);
+
+        // FixtureDef is a confusing expression for physical properties
+        // Basically this is where you, in addition to defining the shape of the body
+        // you also define it's properties like density, restitution and others  we will see shortly
+        // If you are wondering, density and area are used to calculate over all ass
+        FixtureDef llamaFixtureDef = new FixtureDef();
+        llamaFixtureDef.shape = llamaShape;
+        llamaFixtureDef.density = 985;
+        llamaFixtureDef.friction = 1f;
+        llamaFixtureDef.restitution = 0f;
+        Fixture fixture = llamaBody.createFixture(llamaFixtureDef);
+
+
+        groundBody.createFixture(groundShape, 0f);
+        // Shape is the only disposable of the lot, so get rid of it
+        llamaShape.dispose();
+        groundShape.dispose();
+
+        System.out.println("Screen width: " + viewport.getScreenWidth());
+        System.out.println("Screen height: " + viewport.getScreenHeight());
+        System.out.println("Llama dimensions: " + unitsToMeters( llama.getWidth()) + " " + unitsToMeters( llama.getHeight()));
 
 
     }
@@ -129,27 +180,28 @@ public class GameScreen  implements Screen{
 
     @Override
     public void render(float delta) {
-        game.render();
+        // super.render();
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
-        System.out.println(unitsToMeters(llama.getBody().getPosition().x) + " " + unitsToMeters(llama.getBody().getPosition().y) + " " + llama.getY());
+        System.out.println(unitsToMeters(llamaBody.getPosition().x) + " " + unitsToMeters(llamaBody.getPosition().y) + " " + llama.getY());
 
         stepWorld();
 
-        llama.setPosition( unitsToMeters(llama.getBody().getPosition().x), unitsToMeters(llama.getBody().getPosition().y));
+        llama.setPosition( unitsToMeters(llamaBody.getPosition().x), unitsToMeters(llamaBody.getPosition().y));
 
 
 
 
         //camera.update();
-        stage.act();
-        stage.draw();
+        buttonsStage.act();
+        buttonsStage.draw();
 
 
-        game.batch.begin();
-        llama.draw(game.batch);
+        /*game.batch.begin();
+        llama.draw(game.batch, llamaBody.getPosition().x, llamaBody.getPosition().y);
+        ground.draw(game.batch, 0, 0);
         game.batch.end();
-
+        */
 
 
 

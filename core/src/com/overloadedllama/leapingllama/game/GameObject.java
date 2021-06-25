@@ -6,63 +6,112 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 
-public class GameObject extends Actor {
+public class GameObject {
 
     float x, y, w, h;
-
+    Texture texture;
     Sprite sprite;
+    Body body;
+    World world;
 
-    public GameObject(Texture texture, float x, float y, float width, float height) {
-        super();
 
+
+    public GameObject(Texture texture, float x, float y, float width, float height, World world) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
+        this.world = world;
+        this.texture = texture;
 
-
-
-        super.setSize(width, height);
         sprite = new Sprite(texture);
-
-        super.setOrigin(0,0);
         setPosition(x,y);
     }
 
-    @Override
-    public void draw(Batch batch, float parentAlpha) {
-        super.draw(batch, parentAlpha);
-        drawing(batch, x, y);
+    public void draw(Batch batch) {
+      batch.draw(texture, x, y, w, h);
     }
-
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-    }
-
-
-    public void drawing(Batch batch, float x, float y) {
-        sprite.setPosition(x,y);
-        sprite.draw(batch);
-    }
-
-
-
 
     public void setPosition (float x, float y){
         this.x = x;
         this.y = y;
 
         sprite.setPosition(x,y);
-        sprite.setBounds(x, y, super.getWidth(), super.getHeight());
+        sprite.setBounds(x, y, w, h);
 
-        super.setPosition(x,y);
+
     }
 
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public float getY() {
+        return y;
+    }
+
+    public void setY(float y) {
+        this.y = y;
+    }
+
+    public float getW() {
+        return w;
+    }
+
+    public void setW(float w) {
+        this.w = w;
+    }
+
+    public float getH() {
+        return h;
+    }
+
+    public void setH(float h) {
+        this.h = h;
+    }
+
+    public Sprite getSprite() {
+        return sprite;
+    }
+
+    public void setSprite(Sprite sprite) {
+        this.sprite = sprite;
+    }
+
+    public Body getBody() {
+        return body;
+    }
+
+    public void setBody(Body body) {
+        this.body = body;
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public void setWorld(World world) {
+        this.world = world;
+    }
 }
 

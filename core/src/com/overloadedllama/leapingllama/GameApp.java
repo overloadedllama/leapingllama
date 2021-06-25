@@ -31,13 +31,3 @@ public class GameApp extends Game {
 
 }
 
-//ciao prova.....
-//comunque devo capire cosa serve quell'icona a forma di ciliegia
-
-// mi sa che riporta quello che uno ha scritto direttamente
-//bhe ottimo, molto comodo
-
-
-//ahahahaah, boh
-
-
