@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Llama extends GameObject {
 
-    public Llama(Texture texture, int x, int y, int w, int h){
-
-        super(texture);
-
-        sprite.setBounds(x, y, w, h);
+    public Llama(Texture texture, float x, float  y, float w, float h) {
+        super(texture, x, y, w, h);
     }
+
+    public void jump(int hJump) {
+        sprite.setY(sprite.getY() + hJump);
+    }
+
 
 }

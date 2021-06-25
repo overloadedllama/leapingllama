@@ -44,6 +44,8 @@ public class LoadScreen implements Screen {
 
         if (Gdx.input.isTouched()) {
             // ad esempio parte il menu di gioco? o subito il gioco vero e proprio?
+            System.out.println("Load screen is being touched");
+
             game.setScreen(new MainMenuScreen(game));
 
             // game.setScreen(new Space(game));
