@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -55,10 +56,12 @@ public class GameScreen  implements Screen{
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
 
-    float WORLD_WIDTH = 320;
-    float WORLD_HEIGHT = 180;
 
     static float  UNITS_PER_METER = 128;
+    float WORLD_WIDTH = UNITS_PER_METER * 6;
+    float WORLD_HEIGHT = UNITS_PER_METER * 3;
+
+
     float METRE_WIDTH = WORLD_WIDTH / UNITS_PER_METER;
     float METRE_HEIGHT = WORLD_HEIGHT / UNITS_PER_METER;
 
@@ -82,8 +85,8 @@ public class GameScreen  implements Screen{
         return units / UNITS_PER_METER;
     }
 
-    public static float metersToUnits(float metres) {
-        return metres * UNITS_PER_METER;
+    public static float metersToUnits(float meters) {
+        return meters * UNITS_PER_METER;
     }
 
 
@@ -98,22 +101,23 @@ public class GameScreen  implements Screen{
 
         buttonJumpSkin = new Skin(Gdx.files.internal("text_button/text_button.json"), new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
         buttonJump = new TextButton("jump!", buttonJumpSkin);
-        buttonJumpTable = new Table();
-        buttonJumpTable.bottom().add(buttonJump).size(metersToUnits(1f), metersToUnits(1f)).padBottom(metersToUnits(3f)).padLeft(metersToUnits(3f));
-
-        stage.addActor(buttonJumpTable);
+        ///buttonJumpTable = new Table();
+        //buttonJumpTable.bottom().add(buttonJump).size(metersToUnits(2f), metersToUnits(2f)).padBottom(metersToUnits(3f)).padLeft(metersToUnits(3f));
+        buttonJump.setBounds(300, 100, 20, 20);
+        buttonJump.getLabel().setFontScale(0.2f);
+        stage.addActor(buttonJump);
 
 
 
         llamaTexture = new Texture(Gdx.files.internal("llamaphoto.png"));
-        llama = new Llama(llamaTexture,  metersToUnits(0.5f),metersToUnits(1f),metersToUnits(0.2f),metersToUnits(0.4f));
+        llama = new Llama(llamaTexture,  metersToUnits(1f),metersToUnits(2f),metersToUnits(0.5f),metersToUnits(2f));
         stage.addActor(llama);
 
         Gdx.input.setInputProcessor(stage);
         buttonJump.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Jump button pressed");
-                llama.jump(30);
+                llama.jump(metersToUnits(0.5f));
             }
         });
 
@@ -178,7 +182,7 @@ public class GameScreen  implements Screen{
 
     @Override
     public void render(float delta) {
-       // super.render();
+        // super.render();
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
         System.out.println(unitsToMeters(llamaBody.getPosition().x) + " " + unitsToMeters(llamaBody.getPosition().y) + " " + llama.getY());
@@ -195,6 +199,11 @@ public class GameScreen  implements Screen{
         stage.draw();
 
 
+        /*game.batch.begin();
+        llama.draw(game.batch, llamaBody.getPosition().x, llamaBody.getPosition().y);
+        ground.draw(game.batch, 0, 0);
+        game.batch.end();
+        */
 
 
 
@@ -216,7 +225,7 @@ public class GameScreen  implements Screen{
         if (accumulator >= STEP_TIME) {
             accumulator -= STEP_TIME;
 
-           world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
         }
     }
 
@@ -224,8 +233,8 @@ public class GameScreen  implements Screen{
     public void resize(int width, int height) {
         viewport.update(width, height);
 
-        buttonJumpTable.invalidateHierarchy();
-        buttonJumpTable.setSize(10, 10);
+        buttonJump.invalidateHierarchy();
+        //buttonJump.setSize(10, 10);
     }
 
     @Override

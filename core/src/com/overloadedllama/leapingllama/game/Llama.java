@@ -9,8 +9,8 @@ public class Llama extends GameObject {
         super(texture, x, y, w, h);
     }
 
-    public void jump(int hJump) {
-        sprite.setY(sprite.getY() + hJump);
+    public void jump(float hJump) {
+        super.setPosition(getX(), getY() + hJump);
     }
 
 

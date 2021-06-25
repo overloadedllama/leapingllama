@@ -13,49 +13,56 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class GameObject extends Actor {
 
-        float x, y, w, h;
+    float x, y, w, h;
 
-        Sprite sprite;
+    Sprite sprite;
 
-        public GameObject(Texture texture, float x, float y, float width, float height) {
-            super();
+    public GameObject(Texture texture, float x, float y, float width, float height) {
+        super();
 
-            this.x = x;
-            this.y = y;
-            this.w = w;
-            this.h = h;
-
-
-
-            super.setSize(width, height);
-            sprite = new Sprite(texture);
-            setPosition(x,y);
-
-        }
-
-        @Override
-        public void act(float delta) {
-            super.act(delta);
-        }
-
-        @Override
-        public void draw(Batch batch, float parentAlpha) {
-            sprite.setPosition(x,y);
-            sprite.draw(batch);
-        }
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
 
 
 
+        super.setSize(width, height);
+        sprite = new Sprite(texture);
 
-        public void setPosition (float x, float y){
-            this.x = x;
-            this.y = y;
-
-            sprite.setPosition(x,y);
-            sprite.setBounds(x, y, super.getWidth(), super.getHeight());
-
-            super.setPosition(x,y);
-        }
-
+        super.setOrigin(0,0);
+        setPosition(x,y);
     }
+
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        drawing(batch, x, y);
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+    }
+
+
+    public void drawing(Batch batch, float x, float y) {
+        sprite.setPosition(x,y);
+        sprite.draw(batch);
+    }
+
+
+
+
+    public void setPosition (float x, float y){
+        this.x = x;
+        this.y = y;
+
+        sprite.setPosition(x,y);
+        sprite.setBounds(x, y, super.getWidth(), super.getHeight());
+
+        super.setPosition(x,y);
+    }
+
+}
 
