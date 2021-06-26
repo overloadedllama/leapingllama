@@ -78,10 +78,10 @@ public class SettingScreen implements Screen {
                                         new TextureAtlas(Gdx.files.internal("backButton/backButton.atlas")));
         backButton = new ImageButton(backButtonSkin);
 
-        settingTable.add(musicTextField).width(160F).height(120F);
-        settingTable.add(musicButton).width(120F).height(120F).padRight(100F);
+        settingTable.add(musicTextField).width(180F).height(120F);
+        settingTable.add(musicButton).width(160F).height(120F).padLeft(10F);
         settingTable.row();
-        settingTable.add(backButton).width(160F).height(120F).padTop(10F);
+        settingTable.add(backButton).width(180F).height(120F).padTop(10F);
 
 
 
