@@ -8,27 +8,27 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
+import com.overloadedllama.leapingllama.database.LlamaDbHandler;
+
 public class MainMenuScreen implements Screen {
 
     final GameApp game;
 
-    private Texture logo;
+    LlamaDbHandler llamaDbHandler;
     OrthographicCamera camera;
     ExtendViewport viewport;
 
-    private Stage mainmenuStage;
-
+    private Stage mainMenuStage;
     private Table mainMenuTable;
+
+    private Texture logo;
 
     private TextButton settingButton;
     private Skin settingButtonSkin;
@@ -39,6 +39,9 @@ public class MainMenuScreen implements Screen {
     private TextButton creditsButton;
     private Skin creditsButtonSkin;
 
+    private TextField username;
+    private Skin usernameSkin;
+
     public MainMenuScreen(final GameApp game) {
         this.game = game;
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
@@ -48,6 +51,8 @@ public class MainMenuScreen implements Screen {
         viewport.apply();
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
+
+        llamaDbHandler = new LlamaDbHandler(game.context);
     }
 
     @Override
@@ -56,7 +61,7 @@ public class MainMenuScreen implements Screen {
         logo = new Texture(Gdx.files.internal("logo.png"));
         logo.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
 
-        mainmenuStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        mainMenuStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
 
         mainMenuTable = new Table();
 
@@ -73,16 +78,25 @@ public class MainMenuScreen implements Screen {
         settingButtonSkin = playButtonSkin;
         settingButton = new TextButton("settings", settingButtonSkin);
 
-        // add the button to the mainMenuTable and next it to the mainMenuStage
+        // creation of username TextField
+        usernameSkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
+                new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
+        username = new TextField("test", usernameSkin);
+        username.setDisabled(true);
+
+        // add the buttons and the username to the mainMenuTable and next it to the mainMenuStage
         mainMenuTable.add(playButton).width(260F).height(120F);
         mainMenuTable.row();
         mainMenuTable.add(creditsButton).width(260F).height(120F).padTop(10F);
         mainMenuTable.row();
         mainMenuTable.add(settingButton).width(260F).height(120F).padTop(10F);
+        mainMenuTable.row();
+        mainMenuTable.add(username).width(260F).height(120F).padTop(10F);
 
-        mainmenuStage.addActor(mainMenuTable);
 
-        Gdx.input.setInputProcessor(mainmenuStage);
+        mainMenuStage.addActor(mainMenuTable);
+
+        Gdx.input.setInputProcessor(mainMenuStage);
 
         playButton.addListener(new ClickListener() {
             @Override
@@ -98,39 +112,11 @@ public class MainMenuScreen implements Screen {
             }
         });
 
-        /*
-        // create the play button
-        mainmenuTablePlay = new Table();
-        mainmenuSkinPlay = new Skin(Gdx.files.internal("skins/play.json"), new TextureAtlas(Gdx.files.internal("mainMenu/mainMenuPack.atlas")));
-        mainmenuimagebuttonPlay = new ImageButton(mainmenuSkinPlay);
-        mainmenuTablePlay.bottom().add(mainmenuimagebuttonPlay).size( 152F, 164F).padBottom(20F);
-        mainmenuStage.addActor(mainmenuTablePlay);
 
-        // create the setting button
-        settingTable = new Table();
-        settingSkin = new Skin(Gdx.files.internal("skins/setting.json"), new TextureAtlas(Gdx.files.internal("settings/settingIconPack.atlas")));
-        settingButton = new ImageButton(settingSkin);
-        settingTable.bottom().add(settingButton).size(152F, 164F).padBottom(550F).padLeft(2200F);
-        mainmenuStage.addActor(settingTable);
+        // creation of the and Test user
+        //llamaDbHandler.insertNewUser("test");
 
-        Gdx.input.setInputProcessor(mainmenuStage);
-
-        mainmenuimagebuttonPlay.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new GameScreen(game));
-            }
-        });
-
-
-        settingButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new SettingScreen(game));
-            }
-        });
-        */
-
-
+        System.out.println("User Test Money: " + llamaDbHandler.getUserMoney("test"));
 
     }
 
@@ -138,8 +124,8 @@ public class MainMenuScreen implements Screen {
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
-        mainmenuStage.act();
-        mainmenuStage.draw();
+        mainMenuStage.act();
+        mainMenuStage.draw();
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
@@ -166,12 +152,7 @@ public class MainMenuScreen implements Screen {
         mainMenuTable.invalidateHierarchy();
         mainMenuTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
-        /*
-        mainmenuTablePlay.invalidateHierarchy();
-        mainmenuTablePlay.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
-        settingTable.invalidateHierarchy();
-        */
     }
 
     @Override
@@ -185,18 +166,14 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void hide() {
-
+        dispose();
     }
 
     @Override
     public void dispose() {
         logo.dispose();
+        mainMenuStage.dispose();
 
-        mainmenuStage.dispose();
-
-        /*
-        mainmenuSkinPlay.dispose();
-        settingSkin.dispose();
-        */
+        playButtonSkin.dispose();
     }
 }
