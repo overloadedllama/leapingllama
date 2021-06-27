@@ -6,6 +6,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
@@ -38,13 +39,10 @@ public class GameScreen  implements Screen{
 
     TextButton buttonJump;
     Skin buttonJumpSkin;
-    Table buttonJumpTable;
-
 
 
     Llama llama;
     Ground ground;
-
 
     Box2DDebugRenderer debugRenderer;
 
@@ -58,19 +56,19 @@ public class GameScreen  implements Screen{
     float WORLD_HEIGHT = UNITS_PER_METER * 3;
 
 
-    float METRE_WIDTH = WORLD_WIDTH / UNITS_PER_METER;
-    float METRE_HEIGHT = WORLD_HEIGHT / UNITS_PER_METER;
+    float METER_WIDTH = WORLD_WIDTH / UNITS_PER_METER;
+    float METER_HEIGHT = WORLD_HEIGHT / UNITS_PER_METER;
 
     public GameScreen(final GameApp game) {
         this.game = game;
 
         camera = new OrthographicCamera();
+        camera.position.set(WORLD_WIDTH / 2, WORLD_HEIGHT / 2, 0);
 
+        camera.update();
         viewport = new ExtendViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
         viewport.apply();
-        //camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
 
-        //camera.update();
 
 
         debugRenderer = new Box2DDebugRenderer();
@@ -91,34 +89,23 @@ public class GameScreen  implements Screen{
     @Override
     public void show() {
         Box2D.init();
-        world = new World(new Vector2(0f, -9.8f), true);
+        world = new World(new Vector2(0f, metersToUnits(-9.8f)), true);
 
         stage = new Stage(viewport);
 
         buttonJumpSkin = new Skin(Gdx.files.internal("text_button/text_button.json"), new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
-        buttonJump = new TextButton("jump!", buttonJumpSkin);
-        ///buttonJumpTable = new Table();
-        //buttonJumpTable.bottom().add(buttonJump).size(metersToUnits(2f), metersToUnits(2f)).padBottom(metersToUnits(3f)).padLeft(metersToUnits(3f));
+        buttonJump = new TextButton("jump", buttonJumpSkin);
         buttonJump.setBounds(300, 100, 20, 20);
         buttonJump.getLabel().setFontScale(0.2f);
         stage.addActor(buttonJump);
 
 
+
+
+        llama = new Llama(new Texture(Gdx.files.internal("llamaphoto.png")), metersToUnits(1f), metersToUnits(2f), metersToUnits(0.5f), metersToUnits(2f), world, game.batch);
+        ground = new Ground(new Texture(Gdx.files.internal("wall.jpg")), 0, 0, camera.viewportWidth*2, metersToUnits(0.3f), world, game.batch);
+
         Gdx.input.setInputProcessor(stage);
-        buttonJump.addListener(new ClickListener() {
-            public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Jump button pressed");
-                llama.jump(metersToUnits(0.5f));
-            }
-        });
-
-
-        llama = new Llama(new Texture(Gdx.files.internal("llamaphoto.png")), metersToUnits(1f),metersToUnits(2f),metersToUnits(0.5f),metersToUnits(2f), world);
-
-
-
-        ground = new Ground(new Texture(Gdx.files.internal("wall.jpg")), 0, 0, 3000, metersToUnits(0.3f), world);
-
 
 
 
@@ -129,25 +116,20 @@ public class GameScreen  implements Screen{
 
     @Override
     public void render(float delta) {
-        game.render();
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
-
-        System.out.println(unitsToMeters(llama.getBody().getPosition().x) + " " + unitsToMeters(llama.getBody().getPosition().y) + " " + llama.getY());
-
         stepWorld();
 
-        llama.setPosition( unitsToMeters(llama.getBody().getPosition().x), unitsToMeters(llama.getBody().getPosition().y));
+        llama.setPosition((llama.getBody().getPosition().x), (llama.getBody().getPosition().y));
 
+        camera.update();
 
-
-
-        //camera.update();
         stage.act();
         stage.draw();
 
 
         game.batch.begin();
-        llama.draw(game.batch);
+        llama.draw();
+        ground.draw();
         game.batch.end();
 
 
@@ -155,7 +137,12 @@ public class GameScreen  implements Screen{
 
         debugRenderer.render(world, camera.combined);
 
-
+        buttonJump.addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                System.out.println("Jump button pressed");
+                llama.jump();
+            }
+        });
 
 
     }
@@ -178,9 +165,9 @@ public class GameScreen  implements Screen{
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        game.batch.setProjectionMatrix(camera.combined);
 
         buttonJump.invalidateHierarchy();
-        //buttonJump.setSize(10, 10);
     }
 
     @Override

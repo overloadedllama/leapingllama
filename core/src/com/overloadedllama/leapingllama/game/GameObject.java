@@ -20,33 +20,34 @@ public class GameObject {
     Sprite sprite;
     Body body;
     World world;
+    Batch batch;
 
 
-
-    public GameObject(Texture texture, float x, float y, float width, float height, World world) {
+    public GameObject(Texture texture, float x, float y, float w, float h, World world, Batch batch) {
         this.x = x;
         this.y = y;
         this.w = w;
         this.h = h;
         this.world = world;
         this.texture = texture;
+        this.batch = batch;
 
-        sprite = new Sprite(texture);
+        sprite = new Sprite(this.texture);
+        sprite.setSize(w, h);
         setPosition(x,y);
+
     }
 
-    public void draw(Batch batch) {
-      batch.draw(texture, x, y, w, h);
+    public void draw() {
+
+        sprite.draw(batch);
     }
 
     public void setPosition (float x, float y){
         this.x = x;
         this.y = y;
 
-        sprite.setPosition(x,y);
-        sprite.setBounds(x, y, w, h);
-
-
+        sprite.setPosition(x-w/2,y-h/2);
     }
 
 
