@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
+import android.database.sqlite.SQLiteConstraintException;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -19,6 +20,8 @@ import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 
 public class MainMenuScreen implements Screen {
 
+    private static final String TEST_USER = "test";
+
     final GameApp game;
 
     LlamaDbHandler llamaDbHandler;
@@ -28,19 +31,24 @@ public class MainMenuScreen implements Screen {
     private Stage mainMenuStage;
     private Table mainMenuTable;
 
+    // Texture
     private Texture logo;
 
+    // TextButton
     private TextButton settingButton;
-    private Skin settingButtonSkin;
-
     private TextButton playButton;
-    private Skin playButtonSkin;
-
     private TextButton creditsButton;
-    private Skin creditsButtonSkin;
 
+    // TextField
     private TextField username;
+    private TextField money;
+
+    // Skin
+    private Skin settingButtonSkin;
+    private Skin playButtonSkin;
+    private Skin creditsButtonSkin;
     private Skin usernameSkin;
+    private Skin moneySkin;
 
     public MainMenuScreen(final GameApp game) {
         this.game = game;
@@ -84,15 +92,23 @@ public class MainMenuScreen implements Screen {
         username = new TextField("test", usernameSkin);
         username.setDisabled(true);
 
+        // creation of money TextField
+        moneySkin = usernameSkin;
+        String moneyString = "money: " + llamaDbHandler.getUserMoney(TEST_USER);
+        money = new TextField(moneyString, moneySkin);
+        money.setDisabled(true);
+
+
         // add the buttons and the username to the mainMenuTable and next it to the mainMenuStage
+        mainMenuTable.center();
         mainMenuTable.add(playButton).width(260F).height(120F);
         mainMenuTable.row();
         mainMenuTable.add(creditsButton).width(260F).height(120F).padTop(10F);
         mainMenuTable.row();
         mainMenuTable.add(settingButton).width(260F).height(120F).padTop(10F);
         mainMenuTable.row();
-        mainMenuTable.add(username).width(260F).height(120F).padTop(10F);
-
+        mainMenuTable.add(username).width(260F).height(120F).padTop(10F).padRight(10);
+        mainMenuTable.add(money).width(260F).height(120F).padTop(10F).padLeft(10);
 
         mainMenuStage.addActor(mainMenuTable);
 
@@ -113,10 +129,35 @@ public class MainMenuScreen implements Screen {
         });
 
 
-        // creation of the and Test user
-        //llamaDbHandler.insertNewUser("test");
+        /*
+        System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+        System.out.println("User '" + TEST_USER + "' Best Score: " + llamaDbHandler.getUserBestScore(TEST_USER));
 
-        System.out.println("User Test Money: " + llamaDbHandler.getUserMoney("test"));
+
+        if (llamaDbHandler.checkSetUserMoney(TEST_USER, +30)) {
+            System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+        } else {
+            System.out.println("User '"+ TEST_USER + "', checkSetUserMoney(test, +30) returned 'false'");
+        }
+        System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+
+
+        if (llamaDbHandler.checkSetUserMoney(TEST_USER, -20)) {
+            System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+        } else {
+            System.out.println("User '"+ TEST_USER + "', checkSetUserMoney(test, -20) returned 'false'");
+        }
+        System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+
+
+        if (llamaDbHandler.checkSetUserMoney(TEST_USER, -50)) {
+            System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+        } else {
+            System.out.println("User '"+ TEST_USER + "', checkSetUserMoney(test, -50) returned 'false'");
+        }
+        System.out.println("User '" + TEST_USER + "' Money: " + llamaDbHandler.getUserMoney(TEST_USER));
+        */
+
 
     }
 
@@ -139,7 +180,7 @@ public class MainMenuScreen implements Screen {
                 (float) logo.getWidth()/4,  (float) logo.getHeight()/4);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
 
-        game.font.draw(game.batch, "Tap the button to begin!", 2, 50);
+        //game.font.draw(game.batch, "Tap the button to begin!", 2, 50);
 
         game.batch.end();
 

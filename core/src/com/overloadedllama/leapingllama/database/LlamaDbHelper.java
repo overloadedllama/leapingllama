@@ -12,7 +12,9 @@ public class LlamaDbHelper extends SQLiteOpenHelper {
 
     private static LlamaDbHelper sInstance;
 
-    public LlamaDbHelper(Context context) {
+    // to instantiate a new LlamaDbHelper must be used getInstance() method,
+    // due to this the basic constructor is private
+    private LlamaDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
     }
@@ -29,7 +31,7 @@ public class LlamaDbHelper extends SQLiteOpenHelper {
     }
 
 
-
+    // this method prevents having multiple LlamaDbHelper
     public static synchronized LlamaDbHelper getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new LlamaDbHelper(context.getApplicationContext());
