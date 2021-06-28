@@ -74,27 +74,27 @@ public class MainMenuScreen implements Screen {
         mainMenuTable = new Table();
 
         // creation of Play Button
-        playButtonSkin = new Skin(Gdx.files.internal("text_button/text_button.json"),
-                                   new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
-        playButton = new TextButton("play", playButtonSkin);
+        playButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
+                                   new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        playButton = new TextButton("NEW GAME", playButtonSkin);
 
         // creation of creditsButton
         creditsButtonSkin = playButtonSkin;
-        creditsButton = new TextButton("credits", creditsButtonSkin);
+        creditsButton = new TextButton("CREDITS", creditsButtonSkin);
 
         // creation of Settings Button
         settingButtonSkin = playButtonSkin;
-        settingButton = new TextButton("settings", settingButtonSkin);
+        settingButton = new TextButton("SETTINGS", settingButtonSkin);
 
         // creation of username TextField
-        usernameSkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
-                new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
+        usernameSkin = settingButtonSkin;
         username = new TextField("test", usernameSkin);
         username.setDisabled(true);
 
         // creation of money TextField
-        moneySkin = usernameSkin;
-        String moneyString = "money: " + llamaDbHandler.getUserMoney(TEST_USER);
+        //moneySkin =  new Skin(Gdx.files.internal("ui/coin.json"), new TextureAtlas(Gdx.files.internal("ui/coin.atlas")));
+        moneySkin = settingButtonSkin;
+        String moneyString = String.valueOf(llamaDbHandler.getUserMoney(TEST_USER));
         money = new TextField(moneyString, moneySkin);
         money.setDisabled(true);
 
