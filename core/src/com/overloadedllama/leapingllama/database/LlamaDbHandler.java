@@ -10,7 +10,6 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * some ideas: inserting data/time of user's best score,
  * add the possibility to delete user's progresses,
- * create tables/columns for each game level
  */
 
 public class LlamaDbHandler {
@@ -45,6 +44,23 @@ public class LlamaDbHandler {
         }
     }
 
+    // insert settings referred to an existing user
+    public void insertSettingsNewUser(String user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues newUser = new ContentValues();
+        newUser.put(LlamaDbContracts.Settings.PRIMARY_KEY, user);
+
+        long ret = 0;
+        try {
+            ret = db.insert(LlamaDbContracts.Settings.TABLE_NAME, null, newUser);
+        } catch (SQLiteConstraintException unique) {
+            System.out.println("ERROR: user 'test' already exists.");
+        } finally {
+            System.out.println("ret db.insert() = " + ret);
+        }
+    }
+
     // gets the user's money
     public int getUserMoney(String user) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -58,15 +74,9 @@ public class LlamaDbHandler {
 
         Cursor cursor = db.query(
                 LlamaDbContracts.Player.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
+                projection, selection, selectionArgs,
+                null,null, null
         );
-
-        System.out.println(cursor.toString());
 
         cursor.moveToFirst();
         userMoney = cursor.getInt(0);
@@ -87,12 +97,8 @@ public class LlamaDbHandler {
 
         Cursor cursor = db.query(
                 LlamaDbContracts.Player.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                null
+                projection, selection, selectionArgs,
+                null, null, null
         );
 
         cursor.moveToFirst();
@@ -100,7 +106,6 @@ public class LlamaDbHandler {
         cursor.close();
         return userBestScore;
     }
-
 
     // check and set (eventually) the new user's best score
     public void checkSetNewUserBestScore(String user, int score) {
@@ -117,9 +122,7 @@ public class LlamaDbHandler {
 
             int count = db.update(
                     LlamaDbContracts.Player.TABLE_NAME,
-                    newBest,
-                    selection,
-                    selectionArgs);
+                    newBest, selection, selectionArgs);
 
             if (count != 1) {
                 throw new SQLException();
@@ -168,5 +171,78 @@ public class LlamaDbHandler {
             return true;
         }
     }
+
+    public int getUserLevel(String user) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = {
+                LlamaDbContracts.Player.LEVEL_COLUMN
+        };
+
+        String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
+        String[] selectionArgs = { user };
+
+        Cursor cursor = db.query(
+                LlamaDbContracts.Player.TABLE_NAME,
+                projection, selection, selectionArgs,
+                null,null, null
+        );
+
+        cursor.moveToFirst();
+        int levelUser = cursor.getInt(0);
+        cursor.close();
+        return levelUser;
+    }
+
+    // set the new user level, which is the previous increased by 1
+    public void setUserLevel(String user, int level) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues nextLevel = new ContentValues();
+        nextLevel.put(LlamaDbContracts.Player.LEVEL_COLUMN, getUserLevel(user) + 1);
+
+        String selection = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
+        String[] selectionArgs = { user };
+
+        db.update(
+                LlamaDbContracts.Player.TABLE_NAME,
+                nextLevel, selection, selectionArgs
+        );
+    }
+
+
+
+
+    // resets all the progresses (money earned, levels, guns unlocked...) of the user
+    public void resetProgresses(String user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues resetPlayer = new ContentValues();
+        resetPlayer.put(LlamaDbContracts.Player.SCORE_COLUMN, 0);
+        resetPlayer.put(LlamaDbContracts.Player.LEVEL_COLUMN, 0);
+        resetPlayer.put(LlamaDbContracts.Player.MONEY_COLUMN, 0);
+
+        ContentValues resetSetting = new ContentValues();
+        resetSetting.put(LlamaDbContracts.Settings.TAN_COLUMN, 0);
+        resetSetting.put(LlamaDbContracts.Settings.T_SHIRT_COLUMN, 0);
+        resetSetting.put(LlamaDbContracts.Settings.GUN_COLUMN, 0);
+
+        String selPlayer = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
+        String[] selPlayerArgs = { user };
+
+        String selSettings= LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
+        String[] selSettingsArgs = { user };
+
+        db.update(
+                LlamaDbContracts.Player.TABLE_NAME,
+                resetPlayer, selPlayer, selPlayerArgs
+        );
+
+        db.update(
+                LlamaDbContracts.Settings.TABLE_NAME,
+                resetSetting, selSettings, selSettingsArgs
+        );
+    }
+
 
 }
