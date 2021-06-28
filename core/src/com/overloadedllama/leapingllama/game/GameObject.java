@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -33,6 +34,7 @@ public class GameObject {
 
         sprite = new Sprite(this.texture);
         sprite.setSize(w, h);
+        sprite.setOriginCenter();
         setPosition(x,y, 0);
 
     }
@@ -47,8 +49,7 @@ public class GameObject {
         this.y = y;
 
         sprite.setPosition(x-w/2,y-h/2);
-
-        sprite.rotate(d);
+        sprite.setRotation(MathUtils.radiansToDegrees * d);
     }
 
     public void createBody (BodyDef.BodyType type, PolygonShape shape, float density, float friction, float restitution){
