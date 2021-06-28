@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -41,15 +42,21 @@ public class MainMenuScreen implements Screen {
     private TextButton playButton;
     private TextButton shopButton;
     private TextButton creditsButton;
+    private TextButton moneyButton;
+
 
     // TextField
     private TextField user;
-    private TextField bestScore;
-    private TextField money;
+
+
+    //Label
+    private Label bestScore;
+
 
     // Skin
     private Skin textButtonSkin;
     private Skin textFieldSkin;
+    private Skin moneyButtonSkin;
 
     public MainMenuScreen(final GameApp game) {
         this.game = game;
@@ -61,7 +68,7 @@ public class MainMenuScreen implements Screen {
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
 
-        llamaDbHandler = new LlamaDbHandler(game.getContext());
+      //  llamaDbHandler = new LlamaDbHandler(game.getContext());
     }
 
     @Override
@@ -74,24 +81,31 @@ public class MainMenuScreen implements Screen {
         moneyTable = new Table();
 
         // creation of Skins
-        textButtonSkin = new Skin(Gdx.files.internal("text_button/text_button.json"),
-                new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
-        textFieldSkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
-                new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
-        textFieldSkin.getFont("Dream").getData().setScale(0.7F);
+        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        textFieldSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        moneyButtonSkin = new Skin(Gdx.files.internal("ui/coin.json"), new TextureAtlas(Gdx.files.internal("ui/coin.atlas")));
+        //textFieldSkin.getFont("pixeled").getData().setScale(0.7F);
 
         // creation of TextButtons
-        textButtonSkin.getFont("Dream").getData().setScale(1F);
-        playButton = new TextButton("play", textButtonSkin);
-        shopButton = new TextButton("shop", textButtonSkin);
-        settingsButton = new TextButton("settings", textButtonSkin);
-        creditsButton = new TextButton("credits", textButtonSkin);
+        //textButtonSkin.getFont("pixeled").getData().setScale(1F);
+        playButton = new TextButton("PLAY", textButtonSkin);
+        shopButton = new TextButton("SHOP", textButtonSkin);
+        settingsButton = new TextButton("SETTINGS", textButtonSkin);
+        creditsButton = new TextButton("CREDIT", textButtonSkin);
+        moneyButton = new TextButton("0", moneyButtonSkin);
+
+        //labels
 
         // creation of TextField
-        textFieldSkin.getFont("Dream").getData().setScale(0.6F);
-        user = new TextField("user: " + TEST_USER, textFieldSkin);
-        bestScore = new TextField("best score: " + llamaDbHandler.getUserBestScore(TEST_USER), textFieldSkin);
-        money = new TextField("money: " + llamaDbHandler.getUserMoney(TEST_USER), textFieldSkin);
+        textFieldSkin.getFont("pixeled").getData().setScale(1F);
+        user = new TextField("USER: " + TEST_USER, textFieldSkin);
+
+
+       //Label
+        bestScore = new Label("BEST SCORE: 0", textFieldSkin); // + llamaDbHandler.getUserBestScore(TEST_USER), textFieldSkin);
+        bestScore.setAlignment(Align.center);
+        bestScore.setColor(255, 251, 209, 255); //NOT WORKING
+        //money = new TextField("MONEY:  0", textFieldSkin);// + llamaDbHandler.getUserMoney(TEST_USER), textFieldSkin);
 
         // adding items into mainMenu and info Tables and them to the mainMenuStage
         bestScoreTable.top().left();
@@ -99,7 +113,7 @@ public class MainMenuScreen implements Screen {
         userTable.top();
         userTable.add(user).width(240F).height(80F);
         moneyTable.top().right();
-        moneyTable.add(money).width(240F).height(80F);
+        moneyTable.add(moneyButton);
 
         mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
         mainMenuTable.row();

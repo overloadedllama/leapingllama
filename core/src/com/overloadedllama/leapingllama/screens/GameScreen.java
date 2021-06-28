@@ -131,9 +131,10 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             System.out.println("Enemy Created");
         }*/
 
-        llama.setPosition((llama.getBody().getPosition().x), (llama.getBody().getPosition().y));
+        llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
+
         //for (Enemy e : enemies) {
-            enemy.setPosition((enemy.getBody().getPosition().x), (enemy.getBody().getPosition().y));
+            enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
         //}
 
         camera.update();

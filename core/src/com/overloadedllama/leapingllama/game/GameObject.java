@@ -33,7 +33,7 @@ public class GameObject {
 
         sprite = new Sprite(this.texture);
         sprite.setSize(w, h);
-        setPosition(x,y);
+        setPosition(x,y, 0);
 
     }
 
@@ -42,11 +42,13 @@ public class GameObject {
         sprite.draw(batch);
     }
 
-    public void setPosition (float x, float y){
+    public void setPosition (float x, float y, float d){
         this.x = x;
         this.y = y;
 
         sprite.setPosition(x-w/2,y-h/2);
+
+        sprite.rotate(d);
     }
 
     public void createBody (BodyDef.BodyType type, PolygonShape shape, float density, float friction, float restitution){

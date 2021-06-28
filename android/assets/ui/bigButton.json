@@ -10,6 +10,20 @@
 		"g": 0.18218882,
 		"b": 0.14466667,
 		"a": 1
+	},
+	"lightYellow": {
+		"r": 1,
+		"g": 0.98514,
+		"b": 0.82,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+	"cursor": {
+		"name": "white-pixel",
+		"color": "darkBrown",
+		"minWidth": 2,
+		"minHeight": 7
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
@@ -25,6 +39,13 @@
 		"checkedOffsetY": -1
 	}
 },
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "pixeled",
+		"fontColor": "lightYellow",
+		"background": "buttonBigDisabled"
+	}
+},
 "com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
 	"default": {
 		"font": "pixeled",
@@ -37,6 +58,21 @@
 		"pressedOffsetY": -1,
 		"checkedOffsetX": -1,
 		"checkedOffsetY": -1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+	"default": {
+		"font": "pixeled",
+		"fontColor": "darkBrown",
+		"background": "buttonBigNormal",
+		"focusedBackground": "buttonBigPressed",
+		"disabledBackground": "buttonBigDisabled",
+		"cursor": "cursor"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
 	}
 }
 }

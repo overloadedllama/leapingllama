@@ -4,30 +4,37 @@ size: 512, 512
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
+white-pixel
+  rotate: false
+  xy: 509, 507
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
 buttonBigDisabled
   rotate: false
-  xy: 1, 324
+  xy: 1, 327
   size: 212, 80
   orig: 212, 80
   offset: 0, 0
   index: -1
 buttonBigNormal
   rotate: false
-  xy: 1, 242
+  xy: 1, 245
   size: 212, 80
   orig: 212, 80
   offset: 0, 0
   index: -1
 buttonBigPressed
   rotate: false
-  xy: 215, 324
+  xy: 215, 327
   size: 212, 80
   orig: 212, 80
   offset: 0, 0
   index: -1
 pixeled
   rotate: false
-  xy: 1, 406
+  xy: 1, 409
   size: 506, 99
   orig: 506, 99
   offset: 0, 0
