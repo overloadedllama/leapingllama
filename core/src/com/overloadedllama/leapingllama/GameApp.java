@@ -14,7 +14,7 @@ public class GameApp extends Game {
 	public final static float WIDTH = 1280f;
 	public final static float HEIGHT = 720f;
 
-	public Context context;
+	private Context context;
 
 	public GameApp(Context context) {
 		this.context = context;
@@ -39,5 +39,8 @@ public class GameApp extends Game {
 		font.dispose();
 	}
 
+	public Context getContext() {
+		return context;
+	}
 }
 
