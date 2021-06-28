@@ -14,25 +14,18 @@ public class Llama extends GameObject {
         llamaBodyDef.type = BodyDef.BodyType.DynamicBody;
         llamaBodyDef.position.set(x, y);
 
-        body = world.createBody(llamaBodyDef);
 
         PolygonShape llamaShape = new PolygonShape();
         llamaShape.setAsBox(w/2, h/2);
 
-        FixtureDef llamaFixtureDef = new FixtureDef();
-        llamaFixtureDef.shape = llamaShape;
-        llamaFixtureDef.density = 1;
-        llamaFixtureDef.friction = 1f;
-        llamaFixtureDef.restitution = 0f;
-
-        body.createFixture(llamaFixtureDef);
+        super.createBody(BodyDef.BodyType.DynamicBody, llamaShape, 20, 1, 0);
 
         llamaShape.dispose();
 
     }
 
     public void jump() {
-        body.applyLinearImpulse(0, 9999999999999999999f, x, y, true);
+        body.applyForceToCenter(0, 5, true);
     }
 
 

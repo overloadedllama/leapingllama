@@ -1,0 +1,34 @@
+
+coin.png
+size: 512, 512
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+buttonBigDisabled
+  rotate: false
+  xy: 1, 345
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+buttonBigNormal
+  rotate: false
+  xy: 1, 263
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+buttonBigPressed
+  rotate: false
+  xy: 215, 345
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+coin
+  rotate: false
+  xy: 1, 177
+  size: 64, 84
+  orig: 64, 84
+  offset: 0, 0
+  index: -1

@@ -1,0 +1,27 @@
+
+bigButton.png
+size: 256, 256
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+buttonBigDisabled
+  rotate: false
+  xy: 1, 165
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+buttonBigNormal
+  rotate: false
+  xy: 1, 83
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+buttonBigPressed
+  rotate: false
+  xy: 1, 1
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
