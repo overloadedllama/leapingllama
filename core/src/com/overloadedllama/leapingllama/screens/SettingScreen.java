@@ -15,7 +15,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
 
-
 public class SettingScreen implements Screen {
     private final OrthographicCamera camera;
     private final ExtendViewport viewport;
@@ -28,10 +27,6 @@ public class SettingScreen implements Screen {
     private final String ON = "on";
     private final String OFF = "off";
 
-    private boolean MUSIC_ON = true;
-    private boolean SOUND_ON = true;
-
-
     // ImageButtons
     private ImageButton backButton;
 
@@ -39,15 +34,9 @@ public class SettingScreen implements Screen {
     private TextButton musicButton;
     private TextButton soundButton;
 
-    // TextFields
-    private TextField musicTextField;
-    private TextField soundTextField;
-
     // Skins
     private Skin imageButtonSkin;
     private Skin textButtonSkin;
-    private Skin textFieldSkin;
-
 
     public SettingScreen(GameApp game) {
         this.game = game;
@@ -68,34 +57,24 @@ public class SettingScreen implements Screen {
         backButtonTable = new Table();
 
         // creation of the Skins
-        textFieldSkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
-                new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
-        textButtonSkin = new Skin(Gdx.files.internal("text_button/text_button.json"),
-                new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
+        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
+                new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
         imageButtonSkin = new Skin(Gdx.files.internal("backButton/backButton.json"),
                 new TextureAtlas(Gdx.files.internal("backButton/backButton.atlas")));
 
-        // creation of TextFields
-        musicTextField = new TextField("music: ", textFieldSkin);
-        musicTextField.setDisabled(true);
-        soundTextField = new TextField("sound: ", textFieldSkin);
-        soundTextField.setDisabled(true);
-
         // creation of TextButtons
-        musicButton = new TextButton(ON, textButtonSkin);
+        musicButton = new TextButton("MUSIC: " + Settings.getState("MUSIC"), textButtonSkin);
         musicButton.setDisabled(false);
-        soundButton = new TextButton(ON, textButtonSkin);
+        soundButton = new TextButton("SOUND: " + Settings.getState("SOUND"), textButtonSkin);
         musicButton.setDisabled(false);
 
         // creation of ImageButtons
         backButton = new ImageButton(imageButtonSkin);
 
         // adding items to settingTable and backButtonTable and them to settingsStage
-        settingTable.add(musicTextField).width(200F).height(120F);
-        settingTable.add(musicButton).width(160F).height(120F).padLeft(10F);
+        settingTable.add(musicButton).width(260F).height(120F);
         settingTable.row();
-        settingTable.add(soundTextField).width(200F).height(120F);
-        settingTable.add(soundButton).width(160F).height(120F).padLeft(10F);
+        settingTable.add(soundButton).width(260F).height(120F).padTop(10F);
 
         backButtonTable.top().left();
         backButtonTable.add(backButton).width(120F).height(80);
@@ -108,21 +87,19 @@ public class SettingScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("BACK BUTTON PRESSED");
                 ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
             }
         });
-
 
         musicButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (Settings.isMUSIC()) {
                     Settings.setMUSIC(false);
-                    musicButton.getLabel().setText(OFF);
+                    musicButton.getLabel().setText("MUSIC: " + OFF);
                 } else {
                     Settings.setMUSIC(true);
-                    musicButton.getLabel().setText(ON);
+                    musicButton.getLabel().setText("MUSIC: " + ON);
                 }
             }
         });
@@ -132,10 +109,10 @@ public class SettingScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (Settings.isSOUND()) {
                     Settings.setSOUND(false);
-                    soundButton.getLabel().setText(OFF);
+                    soundButton.getLabel().setText("SOUND: " + OFF);
                 } else {
                     Settings.setSOUND(true);
-                    soundButton.getLabel().setText(ON);
+                    soundButton.getLabel().setText("SOUND: " + ON);
                 }
             }
         });
@@ -187,7 +164,6 @@ public class SettingScreen implements Screen {
         settingsStage.dispose();
 
         imageButtonSkin.dispose();
-        textFieldSkin.dispose();
         textButtonSkin.dispose();
 
     }

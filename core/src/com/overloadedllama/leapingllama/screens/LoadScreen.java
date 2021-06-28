@@ -4,8 +4,14 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
 public class LoadScreen implements Screen {
@@ -16,6 +22,17 @@ public class LoadScreen implements Screen {
 
     private Texture logo;
 
+    // stage and tables
+    private Stage loadScreenStage;
+    private Table loadScreenTable;
+
+    // TextField
+    private TextField nameLabel;
+    private TextField nameText;
+
+    // Skins
+    private Skin textFieldSkin;
+
 
     public LoadScreen(final GameApp game) {
         this.game = game;
@@ -25,6 +42,17 @@ public class LoadScreen implements Screen {
         viewport.apply();
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
+    }
+
+    @Override
+    public void show() {
+        loadScreenStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        loadScreenTable = new Table();
+
+        // creation of Skins
+        textFieldSkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
+                new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
+
     }
 
     @Override
@@ -55,10 +83,7 @@ public class LoadScreen implements Screen {
 
 
 
-    @Override
-    public void show() {
 
-    }
 
     @Override
     public void resize(int width, int height) {

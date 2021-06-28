@@ -210,9 +210,6 @@ public class LlamaDbHandler {
         );
     }
 
-
-
-
     // resets all the progresses (money earned, levels, guns unlocked...) of the user
     public void resetProgresses(String user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -244,5 +241,43 @@ public class LlamaDbHandler {
         );
     }
 
+    public boolean isMusicOn(String user) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = { LlamaDbContracts.Settings.MUSIC_COLUMN };
+
+        String selection = LlamaDbContracts.Settings.PRIMARY_KEY + " =? ";
+        String[] selectionArgs = { user };
+
+        Cursor cursor = db.query(
+                LlamaDbContracts.Settings.TABLE_NAME,
+                projection, selection, selectionArgs,
+                null, null, null
+        );
+
+        cursor.moveToFirst();
+        boolean ret = cursor.getInt(0) == 1;
+        cursor.close();
+        return ret;
+    }
+
+    public void setMusic(String user, boolean isOn) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        int music;
+        if (isOn) music = 1;
+        else music = 0;
+
+        ContentValues value = new ContentValues();
+        value.put(LlamaDbContracts.Settings.MUSIC_COLUMN, music);
+
+        String selection = LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
+        String[] selectionArgs = { user };
+
+        db.update(
+                LlamaDbContracts.Settings.TABLE_NAME,
+                value, selection, selectionArgs
+        );
+    }
 
 }

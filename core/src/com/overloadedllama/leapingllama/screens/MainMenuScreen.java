@@ -44,14 +44,11 @@ public class MainMenuScreen implements Screen {
     private TextButton creditsButton;
     private TextButton moneyButton;
 
-
     // TextField
     private TextField user;
 
-
     //Label
     private Label bestScore;
-
 
     // Skin
     private Skin textButtonSkin;
@@ -68,7 +65,7 @@ public class MainMenuScreen implements Screen {
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
 
-      //  llamaDbHandler = new LlamaDbHandler(game.getContext());
+        llamaDbHandler = new LlamaDbHandler(game.getContext());
     }
 
     @Override
@@ -84,7 +81,6 @@ public class MainMenuScreen implements Screen {
         textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
         textFieldSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
         moneyButtonSkin = new Skin(Gdx.files.internal("ui/coin.json"), new TextureAtlas(Gdx.files.internal("ui/coin.atlas")));
-        //textFieldSkin.getFont("pixeled").getData().setScale(0.7F);
 
         // creation of TextButtons
         //textButtonSkin.getFont("pixeled").getData().setScale(1F);
@@ -92,14 +88,16 @@ public class MainMenuScreen implements Screen {
         shopButton = new TextButton("SHOP", textButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonSkin);
         creditsButton = new TextButton("CREDIT", textButtonSkin);
-        moneyButton = new TextButton("0", moneyButtonSkin);
+        String userMoney = "" + llamaDbHandler.getUserMoney(TEST_USER);
+        moneyButton = new TextButton(userMoney , moneyButtonSkin);
 
         //labels
 
         // creation of TextField
         textFieldSkin.getFont("pixeled").getData().setScale(1F);
-        user = new TextField("USER: " + TEST_USER, textFieldSkin);
-
+        user = new TextField("  USER: " + TEST_USER, textFieldSkin);
+        user.setDisabled(true);
+        user.setAlignment(Align.center);
 
        //Label
         bestScore = new Label("BEST SCORE: 0", textFieldSkin); // + llamaDbHandler.getUserBestScore(TEST_USER), textFieldSkin);
@@ -109,11 +107,11 @@ public class MainMenuScreen implements Screen {
 
         // adding items into mainMenu and info Tables and them to the mainMenuStage
         bestScoreTable.top().left();
-        bestScoreTable.add(bestScore).width(240F).height(80F);
+        bestScoreTable.add(bestScore).width(240F).height(80F).padTop(15F).padLeft(15F);
         userTable.top();
-        userTable.add(user).width(240F).height(80F);
+        userTable.add(user).width(240F).height(80F).padTop(15F);
         moneyTable.top().right();
-        moneyTable.add(moneyButton);
+        moneyTable.add(moneyButton).padTop(15F).padRight(15F);
 
         mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
         mainMenuTable.row();
@@ -203,5 +201,6 @@ public class MainMenuScreen implements Screen {
 
         textFieldSkin.dispose();
         textButtonSkin.dispose();
+        moneyButtonSkin.dispose();
     }
 }

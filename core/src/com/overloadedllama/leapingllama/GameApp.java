@@ -25,6 +25,7 @@ public class GameApp extends Game {
 		batch = new SpriteBatch();
 		font = new BitmapFont(Gdx.files.internal("vcrosdmono.fnt")); // using a free font downloaded from dafont.com and then converted into a .fnt (32bit, white text with alpha) using a free tool called bmfont.
 
+
 		this.setScreen(new LoadScreen(this));
 	}
 
