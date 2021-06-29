@@ -6,23 +6,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Enemy;
-import com.overloadedllama.leapingllama.game.GameObject;
 import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
 
@@ -46,7 +41,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     World world;
 
     TextButton buttonJump;
-    Skin buttonJumpSkin;
+    Skin buttonLittle;
 
 
     Llama llama;
@@ -74,7 +69,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         this.game = game;
 
         camera = new OrthographicCamera();
-        camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 0);
+        camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
 
         camera.update();
         viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
@@ -98,16 +93,19 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         stage = new Stage(viewport);
 
-        buttonJumpSkin = new Skin(Gdx.files.internal("text_button/text_button.json"), new TextureAtlas(Gdx.files.internal("text_button/text_button.atlas")));
-        buttonJump = new TextButton("jump", buttonJumpSkin);
-        buttonJump.setBounds(3, 1, 0.20f, 0.20f);
-        buttonJump.getLabel().setFontScale(0.0052f);
+        buttonLittle = new Skin(Gdx.files.internal("ui/littleButton.json"), new TextureAtlas(Gdx.files.internal("ui/littleButton.atlas")));
+
+        buttonJump = new TextButton("JUMP", buttonLittle);
+        buttonJump.setPosition(1, 1);
+        //buttonJump.getLabel().setFontScale(1f);
         stage.addActor(buttonJump);
+        buttonJump.setZIndex(3);
 
 
 
-
-        llama = new Llama(new Texture(Gdx.files.internal("llamaphoto.png")), 1, 1, 0.5f, 2, world, game.batch);
+        Texture llamaTexture = new Texture(Gdx.files.internal("llamaStanding.png"));
+        float desiredLlamaHeight = 2; //2 meters
+        llama = new Llama(llamaTexture, 3, 1, desiredLlamaHeight / llamaTexture.getHeight() * llamaTexture.getWidth(), desiredLlamaHeight, world, game.batch);
         ground = new Ground(new Texture(Gdx.files.internal("wall.jpg")), 0, 0, camera.viewportWidth*2, 0.3f, world, game.batch);
         enemy = new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch);
 
