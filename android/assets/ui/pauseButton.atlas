@@ -1,5 +1,5 @@
 
-jumpButton.png
+pauseButton.png
 size: 256, 256
 format: RGBA8888
 filter: Linear, Linear
@@ -18,10 +18,10 @@ buttonLittlePressed
   orig: 80, 80
   offset: 0, 0
   index: -1
-jump
+pause
   rotate: false
   xy: 83, 123
-  size: 40, 40
-  orig: 40, 40
+  size: 36, 40
+  orig: 36, 40
   offset: 0, 0
   index: -1

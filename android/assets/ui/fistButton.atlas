@@ -1,5 +1,5 @@
 
-jumpButton.png
+fistButton.png
 size: 256, 256
 format: RGBA8888
 filter: Linear, Linear
@@ -18,7 +18,7 @@ buttonLittlePressed
   orig: 80, 80
   offset: 0, 0
   index: -1
-jump
+fist
   rotate: false
   xy: 83, 123
   size: 40, 40
