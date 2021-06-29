@@ -66,7 +66,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
 
-        camera.update();
         viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
@@ -74,6 +73,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         timeBetweenEnemies = 0;
 
         debugRenderer = new Box2DDebugRenderer();
+        camera.update();
+
     }
 
 
@@ -90,8 +91,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
 
-        
-        ////buttonJump.setPosition(0.1f, 0.1f);
+
+        //buttonJump.setPosition(0.1f, 0.1f);
         //buttonJump.getLabel().setFontScale(0.005f);
         //buttonJump.setScale(0.005f);
 
@@ -128,11 +129,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
 
         //for (Enemy e : enemies) {
-            enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
+        enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
         //}
 
         camera.update();
-
+        game.batch.setProjectionMatrix(camera.combined);
 
         uistage.drawer();
 
@@ -140,8 +141,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         game.batch.begin();
         llama.draw();
         ground.draw();
-       // for (Enemy e : enemies) {
-            enemy.draw();
+        // for (Enemy e : enemies) {
+        enemy.draw();
         //}
         game.batch.end();
 
@@ -177,7 +178,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        game.batch.setProjectionMatrix(camera.combined);
+        //game.batch.setProjectionMatrix(camera.combined);
 
         uistage.resizer();
     }

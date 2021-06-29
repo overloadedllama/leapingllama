@@ -73,7 +73,7 @@ public class LoadScreen implements Screen {
         nameLabel = new TextField("Insert username! ", textFieldSkin);
         nameLabel.setDisabled(true);
         nameLabel.setAlignment(Align.center);
-        nameText = new TextField("", textFieldSkin);
+        nameText = new TextField("test", textFieldSkin);
         nameText.setDisabled(false);
         nameText.setAlignment(Align.center);
 

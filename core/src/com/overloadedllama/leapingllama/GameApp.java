@@ -14,7 +14,7 @@ public class GameApp extends Game {
 	public final static float WIDTH = 1280f;
 	public final static float HEIGHT = 720f;
 
-	private Context context;
+	private final Context context;
 
 	public GameApp(Context context) {
 		this.context = context;

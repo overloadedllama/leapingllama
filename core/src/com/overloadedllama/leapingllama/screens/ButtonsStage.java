@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.overloadedllama.leapingllama.GameApp;
 
 public class ButtonsStage {
 
@@ -15,23 +16,24 @@ public class ButtonsStage {
 
 
     TextButton buttonJump;
-    Skin buttonLittle;
+    Skin buttonLittleSkin;
     Table buttons;
 
 
 
     public ButtonsStage(Viewport viewport, float w, float h) {
 
-
         stage = new Stage(viewport);
 
-        buttonLittle = new Skin(Gdx.files.internal("ui/littleButton.json"), new TextureAtlas(Gdx.files.internal("ui/littleButton.atlas")));
+        buttonLittleSkin = new Skin(Gdx.files.internal("ui/littleButton.json"), new TextureAtlas(Gdx.files.internal("ui/littleButton.atlas")));
 
-        buttonJump = new TextButton("jump", buttonLittle);
+        buttonJump = new TextButton("jump", buttonLittleSkin);
 
-        buttons = new Table(buttonLittle);
+        buttons = new Table(buttonLittleSkin);
+        //buttons = new Table();
         buttons.setSize(w, h);
-        buttons.add(buttonJump).width(0.5f).height(0.5f).align(Align.bottomLeft).getActor().getLabel().setFontScale(0.05f);
+        buttonJump.getLabel().setFontScale(0.05F);
+        buttons.add(buttonJump).width(0.5f).height(0.5f).align(Align.bottomLeft);//.getActor().getLabel().setFontScale(0.05f);
 
         stage.addActor(buttons);
 
@@ -45,8 +47,8 @@ public class ButtonsStage {
     }
 
     public void resizer() {
-        buttonJump.invalidateHierarchy();
-
+        buttons.invalidateHierarchy();
+        //buttons.setSize(GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     public TextButton getButtonJump() {
