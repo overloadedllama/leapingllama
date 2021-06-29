@@ -1,19 +1,19 @@
 
-littleButton.png
+jumpButton.png
 size: 512, 512
 format: RGBA8888
 filter: Linear, Linear
 repeat: none
 buttonLittleNormal
   rotate: false
-  xy: 1, 301
+  xy: 1, 164
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
   index: -1
 buttonLittlePressed
   rotate: false
-  xy: 1, 219
+  xy: 138, 301
   size: 80, 80
   orig: 80, 80
   offset: 0, 0
@@ -37,5 +37,12 @@ pixeledSmall
   xy: 1, 383
   size: 505, 21
   orig: 505, 21
+  offset: 0, 0
+  index: -1
+up
+  rotate: false
+  xy: 1, 246
+  size: 135, 135
+  orig: 135, 135
   offset: 0, 0
   index: -1

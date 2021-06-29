@@ -23,15 +23,17 @@ public class GameObject {
     Batch batch;
 
 
-    public GameObject(Texture texture, float x, float y, float w, float h, World world, Batch batch) {
+    public GameObject(Texture texture, float x, float y, float h, World world, Batch batch) {
         this.x = x;
         this.y = y;
-        this.w = w;
+
         this.h = h;
         this.world = world;
         this.texture = texture;
         this.batch = batch;
 
+
+        w = h/texture.getHeight()*texture.getWidth();
         sprite = new Sprite(this.texture);
         sprite.setSize(w, h);
         sprite.setOriginCenter();

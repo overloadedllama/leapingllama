@@ -29,14 +29,11 @@
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle": {
 	"default": {
-		"imageUp": "buttonIcon",
+		"imageUp": "up",
 		"up": "buttonLittleNormal",
 		"down": "buttonLittlePressed",
-		"checked": "buttonLittlePressed",
 		"pressedOffsetX": -1,
-		"pressedOffsetY": -1,
-		"checkedOffsetX": -1,
-		"checkedOffsetY": -1
+		"pressedOffsetY": -1
 	}
 },
 "com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {

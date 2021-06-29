@@ -20,6 +20,7 @@ import com.overloadedllama.leapingllama.game.Llama;
 
 import java.util.ArrayList;
 
+import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
 import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
@@ -37,6 +38,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     World world;
 
+    Texture sky;
+    float xSky = 0;
 
 
     Llama llama;
@@ -75,6 +78,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
+        sky = new Texture(Gdx.files.internal("sky.png"));
+        sky.setWrap(Repeat,Repeat);
+
     }
 
 
@@ -101,11 +107,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
 
-        Texture llamaTexture = new Texture(Gdx.files.internal("llamaStanding.png"));
-        float desiredLlamaHeight = 2; //2 meters
-        llama = new Llama(llamaTexture, 3, 1, desiredLlamaHeight / llamaTexture.getHeight() * llamaTexture.getWidth(), desiredLlamaHeight, world, game.batch);
-        ground = new Ground(new Texture(Gdx.files.internal("wall.jpg")), 0, 0, camera.viewportWidth*2, 0.3f, world, game.batch);
-        enemy = new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch);
+        llama = new Llama(3, 1, 2, world, game.batch);
+        ground = new Ground( 0, 0, 0.6f, world, game.batch);
+
+
+
+        enemy = new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch);
 
 
 
@@ -119,6 +126,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
         stepWorld();
 
+        xSky+=1;
+        ground.setX(ground.getX()+1);
 
        /* if(Gdx.graphics.getDeltaTime()-timeBetweenEnemies>0.5){
             enemies.add(new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch));
@@ -135,16 +144,28 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
-        uistage.drawer();
+
 
 
         game.batch.begin();
+        game.batch.draw(sky,
+                // position and size of texture
+                0, 0, viewport.getScreenWidth()/UNITS_PER_METER , METER_HEIGHT,
+                // srcX, srcY, srcWidth, srcHeight
+                (int) xSky, 0, sky.getWidth(), sky.getHeight(),
+                // flipX, flipY
+                false, false);
+
         llama.draw();
         ground.draw();
         // for (Enemy e : enemies) {
         enemy.draw();
         //}
         game.batch.end();
+
+
+        uistage.drawer();
+
 
         uistage.getButtonJump().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {

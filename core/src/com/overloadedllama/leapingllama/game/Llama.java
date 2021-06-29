@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -8,8 +9,9 @@ import com.badlogic.gdx.physics.box2d.*;
 public class Llama extends GameObject {
 
 
-    public Llama(Texture texture, float x, float  y, float w, float h, World world, Batch batch) {
-        super(texture, x, y, w, h, world, batch);
+    public Llama(float x, float  y, float h, World world, Batch batch) {
+        super(new Texture(Gdx.files.internal("llamaStanding.png")), x, y, h, world, batch);
+
         BodyDef llamaBodyDef = new BodyDef();
         llamaBodyDef.type = BodyDef.BodyType.DynamicBody;
         llamaBodyDef.position.set(x, y);
