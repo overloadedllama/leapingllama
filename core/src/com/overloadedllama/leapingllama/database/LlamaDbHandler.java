@@ -44,6 +44,27 @@ public class LlamaDbHandler {
         }
     }
 
+    public boolean existsUser(String user) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = { LlamaDbContracts.Player.PRIMARY_KEY };
+
+        String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
+        String[] selectionArgs = { user };
+
+        Cursor cursor = db.query(
+                LlamaDbContracts.Player.TABLE_NAME,
+                projection, selection, selectionArgs,
+                null, null, null
+        );
+
+        // if exists an user called "user" then the cursor is not empty,
+        // so method moveToFirst() will return true, else false
+        boolean ret = cursor.moveToFirst();
+        cursor.close();
+        return ret;
+    }
+
     // insert settings referred to an existing user
     public void insertSettingsNewUser(String user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -65,9 +86,7 @@ public class LlamaDbHandler {
     public int getUserMoney(String user) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] projection = {
-                LlamaDbContracts.Player.MONEY_COLUMN
-        };
+        String[] projection = { LlamaDbContracts.Player.MONEY_COLUMN };
 
         String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
         String[] selectionArgs = { user };
@@ -210,37 +229,6 @@ public class LlamaDbHandler {
         );
     }
 
-    // resets all the progresses (money earned, levels, guns unlocked...) of the user
-    public void resetProgresses(String user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues resetPlayer = new ContentValues();
-        resetPlayer.put(LlamaDbContracts.Player.SCORE_COLUMN, 0);
-        resetPlayer.put(LlamaDbContracts.Player.LEVEL_COLUMN, 0);
-        resetPlayer.put(LlamaDbContracts.Player.MONEY_COLUMN, 0);
-
-        ContentValues resetSetting = new ContentValues();
-        resetSetting.put(LlamaDbContracts.Settings.TAN_COLUMN, 0);
-        resetSetting.put(LlamaDbContracts.Settings.T_SHIRT_COLUMN, 0);
-        resetSetting.put(LlamaDbContracts.Settings.GUN_COLUMN, 0);
-
-        String selPlayer = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
-        String[] selPlayerArgs = { user };
-
-        String selSettings= LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
-        String[] selSettingsArgs = { user };
-
-        db.update(
-                LlamaDbContracts.Player.TABLE_NAME,
-                resetPlayer, selPlayer, selPlayerArgs
-        );
-
-        db.update(
-                LlamaDbContracts.Settings.TABLE_NAME,
-                resetSetting, selSettings, selSettingsArgs
-        );
-    }
-
     public boolean isMusicOn(String user) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
@@ -277,6 +265,37 @@ public class LlamaDbHandler {
         db.update(
                 LlamaDbContracts.Settings.TABLE_NAME,
                 value, selection, selectionArgs
+        );
+    }
+
+    // resets all the progresses (money earned, levels, guns unlocked...) of the user
+    public void resetProgresses(String user) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues resetPlayer = new ContentValues();
+        resetPlayer.put(LlamaDbContracts.Player.SCORE_COLUMN, 0);
+        resetPlayer.put(LlamaDbContracts.Player.LEVEL_COLUMN, 0);
+        resetPlayer.put(LlamaDbContracts.Player.MONEY_COLUMN, 0);
+
+        ContentValues resetSetting = new ContentValues();
+        resetSetting.put(LlamaDbContracts.Settings.TAN_COLUMN, 0);
+        resetSetting.put(LlamaDbContracts.Settings.T_SHIRT_COLUMN, 0);
+        resetSetting.put(LlamaDbContracts.Settings.GUN_COLUMN, 0);
+
+        String selPlayer = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
+        String[] selPlayerArgs = { user };
+
+        String selSettings= LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
+        String[] selSettingsArgs = { user };
+
+        db.update(
+                LlamaDbContracts.Player.TABLE_NAME,
+                resetPlayer, selPlayer, selPlayerArgs
+        );
+
+        db.update(
+                LlamaDbContracts.Settings.TABLE_NAME,
+                resetSetting, selSettings, selSettingsArgs
         );
     }
 

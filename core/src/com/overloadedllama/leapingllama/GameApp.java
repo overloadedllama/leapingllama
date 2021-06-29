@@ -18,6 +18,7 @@ public class GameApp extends Game {
 
 	public GameApp(Context context) {
 		this.context = context;
+		new Settings(context);
 	}
 
 	@Override

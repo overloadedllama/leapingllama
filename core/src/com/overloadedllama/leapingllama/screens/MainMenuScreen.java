@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
+import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 
 public class MainMenuScreen implements Screen {
@@ -24,7 +25,6 @@ public class MainMenuScreen implements Screen {
 
     OrthographicCamera camera;
     ExtendViewport viewport;
-    LlamaDbHandler llamaDbHandler;
 
     float defaultButtonWidth = 240F;
     float defaultButtonHeight = 100F;
@@ -65,7 +65,6 @@ public class MainMenuScreen implements Screen {
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
 
-        llamaDbHandler = new LlamaDbHandler(game.getContext());
     }
 
     @Override
@@ -88,22 +87,21 @@ public class MainMenuScreen implements Screen {
         shopButton = new TextButton("SHOP", textButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonSkin);
         creditsButton = new TextButton("CREDIT", textButtonSkin);
-        String userMoney = "" + llamaDbHandler.getUserMoney(TEST_USER);
+        String userMoney = "" + Settings.getUserMoney(Settings.getCurrentUser());
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
 
         //labels
 
         // creation of TextField
         textFieldSkin.getFont("pixeled").getData().setScale(1F);
-        user = new TextField("  USER: " + TEST_USER, textFieldSkin);
+        user = new TextField("  USER: " + Settings.getCurrentUser(), textFieldSkin);
         user.setDisabled(true);
         user.setAlignment(Align.center);
 
        //Label
-        bestScore = new Label("BEST SCORE: 0", textFieldSkin); // + llamaDbHandler.getUserBestScore(TEST_USER), textFieldSkin);
+        bestScore = new Label("BEST SCORE: " + Settings.getUserBestScore(Settings.getCurrentUser()) , textFieldSkin);
         bestScore.setAlignment(Align.center);
         bestScore.setColor(255, 251, 209, 255); //NOT WORKING
-        //money = new TextField("MONEY:  0", textFieldSkin);// + llamaDbHandler.getUserMoney(TEST_USER), textFieldSkin);
 
         // adding items into mainMenu and info Tables and them to the mainMenuStage
         bestScoreTable.top().left();

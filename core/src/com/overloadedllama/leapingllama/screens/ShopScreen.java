@@ -20,11 +20,9 @@ import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 public class ShopScreen implements Screen {
 
     private final GameApp game;
-    private static final String TEST_USER = "test";
 
     OrthographicCamera camera;
     ExtendViewport viewport;
-    LlamaDbHandler llamaDbHandler;
 
     private int userMoney;
 
@@ -33,8 +31,6 @@ public class ShopScreen implements Screen {
 
     // ImageButton
     private ImageButton backButton;
-    private ImageButton previousItemButton;
-    private ImageButton nextItemButton;
 
     // TextButton
     private TextButton buyItemButton;
@@ -61,10 +57,6 @@ public class ShopScreen implements Screen {
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
 
-        llamaDbHandler = new LlamaDbHandler(game.getContext());
-
-        llamaDbHandler.insertNewUser(TEST_USER);
-        llamaDbHandler.insertSettingsNewUser(TEST_USER);
     }
 
     @Override
@@ -80,7 +72,6 @@ public class ShopScreen implements Screen {
         // creation of userMoney
         userMoneySkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
                 new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
-        userMoney = llamaDbHandler.getUserMoney(TEST_USER);
         userMoneyText = new TextField("money: " + userMoney, userMoneySkin);
 
         shopTable.top().left();

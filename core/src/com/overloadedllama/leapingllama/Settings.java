@@ -1,30 +1,44 @@
 package com.overloadedllama.leapingllama;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
+import com.overloadedllama.leapingllama.database.LlamaDbHandler;
+
 /**
+ * We can convert Settings into an Interface, more readable?
+ *
  * a class that contains all the game settings and methods used to change them on
  * the smartphone.
+ *
+ * Maybe method should refer to currentUser only
  */
 public class Settings {
+
+    private static final String TEST_USER = "test";
+    private static String currentUser = TEST_USER;
 
     private static final String ON = "on";
     private static final String OFF = "off";
 
     // if MUSIC/SOUND/GORE == true, then it is set ON, else OFF
-    private static boolean MUSIC;
-    private static boolean SOUND;
-    private static boolean GORE;
+    private static boolean MUSIC = true;
+    private static boolean SOUND = true;
+    private static boolean GORE = true;
 
     // if true is set for dx-players, else for sx-players
     private static boolean LX_DX;
 
+    @SuppressLint("StaticFieldLeak")
+    private static LlamaDbHandler llamaDbHandler;
 
-    public Settings() {
-        MUSIC = true;
-        SOUND = true;
-        GORE = true;
-        LX_DX = true;
+    // METHODS
+    public Settings(Context context) {
+        llamaDbHandler = new LlamaDbHandler(context);
     }
 
+    public static String getCurrentUser() { return currentUser; }
+
+    public static void setCurrentUser(String user) { currentUser = user; }
 
     public static boolean isMUSIC() { return MUSIC; }
 
@@ -55,4 +69,26 @@ public class Settings {
 
         return ret;
     }
+
+    private boolean callExistsUser(String user) {
+        return llamaDbHandler.existsUser(user);
+    }
+
+    public static boolean existsUser(String user) {
+        // supposing user is not null...
+        return llamaDbHandler.existsUser(user);
+    }
+
+    public static void insertNewUser(String user) {
+        llamaDbHandler.insertNewUser(user);
+    }
+
+    public static int getUserMoney(String user) {
+        return llamaDbHandler.getUserMoney(user);
+    }
+
+    public static int getUserBestScore(String user) {
+        return llamaDbHandler.getUserBestScore(user);
+    }
+
 }
