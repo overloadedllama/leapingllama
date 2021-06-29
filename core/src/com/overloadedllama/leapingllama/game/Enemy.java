@@ -22,7 +22,7 @@ public class Enemy extends GameObject{
 
         enemyShape.dispose();
 
-        body.setLinearVelocity(-7f, 0f);
+        body.setLinearVelocity(-1f, 0f);
 
     }
 

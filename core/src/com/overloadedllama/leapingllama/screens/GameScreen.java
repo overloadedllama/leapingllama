@@ -6,12 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -36,12 +33,10 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     Viewport viewport;
     GameApp game;
 
-    Stage stage;
+    ButtonsStage uistage;
 
     World world;
 
-    TextButton buttonJump;
-    Skin buttonLittle;
 
 
     Llama llama;
@@ -91,15 +86,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
 
-        stage = new Stage(viewport);
+        uistage = new ButtonsStage(viewport, METER_WIDTH, METER_HEIGHT);
 
-        buttonLittle = new Skin(Gdx.files.internal("ui/littleButton.json"), new TextureAtlas(Gdx.files.internal("ui/littleButton.atlas")));
 
-        buttonJump = new TextButton("JUMP", buttonLittle);
-        buttonJump.setPosition(1, 1);
-        //buttonJump.getLabel().setFontScale(1f);
-        stage.addActor(buttonJump);
-        buttonJump.setZIndex(3);
+
+        
+        ////buttonJump.setPosition(0.1f, 0.1f);
+        //buttonJump.getLabel().setFontScale(0.005f);
+        //buttonJump.setScale(0.005f);
+
+
+        //buttonJump.setZIndex(3);
 
 
 
@@ -110,7 +107,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         enemy = new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch);
 
 
-        Gdx.input.setInputProcessor(stage);
 
 
 
@@ -137,8 +133,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         camera.update();
 
-        stage.act();
-        stage.draw();
+
+        uistage.drawer();
 
 
         game.batch.begin();
@@ -149,7 +145,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         //}
         game.batch.end();
 
-        buttonJump.addListener(new ClickListener() {
+        uistage.getButtonJump().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Jump button pressed");
                 llama.jump();
@@ -183,7 +179,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         viewport.update(width, height);
         game.batch.setProjectionMatrix(camera.combined);
 
-        buttonJump.invalidateHierarchy();
+        uistage.resizer();
     }
 
     @Override
