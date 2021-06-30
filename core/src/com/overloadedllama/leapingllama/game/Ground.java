@@ -12,9 +12,16 @@ public class Ground extends GameObject{
 
     public Ground(float x, float y, float h, World world, Batch batch) {
         super(new Texture(Gdx.files.internal("ground.png")), x, y, h, world, batch);
-        w = GameApp.WIDTH;
 
 
+
+
+
+
+    }
+
+    public void setMyW(float meter_width) {
+        w = meter_width;
 
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
         TextureRegion imgTextureRegion = new TextureRegion(texture);
@@ -27,12 +34,22 @@ public class Ground extends GameObject{
 
 
         PolygonShape groundShape = new PolygonShape();
-        groundShape.setAsBox(w/2, h); //dunno why h instead of h/2, but it works ;)
+        groundShape.setAsBox(w, h); //dunno why h instead of h/2, but it works ;)
 
         super.createBody(BodyDef.BodyType.StaticBody, groundShape, 20, 0.5f, 0);
 
-
         groundShape.dispose();
 
+    }
+
+    @Override
+    public void draw(){
+        batch.draw(texture,
+                // position and size of texture
+                -1, 0, w +2, h,
+                // srcX, srcY, srcWidth, srcHeight
+                (int) x, (int)y, texture.getWidth(), texture.getHeight(),
+                // flipX, flipY
+                true, false);
     }
 }

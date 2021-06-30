@@ -121,6 +121,7 @@ public class ButtonsStage {
 
     public void setUpButtonAction() {
         for (String s : actions.keySet()){
+            //actions.remove(s);
             actions.put(s, false);
         }
 
@@ -129,6 +130,7 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                //actions.remove("pause");
                 actions.put("pause", true);
             }
         });
@@ -137,6 +139,7 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+               // actions.remove("jump");
                 actions.put("jump", true);
 
             }
@@ -146,6 +149,7 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+               // actions.remove("fist");
                 actions.put("fist", true);
 
             }
@@ -155,6 +159,7 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+              //  actions.remove("crouch");
                 actions.put("crouch", true);
 
             }
@@ -164,6 +169,7 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                actions.remove("shot");
                 actions.put("shot", true);
 
             }

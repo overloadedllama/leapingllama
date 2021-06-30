@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Bullet;
@@ -55,8 +56,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     static float  UNITS_PER_METER = 128;
 
-    float METER_WIDTH = WIDTH / UNITS_PER_METER;
-    float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
+    public final float METER_WIDTH = WIDTH / UNITS_PER_METER;
+    public final float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
 
     float timeBetweenEnemies;
     float accumulator = 0;
@@ -68,7 +69,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
 
-        viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
+        viewport = new FitViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
         enemies = new ArrayList<>();
@@ -98,8 +99,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
         llama = new Llama(3, 1, 2, world, game.batch);
-        ground = new Ground( 0, 0, 0.6f, world, game.batch);
-
+        ground = new Ground( -1, 0, 0.6f, world, game.batch);
+        ground.setMyW(METER_WIDTH);
         uistage = new ButtonsStage();
         uistage.setUpButtonAction();
 
@@ -107,7 +108,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
 
         bullets = new ArrayList<>();
-        //bullets.add(new Bullet(llama.getX() + llama.getW(), 1.5f, 0.1f, world, game.batch));
     }
 
 
@@ -116,8 +116,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
         stepWorld();
 
-        xSky+=1;
-        ground.setX(ground.getX()+1);
+        xSky-=1;
+       // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
        /* if(Gdx.graphics.getDeltaTime()-timeBetweenEnemies>0.5){
             enemies.add(new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch));
@@ -143,7 +143,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         game.batch.begin();
         game.batch.draw(sky,
                 // position and size of texture
-                0, 0, viewport.getScreenWidth()/UNITS_PER_METER , METER_HEIGHT,
+                -1, 0, viewport.getScreenWidth()/UNITS_PER_METER +2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
                 (int) xSky, 0, sky.getWidth(), sky.getHeight(),
                 // flipX, flipY
@@ -161,10 +161,26 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         uistage.drawer();
         actions = uistage.getActions();
-        System.out.println(actions);
+        //System.out.println(actions);
 
         if (actions.get("shot")) {
             shot();
+        }
+
+        if (actions.get("jump")){
+            jump();
+        }
+
+        if (actions.get("crouch")){
+            crouch();
+        }
+
+        if (actions.get("pause")){
+            pause();
+        }
+
+        if (actions.get("fist")){
+            fist();
         }
 
         uistage.setActions(actions);
@@ -173,12 +189,23 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
+    private void crouch() {
+    }
+
+    private void fist() {
+    }
+
     private void shot() {
         bullets.add(new Bullet(llama.getX() + llama.getW(), 1.5f, 0.1f, world, game.batch));
         actions.remove("shot");
         actions.put("shot", false);
     }
 
+    private void jump(){
+        llama.jump();
+        actions.remove("jump");
+        actions.put("jump", false);
+    }
 
 
     private void stepWorld() {

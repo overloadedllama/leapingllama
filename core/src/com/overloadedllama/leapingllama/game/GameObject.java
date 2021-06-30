@@ -54,6 +54,13 @@ public class GameObject {
         sprite.setRotation(MathUtils.radiansToDegrees * d);
     }
 
+    public void setPosition (float x, float y){
+        this.x = x;
+        this.y = y;
+
+        sprite.setPosition(x-w/2,y-h/2);
+    }
+
     public void createBody (BodyDef.BodyType type, PolygonShape shape, float density, float friction, float restitution){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = type;
