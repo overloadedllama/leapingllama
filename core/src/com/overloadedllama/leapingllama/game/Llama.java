@@ -20,14 +20,15 @@ public class Llama extends GameObject {
         PolygonShape llamaShape = new PolygonShape();
         llamaShape.setAsBox(w/2, h/2);
 
-        super.createBody(BodyDef.BodyType.DynamicBody, llamaShape, 20, 1, 0);
+        super.createBody(BodyDef.BodyType.DynamicBody, llamaShape, 1100, 0.05f, 0);
 
         llamaShape.dispose();
 
     }
 
     public void jump() {
-        body.applyForceToCenter(0, 5, true);
+        body.applyForceToCenter(0, 1000000, true);
+        System.out.println("jumping");
     }
 
 

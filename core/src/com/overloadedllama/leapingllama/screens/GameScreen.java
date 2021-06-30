@@ -9,12 +9,14 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Bullet;
 import com.overloadedllama.leapingllama.game.Enemy;
 import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
+import com.overloadedllama.leapingllama.screens.ButtonsStage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +28,6 @@ import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
 //this is the screen of the gameplay, i start to set up the environment.
 
-// i set arrays enemies and bullets static, hope it won't hurt anything
 
 public class GameScreen extends ApplicationAdapter implements Screen{
 
@@ -36,7 +37,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     ButtonsStage uistage;
 
-    static World world;
+    World world;
 
     Texture sky;
     float xSky = 0;
@@ -44,8 +45,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     Llama llama;
     Ground ground;
-    static ArrayList<Enemy> enemies;
-    static ArrayList<Bullet> bullets;
+    ArrayList<Enemy> enemies;
+    ArrayList<Bullet> bullets;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -55,8 +56,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     static float  UNITS_PER_METER = 128;
 
-    float METER_WIDTH = WIDTH / UNITS_PER_METER;
-    float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
+    public final float METER_WIDTH = WIDTH / UNITS_PER_METER;
+    public final float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
 
     float timeBetweenEnemies;
     float accumulator = 0;
@@ -68,7 +69,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
 
-        viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
+        viewport = new FitViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
         enemies = new ArrayList<>();
@@ -93,12 +94,13 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void show() {
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
-        createCollisionDetector();
+
+
 
 
         llama = new Llama(3, 1, 2, world, game.batch);
-        ground = new Ground( 0, 0, 0.6f, world, game.batch);
-
+        ground = new Ground( -1, 0, 0.6f, world, game.batch);
+        ground.setMyW(METER_WIDTH);
         uistage = new ButtonsStage();
         uistage.setUpButtonAction();
 
@@ -106,7 +108,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
 
         bullets = new ArrayList<>();
-        //bullets.add(new Bullet(llama.getX() + llama.getW(), 1.5f, 0.1f, world, game.batch));
     }
 
 
@@ -115,8 +116,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
         stepWorld();
 
-        xSky+=1;
-        ground.setX(ground.getX()+1);
+        xSky-=1;
+       // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
        /* if(Gdx.graphics.getDeltaTime()-timeBetweenEnemies>0.5){
             enemies.add(new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch));
@@ -142,7 +143,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         game.batch.begin();
         game.batch.draw(sky,
                 // position and size of texture
-                0, 0, viewport.getScreenWidth()/UNITS_PER_METER , METER_HEIGHT,
+                -1, 0, viewport.getScreenWidth()/UNITS_PER_METER +2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
                 (int) xSky, 0, sky.getWidth(), sky.getHeight(),
                 // flipX, flipY
@@ -160,6 +161,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         uistage.drawer();
         actions = uistage.getActions();
+        //System.out.println(actions);
 
         if (actions.get("shot")) {
             shot();
@@ -182,13 +184,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         uistage.setActions(actions);
-        //debugRenderer.render(world, camera.combined);
-
-    }
+        debugRenderer.render(world, camera.combined);
 
 
-    private void createCollisionDetector() {
-        world.setContactListener(new MyContactListener());
     }
 
     private void crouch() {
@@ -220,14 +218,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
         }
-    }
-
-    public static void removeEnemy(Enemy e) {
-        enemies.remove(e);
-    }
-
-    public static void removeBullet(Bullet b) {
-        bullets.remove(b);
     }
 
     @Override
