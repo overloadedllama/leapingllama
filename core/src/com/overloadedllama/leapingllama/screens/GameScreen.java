@@ -45,8 +45,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     Llama llama;
     Ground ground;
-    ArrayList<Enemy> enemies;
-    ArrayList<Bullet> bullets;
+    static ArrayList<Enemy> enemies;
+    static ArrayList<Bullet> bullets;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -85,16 +85,20 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
+    public static void removeBullet(Bullet b) {
+        bullets.remove(b);
+    }
 
-
-
+    public static void removeEnemy(Enemy e) {
+        enemies.remove(e);
+    }
 
 
     @Override
     public void show() {
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
-
+        world.setContactListener(new MyContactListener());
 
 
 
