@@ -2,23 +2,26 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.game.Llama;
 
-import java.util.ArrayList;
 
 public class ButtonsStage {
 
     float tableWidth, tableHeight;
     final float buttonSize = 100f;
 
+    Llama llama;
     Stage stage;
 
     // tables
@@ -44,7 +47,9 @@ public class ButtonsStage {
 
 
 
-    public ButtonsStage(Viewport viewport, float w, float h) {
+    public ButtonsStage(final Llama llama) {
+
+        this.llama = llama;
 
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
@@ -91,6 +96,9 @@ public class ButtonsStage {
 
         Gdx.input.setInputProcessor(stage);
 
+
+
+
     }
 
     public void drawer() {
@@ -109,11 +117,58 @@ public class ButtonsStage {
         buttonsMovement.setSize(tableWidth, tableHeight);
     }
 
-        public ImageButton getButtonJump() {
-           return buttonJump;
+    public ImageButton getButtonJump() {
+        return buttonJump;
     }
 
     public void setButtonJump(ImageButton buttonJump) {
         this.buttonJump = buttonJump;
+    }
+
+    public void setUpButtonAction() {
+        buttonPause.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+            }
+        });
+
+        buttonJump.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                llama.jump();
+            }
+        });
+
+
+        buttonFist.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+            }
+        });
+
+        buttonCrouch.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+            }
+        });
+
+        buttonShot.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+            }
+        });
+    }
+
+    public void dispose() {
+        buttonCrouchSkin.dispose();
+        buttonFistSkin.dispose();
+        buttonJumpSkin.dispose();
+        buttonShotSkin.dispose();
+        buttonPauseSkin.dispose();
     }
 }

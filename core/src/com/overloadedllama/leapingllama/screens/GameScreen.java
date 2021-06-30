@@ -61,6 +61,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
 
     float timeBetweenEnemies;
+    float accumulator = 0;
 
 
     public GameScreen(final GameApp game) {
@@ -93,29 +94,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
 
-        uistage = new ButtonsStage(viewport, METER_WIDTH, METER_HEIGHT);
-
-
-
-
-        //buttonJump.setPosition(0.1f, 0.1f);
-        //buttonJump.getLabel().setFontScale(0.005f);
-        //buttonJump.setScale(0.005f);
-
-
-        //buttonJump.setZIndex(3);
 
 
 
         llama = new Llama(3, 1, 2, world, game.batch);
         ground = new Ground( 0, 0, 0.6f, world, game.batch);
 
-
+        uistage = new ButtonsStage(llama);
 
         enemy = new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch);
-
-
-
 
 
     }
@@ -146,7 +133,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
 
-
         game.batch.begin();
         game.batch.draw(sky,
                 // position and size of texture
@@ -163,10 +149,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         //}
         game.batch.end();
 
-
         uistage.drawer();
 
+        uistage.setUpButtonAction();
 
+/*
         uistage.getButtonJump().addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 System.out.println("Jump button pressed");
@@ -174,15 +161,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             }
         });
 
+ */
 
         debugRenderer.render(world, camera.combined);
-
 
 
     }
 
 
-    float accumulator = 0;
 
     private void stepWorld() {
         float delta = Gdx.graphics.getDeltaTime();
@@ -199,7 +185,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
-        //game.batch.setProjectionMatrix(camera.combined);
 
         uistage.resizer();
     }
@@ -220,5 +205,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     @Override
     public void dispose() {
         world.dispose();
+        uistage.dispose();
     }
 }
