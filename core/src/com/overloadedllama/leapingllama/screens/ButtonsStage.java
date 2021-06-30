@@ -7,13 +7,9 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.game.Llama;
 
 import java.util.HashMap;
 
@@ -30,21 +26,19 @@ public class ButtonsStage {
     Table buttonsAction;
     Table buttonPauseTable;
 
-    // ImageButtons and Skins
+    // ImageButtons
     ImageButton buttonJump;
-    Skin buttonJumpSkin;
-
     ImageButton buttonCrouch;
-    Skin buttonCrouchSkin;
-
     ImageButton buttonFist;
-    Skin buttonFistSkin;
-
     ImageButton buttonShot;
-    Skin buttonShotSkin;
-
     ImageButton buttonPause;
+
+    // Skins
+    Skin buttonJumpSkin;
     Skin buttonPauseSkin;
+    Skin buttonFistSkin;
+    Skin buttonShotSkin;
+    Skin buttonCrouchSkin;
 
     HashMap<String, Boolean> actions;
 
@@ -78,14 +72,14 @@ public class ButtonsStage {
 
 
         buttonPauseTable.top().left();
-        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize);
+        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(15f).padTop(15f);
 
         buttonsMovement.bottom().left();
         buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
-        buttonsAction.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(15f).padLeft(15f);
+        buttonsMovement.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(15f).padLeft(15f);
 
         buttonsAction.bottom().right();
-        buttonsMovement.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
         buttonsAction.add(buttonFist).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
 
 
@@ -96,7 +90,6 @@ public class ButtonsStage {
         Gdx.input.setInputProcessor(stage);
 
         //creation of the dictionary
-
         actions = new HashMap<>(5);
         actions.put("jump", false);
         actions.put("crouch", false);
@@ -149,7 +142,6 @@ public class ButtonsStage {
             }
         });
 
-
         buttonFist.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -193,4 +185,5 @@ public class ButtonsStage {
     public void setActions(HashMap<String, Boolean> actions) {
         this.actions = actions;
     }
+
 }
