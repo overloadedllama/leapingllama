@@ -15,13 +15,14 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Llama;
 
+import java.util.HashMap;
+
 
 public class ButtonsStage {
 
     float tableWidth, tableHeight;
     final float buttonSize = 100f;
 
-    Llama llama;
     Stage stage;
 
     // tables
@@ -45,11 +46,9 @@ public class ButtonsStage {
     ImageButton buttonPause;
     Skin buttonPauseSkin;
 
+    HashMap<String, Boolean> actions;
 
-
-    public ButtonsStage(final Llama llama) {
-
-        this.llama = llama;
+    public ButtonsStage() {
 
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
@@ -96,6 +95,15 @@ public class ButtonsStage {
 
         Gdx.input.setInputProcessor(stage);
 
+        //creation of the dictionary
+
+        actions = new HashMap<>(5);
+        actions.put("jump", false);
+        actions.put("crouch", false);
+        actions.put("shot", false);
+        actions.put("fist", false);
+        actions.put("pause", false);
+
 
 
 
@@ -117,19 +125,18 @@ public class ButtonsStage {
         buttonsMovement.setSize(tableWidth, tableHeight);
     }
 
-    public ImageButton getButtonJump() {
-        return buttonJump;
-    }
-
-    public void setButtonJump(ImageButton buttonJump) {
-        this.buttonJump = buttonJump;
-    }
 
     public void setUpButtonAction() {
+        for (String s : actions.keySet()){
+            actions.put(s, false);
+        }
+
+
         buttonPause.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                actions.put("pause", true);
             }
         });
 
@@ -137,7 +144,8 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                llama.jump();
+                actions.put("jump", true);
+
             }
         });
 
@@ -146,6 +154,8 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                actions.put("fist", true);
+
             }
         });
 
@@ -153,6 +163,8 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                actions.put("crouch", true);
+
             }
         });
 
@@ -160,6 +172,8 @@ public class ButtonsStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                actions.put("shot", true);
+
             }
         });
     }
@@ -170,5 +184,13 @@ public class ButtonsStage {
         buttonJumpSkin.dispose();
         buttonShotSkin.dispose();
         buttonPauseSkin.dispose();
+    }
+
+    public HashMap<String, Boolean> getActions() {
+        return actions;
+    }
+
+    public void setActions(HashMap<String, Boolean> actions) {
+        this.actions = actions;
     }
 }

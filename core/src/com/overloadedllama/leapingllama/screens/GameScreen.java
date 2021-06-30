@@ -13,12 +13,14 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.game.Bullet;
 import com.overloadedllama.leapingllama.game.Enemy;
 import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
 import com.overloadedllama.leapingllama.screens.ButtonsStage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
@@ -40,12 +42,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     Texture sky;
     float xSky = 0;
-
+    HashMap<String, Boolean> actions;
 
     Llama llama;
     Ground ground;
     ArrayList<Enemy> enemies;
-    Enemy enemy;
+    ArrayList<Bullet> bullets;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -82,6 +84,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         sky = new Texture(Gdx.files.internal("sky.png"));
         sky.setWrap(Repeat,Repeat);
 
+        actions = new HashMap<>();
+
     }
 
 
@@ -100,11 +104,13 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         llama = new Llama(3, 1, 2, world, game.batch);
         ground = new Ground( 0, 0, 0.6f, world, game.batch);
 
-        uistage = new ButtonsStage(llama);
+        uistage = new ButtonsStage();
 
-        enemy = new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch);
+        enemies=new ArrayList<>();
+        enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
 
-
+        bullets = new ArrayList<>();
+        bullets.add(new Bullet(0, 1.5f, 0.1f, world, game.batch));
     }
 
 
@@ -122,14 +128,29 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             System.out.println("Enemy Created");
         }*/
 
+
+
+
+
+
         llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
 
-        //for (Enemy e : enemies) {
+        for (Enemy enemy : enemies) {
         enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
-        //}
+        }
+
+        for (Bullet bullet : bullets){
+            bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
+        }
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+
+        uistage.setUpButtonAction();
+
+        actions = uistage.getActions();
+        System.out.println(actions);
+
 
 
 
@@ -144,14 +165,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         llama.draw();
         ground.draw();
-        // for (Enemy e : enemies) {
-        enemy.draw();
-        //}
+        for (Bullet bullet : bullets)
+            bullet.draw();
+
+        for (Enemy enemy : enemies)
+            enemy.draw();
+
         game.batch.end();
 
         uistage.drawer();
 
-        uistage.setUpButtonAction();
+
 
 /*
         uistage.getButtonJump().addListener(new ClickListener() {
@@ -164,6 +188,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
  */
 
         debugRenderer.render(world, camera.combined);
+
+
 
 
     }

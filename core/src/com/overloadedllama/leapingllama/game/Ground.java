@@ -20,6 +20,7 @@ public class Ground extends GameObject{
         TextureRegion imgTextureRegion = new TextureRegion(texture);
         imgTextureRegion.setRegion(0,0, w, h);
 
+
         sprite = new Sprite(imgTextureRegion);
         sprite.setSize(w, h);
 
