@@ -1,0 +1,103 @@
+package com.overloadedllama.leapingllama.screens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.overloadedllama.leapingllama.GameApp;
+
+import java.util.HashMap;
+
+
+public class ButtonsStagePause {
+
+    float tableWidth, tableHeight;
+  //  final float buttonSize = 200f;
+
+    Stage stage;
+
+    // tables
+    Table buttonPauseTable;
+
+    // TextButtons
+    TextButton buttonPlay;
+    TextButton buttonSaveExit;
+
+
+    // Skins
+    Skin buttonSkin;
+
+
+    public ButtonsStagePause() {
+
+        tableWidth = GameApp.WIDTH;
+        tableHeight = GameApp.HEIGHT;
+        stage = new Stage(new FitViewport(tableWidth, tableHeight));
+
+        // creation of Tables
+
+        buttonPauseTable = new Table();
+
+
+        buttonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+
+        buttonPlay = new TextButton("RESUME", buttonSkin);
+        buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
+
+        //buttonPauseTable.top();
+        buttonPauseTable.add(buttonPlay);
+        buttonPauseTable.add(buttonSaveExit);
+
+
+        /*buttonsMovement.bottom();
+        buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsMovement.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(15f).padLeft(15f);
+
+        buttonsAction.bottom().right();
+        buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsAction.add(buttonFist).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+*/
+
+        stage.addActor(buttonPauseTable);
+
+
+        Gdx.input.setInputProcessor(stage);
+
+
+    }
+
+    public void drawer() {
+        stage.act();
+        stage.draw();
+    }
+
+    public void resizer() {
+        buttonPauseTable.invalidateHierarchy();
+        buttonPauseTable.setSize(tableWidth, tableHeight);
+
+    }
+
+
+
+
+    public void dispose() {
+        buttonSkin.dispose();
+        buttonPauseTable.dispose();
+        buttonPlay.dispose();
+    }
+
+    public HashMap<String, Boolean> getActions() {
+        return actions;
+    }
+
+    public void setActions(HashMap<String, Boolean> actions) {
+        this.actions = actions;
+    }
+
+}

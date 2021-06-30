@@ -1,20 +1,21 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
 import java.util.HashMap;
 
 
-public class ButtonsStage {
+public class ButtonsStagePlay {
 
     float tableWidth, tableHeight;
     final float buttonSize = 100f;
@@ -25,6 +26,7 @@ public class ButtonsStage {
     Table buttonsMovement;
     Table buttonsAction;
     Table buttonPauseTable;
+    Table buttonPauseMenuTable;
 
     // ImageButtons
     ImageButton buttonJump;
@@ -39,10 +41,15 @@ public class ButtonsStage {
     Skin buttonFistSkin;
     Skin buttonShotSkin;
     Skin buttonCrouchSkin;
+    Skin buttonSkin;
+
+    // TextButtons
+    TextButton buttonPlay;
+    TextButton buttonSaveExit;
 
     HashMap<String, Boolean> actions;
 
-    public ButtonsStage() {
+    public ButtonsStagePlay() {
 
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
@@ -52,7 +59,7 @@ public class ButtonsStage {
         buttonsMovement = new Table();
         buttonsAction = new Table();
         buttonPauseTable = new Table();
-
+        buttonPauseMenuTable = new Table();
 
         // creation of ImageButtons and their Skins
         buttonJumpSkin = new Skin(Gdx.files.internal("ui/jumpButton.json"), new TextureAtlas(Gdx.files.internal("ui/jumpButton.atlas")));
@@ -70,6 +77,13 @@ public class ButtonsStage {
         buttonPauseSkin = new Skin(Gdx.files.internal("ui/pauseButton.json"), new TextureAtlas(Gdx.files.internal("ui/pauseButton.atlas")));
         buttonPause = new ImageButton(buttonPauseSkin);
 
+        buttonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        buttonPlay = new TextButton("RESUME", buttonSkin);
+        buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
+
+        buttonPauseMenuTable.add(buttonPlay);
+        buttonPauseMenuTable.add(buttonSaveExit);
+
 
         buttonPauseTable.top().left();
         buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(15f).padTop(15f);
@@ -82,6 +96,10 @@ public class ButtonsStage {
         buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
         buttonsAction.add(buttonFist).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
 
+        buttonPauseMenuTable.top().center();
+        buttonPauseMenuTable.add(buttonPlay).padLeft(tableWidth/2);
+        buttonPauseMenuTable.row();
+        buttonPauseMenuTable.add(buttonSaveExit);
 
         stage.addActor(buttonPauseTable);
         stage.addActor(buttonsMovement);
@@ -90,12 +108,14 @@ public class ButtonsStage {
         Gdx.input.setInputProcessor(stage);
 
         //creation of the dictionary
-        actions = new HashMap<>(5);
+        actions = new HashMap<>(7);
         actions.put("jump", false);
         actions.put("crouch", false);
         actions.put("shot", false);
         actions.put("fist", false);
         actions.put("pause", false);
+        actions.put("play", false);
+        actions.put("exit", false);
 
 
 
@@ -118,6 +138,7 @@ public class ButtonsStage {
         buttonsMovement.setSize(tableWidth, tableHeight);
     }
 
+    Image fadeoutBackground;
 
     public void setUpButtonAction() {
         for (String s : actions.keySet()){
@@ -132,8 +153,49 @@ public class ButtonsStage {
                 super.clicked(event, x, y);
                 //actions.remove("pause");
                 actions.put("pause", true);
+
+                fadeoutBackground = new Image(new Texture(Gdx.files.internal("quiteBlack.png")));
+
+                fadeoutBackground.setBounds(0,0, tableWidth, tableHeight);
+                stage.addActor(fadeoutBackground);
+
+
+
+                buttonPlay.setPosition(tableWidth/2 - buttonPlay.getWidth()/2, tableHeight/2 - buttonPlay.getHeight()+20);
+                stage.addActor(buttonPlay);
+
+                buttonSaveExit.setPosition(tableWidth/2 - buttonPlay.getWidth()/2, tableHeight/2 - buttonPlay.getHeight()*2);
+                stage.addActor(buttonSaveExit);
+
+
             }
         });
+
+
+        buttonPlay.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                // actions.remove("jump");
+                actions.put("play", true);
+
+                fadeoutBackground.remove();
+                buttonPlay.remove();
+                buttonSaveExit.remove();
+            }
+        });
+
+
+        buttonSaveExit.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                // actions.remove("jump");
+                actions.put("exit", true);
+
+            }
+        });
+
 
         buttonJump.addListener(new ClickListener() {
             @Override

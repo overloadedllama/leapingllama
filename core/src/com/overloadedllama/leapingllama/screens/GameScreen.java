@@ -16,7 +16,6 @@ import com.overloadedllama.leapingllama.game.Bullet;
 import com.overloadedllama.leapingllama.game.Enemy;
 import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
-import com.overloadedllama.leapingllama.screens.ButtonsStage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,12 +30,23 @@ import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
 public class GameScreen extends ApplicationAdapter implements Screen{
 
+
+    public enum State
+    {
+        PAUSE,
+        RUN,
+        STOPPED
+    }
+
+
+    private State state = State.RUN;
+
+
     OrthographicCamera camera;
     Viewport viewport;
     GameApp game;
 
-    ButtonsStage uistage;
-
+    ButtonsStagePlay stageUi;
     World world;
 
     Texture sky;
@@ -69,7 +79,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
 
-        viewport = new FitViewport(METER_WIDTH, METER_HEIGHT, camera);
+        viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
         enemies = new ArrayList<>();
@@ -105,8 +115,13 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         llama = new Llama(3, 1, 2, world, game.batch);
         ground = new Ground( -1, 0, 0.6f, world, game.batch);
         ground.setMyW(METER_WIDTH);
-        uistage = new ButtonsStage();
-        uistage.setUpButtonAction();
+
+
+
+        stageUi = new ButtonsStagePlay();
+        stageUi.setUpButtonAction();
+
+        //stagePause = new ButtonsStagePause();
 
         enemies=new ArrayList<>();
         enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
@@ -116,33 +131,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
     @Override
-    public void render(float delta) {
-        ScreenUtils.clear(0.1f, 0, 0.2f, 1);
-        stepWorld();
-
-        xSky-=1;
-       // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
-
-       /* if(Gdx.graphics.getDeltaTime()-timeBetweenEnemies>0.5){
-            enemies.add(new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch));
-            timeBetweenEnemies = Gdx.graphics.getDeltaTime();
-            System.out.println("Enemy Created");
-        }*/
-
-
-        llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
-
-        for (Enemy enemy : enemies) {
-            enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
-        }
-
-        for (Bullet bullet : bullets){
-            bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
-        }
-
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
-
+    public void render(float delta)     {
+        ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
 
         game.batch.begin();
         game.batch.draw(sky,
@@ -157,14 +147,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         ground.draw();
         for (Bullet bullet : bullets)
             bullet.draw();
-
         for (Enemy enemy : enemies)
             enemy.draw();
-
         game.batch.end();
 
-        uistage.drawer();
-        actions = uistage.getActions();
+
+        stageUi.drawer();
+
+
+        actions = stageUi.getActions();
         //System.out.println(actions);
 
         if (actions.get("shot")) {
@@ -187,13 +178,80 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             fist();
         }
 
-        uistage.setActions(actions);
+        if(actions.get("play")){
+            resume();
+        }
+
+        if(actions.get("exit")){
+            exit();
+        }
+
+        stageUi.setActions(actions);
         debugRenderer.render(world, camera.combined);
+
+
+
+        switch(state) {
+
+            case RUN:
+
+
+                stepWorld();
+
+                xSky += 1;
+                // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
+
+               /* if(Gdx.graphics.getDeltaTime()-timeBetweenEnemies>0.5){
+                    enemies.add(new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch));
+                    timeBetweenEnemies = Gdx.graphics.getDeltaTime();
+                    System.out.println("Enemy Created");
+                }*/
+
+
+                llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
+
+                for (Enemy enemy : enemies) {
+                    enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
+                }
+
+                for (Bullet bullet : bullets) {
+                    bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
+                }
+
+
+                break;
+
+            case PAUSE:
+
+
+
+                break;
+
+            case STOPPED:
+
+
+
+
+                break;
+
+        }
+
+
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
+
+
+
+
+
 
 
     }
 
     private void crouch() {
+        llama.crouch();
+        actions.remove("crouch");
+        actions.put("crouch", false);
     }
 
     private void fist() {
@@ -203,6 +261,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         bullets.add(new Bullet(llama.getX() + llama.getW(), 1.5f, 0.1f, world, game.batch));
         actions.remove("shot");
         actions.put("shot", false);
+    }
+
+    private void exit() {
+        //here there will be to develop the stuff for save the checkpoint;
+
+        game.setScreen(new MainMenuScreen(game));
+
+        actions.remove("exit");
+        actions.put("exit", false);
+
+        dispose();
     }
 
     private void jump(){
@@ -228,25 +297,34 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void resize(int width, int height) {
         viewport.update(width, height);
 
-        uistage.resizer();
+        stageUi.resizer();
     }
 
     @Override
     public void pause() {
+
+        state = State.PAUSE;
+
+        actions.remove("pause");
+        actions.put("pause", false);
     }
 
     @Override
     public void resume() {
+        state = State.RUN;
+
+        actions.remove("play");
+        actions.put("play", false);
     }
 
     @Override
     public void hide() {
-        dispose();
+       pause();
     }
 
     @Override
     public void dispose() {
         world.dispose();
-        uistage.dispose();
+        stageUi.dispose();
     }
 }

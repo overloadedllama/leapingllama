@@ -22,6 +22,7 @@ public class GameObject {
     Body body;
     World world;
     Batch batch;
+    FixtureDef fixtureDef;
 
     public GameObject(Texture texture, float x, float y, float h, World world, Batch batch) {
         this.x = x;
@@ -67,7 +68,7 @@ public class GameObject {
 
         body = world.createBody(bodyDef);
 
-        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.density = density;
         fixtureDef.friction = friction;

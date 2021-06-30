@@ -32,4 +32,14 @@ public class Llama extends GameObject {
     }
 
 
+    public void crouch() {
+        PolygonShape llamaShape = new PolygonShape();
+        llamaShape.setAsBox(w/2, h/4);
+
+        fixtureDef.shape = llamaShape;
+
+        llamaShape.dispose();
+    }
+
+
 }
