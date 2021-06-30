@@ -15,7 +15,6 @@ import com.overloadedllama.leapingllama.game.Bullet;
 import com.overloadedllama.leapingllama.game.Enemy;
 import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
-import com.overloadedllama.leapingllama.screens.ButtonsStage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -27,6 +26,7 @@ import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
 //this is the screen of the gameplay, i start to set up the environment.
 
+// i set arrays enemies and bullets static, hope it won't hurt anything
 
 public class GameScreen extends ApplicationAdapter implements Screen{
 
@@ -36,7 +36,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     ButtonsStage uistage;
 
-    World world;
+    static World world;
 
     Texture sky;
     float xSky = 0;
@@ -44,8 +44,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     Llama llama;
     Ground ground;
-    ArrayList<Enemy> enemies;
-    ArrayList<Bullet> bullets;
+    static ArrayList<Enemy> enemies;
+    static ArrayList<Bullet> bullets;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -93,8 +93,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void show() {
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
-
-
+        createCollisionDetector();
 
 
         llama = new Llama(3, 1, 2, world, game.batch);
@@ -161,16 +160,41 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         uistage.drawer();
         actions = uistage.getActions();
-        System.out.println(actions);
 
         if (actions.get("shot")) {
             shot();
         }
 
+        if (actions.get("jump")){
+            jump();
+        }
+
+        if (actions.get("crouch")){
+            crouch();
+        }
+
+        if (actions.get("pause")){
+            pause();
+        }
+
+        if (actions.get("fist")){
+            fist();
+        }
+
         uistage.setActions(actions);
-        debugRenderer.render(world, camera.combined);
+        //debugRenderer.render(world, camera.combined);
+
+    }
 
 
+    private void createCollisionDetector() {
+        world.setContactListener(new MyContactListener());
+    }
+
+    private void crouch() {
+    }
+
+    private void fist() {
     }
 
     private void shot() {
@@ -179,6 +203,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions.put("shot", false);
     }
 
+    private void jump(){
+        llama.jump();
+        actions.remove("jump");
+        actions.put("jump", false);
+    }
 
 
     private void stepWorld() {
@@ -191,6 +220,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
         }
+    }
+
+    public static void removeEnemy(Enemy e) {
+        enemies.remove(e);
+    }
+
+    public static void removeBullet(Bullet b) {
+        bullets.remove(b);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -21,7 +22,6 @@ public class GameObject {
     Body body;
     World world;
     Batch batch;
-
 
     public GameObject(Texture texture, float x, float y, float h, World world, Batch batch) {
         this.x = x;
@@ -38,7 +38,6 @@ public class GameObject {
         sprite.setSize(w, h);
         sprite.setOriginCenter();
         setPosition(x,y, 0);
-
     }
 
     public void draw() {
@@ -67,7 +66,8 @@ public class GameObject {
         fixtureDef.friction = friction;
         fixtureDef.restitution = restitution;
 
-        body.createFixture(fixtureDef);
+        // added setUserData(this)
+        body.createFixture(fixtureDef).setUserData(this);
 
     }
 
@@ -135,5 +135,6 @@ public class GameObject {
     public void setWorld(World world) {
         this.world = world;
     }
+
 }
 
