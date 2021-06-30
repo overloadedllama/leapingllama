@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 
@@ -15,9 +16,17 @@ import java.util.ArrayList;
 
 public class ButtonsStage {
 
+    float tableWidth, tableHeight;
+    final float buttonSize = 100f;
 
+    Stage stage;
 
+    // tables
+    Table buttonsMovement;
+    Table buttonsAction;
+    Table buttonPauseTable;
 
+    // ImageButtons and Skins
     ImageButton buttonJump;
     Skin buttonJumpSkin;
 
@@ -33,18 +42,21 @@ public class ButtonsStage {
     ImageButton buttonPause;
     Skin buttonPauseSkin;
 
-    float buttonSize;
-
-    Table buttons;
-    Stage stage;
 
 
     public ButtonsStage(Viewport viewport, float w, float h) {
 
-        stage = new Stage(viewport);
+        tableWidth = GameApp.WIDTH;
+        tableHeight = GameApp.HEIGHT;
+        stage = new Stage(new FitViewport(tableWidth, tableHeight));
+
+        // creation of Tables
+        buttonsMovement = new Table();
+        buttonsAction = new Table();
+        buttonPauseTable = new Table();
 
 
-
+        // creation of ImageButtons and their Skins
         buttonJumpSkin = new Skin(Gdx.files.internal("ui/jumpButton.json"), new TextureAtlas(Gdx.files.internal("ui/jumpButton.atlas")));
         buttonJump = new ImageButton(buttonJumpSkin);
 
@@ -61,22 +73,21 @@ public class ButtonsStage {
         buttonPause = new ImageButton(buttonPauseSkin);
 
 
+        buttonPauseTable.top().left();
+        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize);
 
-        buttons = new Table();
+        buttonsMovement.bottom().left();
+        buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsAction.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(15f).padLeft(15f);
 
-        buttons.setSize(w, h);
-        buttonSize = 0.3f;
+        buttonsAction.bottom().right();
+        buttonsMovement.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsAction.add(buttonFist).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
 
-        buttons.add(buttonPause).width(buttonSize).height(buttonSize).align(Align.topLeft);
-        buttons.row();
-        buttons.add(buttonJump).width(buttonSize).height(buttonSize).align(Align.bottomLeft);
-        buttons.add(buttonShot).width(buttonSize).height(buttonSize).align(Align.bottomRight);
-        buttons.row();
-        buttons.add(buttonCrouch).width(buttonSize).height(buttonSize).align(Align.topLeft);
-        buttons.add(buttonFist).width(buttonSize).height(buttonSize).align(Align.topRight);
-        buttons.row();
 
-        stage.addActor(buttons);
+        stage.addActor(buttonPauseTable);
+        stage.addActor(buttonsMovement);
+        stage.addActor(buttonsAction);
 
         Gdx.input.setInputProcessor(stage);
 
@@ -88,12 +99,18 @@ public class ButtonsStage {
     }
 
     public void resizer() {
-        buttons.invalidateHierarchy();
-        //buttons.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+        buttonPauseTable.invalidateHierarchy();
+        buttonPauseTable.setSize(tableWidth, tableHeight);
+
+        buttonsAction.invalidateHierarchy();
+        buttonsAction.setSize(tableWidth, tableHeight);
+
+        buttonsMovement.invalidateHierarchy();
+        buttonsMovement.setSize(tableWidth, tableHeight);
     }
 
-    public ImageButton getButtonJump() {
-        return buttonJump;
+        public ImageButton getButtonJump() {
+           return buttonJump;
     }
 
     public void setButtonJump(ImageButton buttonJump) {
