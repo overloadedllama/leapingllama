@@ -271,13 +271,13 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         if (llama.isStanding()) {
             // crouches
             world.destroyBody(llama.getBody());
-            llama = new Llama(llama.getX(), llama.getY(), llama.getH() / 2, world, game.batch, new Texture(Gdx.files.internal("llamaCrouching.png")));
+            llama = new Llama(llama.getX(), llama.getY() - llama.getH()/4, llama.getH() / 2, world, game.batch, new Texture(Gdx.files.internal("llamaCrouching.png")));
             llama.setStanding(false);
             actions.put("crouch", false);
         } else {
             // stands up
             world.destroyBody(llama.getBody());
-            llama = new Llama(llama.getX(), llama.getY(), 2, world, game.batch, new Texture(Gdx.files.internal("llamaStanding.png")));
+            llama = new Llama(llama.getX(), llama.getY() + llama.getH() / 2, 2, world, game.batch, new Texture(Gdx.files.internal("llamaStanding.png")));
             llama.setStanding(true);
             actions.put("crouch", false);
         }
