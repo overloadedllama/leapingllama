@@ -1,6 +1,7 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -95,12 +96,32 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
-    public static void removeBullet(Bullet b) {
+    public void removeBullet(Bullet b) {
         bullets.remove(b);
+        final Body toRemove = b.getBody();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                world.destroyBody(toRemove);
+            }
+        });
     }
 
-    public static void removeEnemy(Enemy e) {
+    public void removeEnemy(Enemy e) {
         enemies.remove(e);
+        final Body toRemove = e.getBody();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                world.destroyBody(toRemove);
+            }
+        });
+    }
+
+
+    public void gameOver() {
+        game.setScreen(new GameOverScreen(game));
+        //dispose();
     }
 
 
@@ -108,7 +129,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void show() {
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
-        world.setContactListener(new MyContactListener());
+        world.setContactListener(new MyContactListener(this));
 
 
 
@@ -128,7 +149,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         bullets = new ArrayList<>();
     }
-
 
     @Override
     public void render(float delta)     {
@@ -255,6 +275,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     private void fist() {
+        actions.remove("fist");
+        actions.put("fist", false);
+        if (enemies.size() != 1) {
+            enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
+        }
     }
 
     private void shot() {
@@ -265,11 +290,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     private void exit() {
         //here there will be to develop the stuff for save the checkpoint;
+        actions.remove("exit");
+        actions.put("exit", false);
 
         game.setScreen(new MainMenuScreen(game));
 
-        actions.remove("exit");
-        actions.put("exit", false);
 
         dispose();
     }
@@ -279,7 +304,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions.remove("jump");
         actions.put("jump", false);
     }
-
 
     private void stepWorld() {
         float delta = Gdx.graphics.getDeltaTime();

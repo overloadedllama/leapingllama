@@ -1,20 +1,13 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
 
 public class GameObject {
+
 
     float x, y, w, h;
     Texture texture;
@@ -74,7 +67,6 @@ public class GameObject {
         fixtureDef.friction = friction;
         fixtureDef.restitution = restitution;
 
-        // added setUserData(this)
         body.createFixture(fixtureDef).setUserData(this);
 
     }
@@ -83,7 +75,6 @@ public class GameObject {
     public float getX() {
         return x;
     }
-
     public void setX(float x) {
         this.x = x;
     }
@@ -91,7 +82,6 @@ public class GameObject {
     public float getY() {
         return y;
     }
-
     public void setY(float y) {
         this.y = y;
     }
@@ -99,7 +89,6 @@ public class GameObject {
     public float getW() {
         return w;
     }
-
     public void setW(float w) {
         this.w = w;
     }
@@ -107,7 +96,6 @@ public class GameObject {
     public float getH() {
         return h;
     }
-
     public void setH(float h) {
         this.h = h;
     }
@@ -115,7 +103,6 @@ public class GameObject {
     public Sprite getSprite() {
         return sprite;
     }
-
     public void setSprite(Sprite sprite) {
         this.sprite = sprite;
     }
@@ -123,25 +110,23 @@ public class GameObject {
     public Body getBody() {
         return body;
     }
-
     public void setBody(Body body) {
         this.body = body;
     }
 
-    public World getWorld() {
-        return world;
-    }
 
     public Texture getTexture() {
         return texture;
     }
-
     public void setTexture(Texture texture) {
         this.texture = texture;
     }
 
     public void setWorld(World world) {
         this.world = world;
+    }
+    public World getWorld() {
+        return world;
     }
 
 }

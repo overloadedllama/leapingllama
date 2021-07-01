@@ -7,8 +7,11 @@ import com.overloadedllama.leapingllama.game.Llama;
 
 public class MyContactListener implements ContactListener {
 
-    public MyContactListener() {
+    final GameScreen parent;
 
+    // set the GameScreen parent in order to not use static method --> some noisy problems...
+    public MyContactListener(final GameScreen parent) {
+        this.parent = parent;
     }
 
 
@@ -23,6 +26,7 @@ public class MyContactListener implements ContactListener {
         if (isBulletEnemyContact(fa, fb)) {
             System.out.println("COLLISION BULLET-ENEMY DETECTED!");
         } else if (isLlamaEnemyContact(fa, fb)) {
+
             System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
         }
 
@@ -48,6 +52,8 @@ public class MyContactListener implements ContactListener {
 
     /**
      * if the contact is between a bullet and an enemy, remove both from respective arrays
+     *
+     * TO DO remove "static" from GameScreen methods
      */
     private boolean isBulletEnemyContact(Fixture a, Fixture b) {
 
@@ -55,15 +61,15 @@ public class MyContactListener implements ContactListener {
                     || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Bullet)) {
 
                 if (a.getUserData() instanceof Bullet) {
-                    GameScreen.removeBullet((Bullet) a.getUserData());
+                    parent.removeBullet((Bullet) a.getUserData());
                 } else if (b.getUserData() instanceof Bullet) {
-                    GameScreen.removeBullet((Bullet) b.getUserData());
+                    parent.removeBullet((Bullet) b.getUserData());
                 }
 
                 if (a.getUserData() instanceof Enemy) {
-                    GameScreen.removeEnemy((Enemy) a.getUserData());
+                    parent.removeEnemy((Enemy) a.getUserData());
                 } else if (b.getUserData() instanceof Enemy) {
-                    GameScreen.removeEnemy((Enemy) b.getUserData());
+                    parent.removeEnemy((Enemy) b.getUserData());
                 }
                 return true;
             }
@@ -71,8 +77,12 @@ public class MyContactListener implements ContactListener {
     }
 
     private boolean isLlamaEnemyContact(Fixture a, Fixture b) {
-        return ((a.getUserData() instanceof Llama && b.getUserData() instanceof Enemy)
-                || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Llama));
+        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Enemy)
+                || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Llama)) {
+            parent.gameOver();
+            return true;
+        }
+        return false;
     }
 
 }
