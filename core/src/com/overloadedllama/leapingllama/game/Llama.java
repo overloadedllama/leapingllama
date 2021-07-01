@@ -13,7 +13,7 @@ public class Llama extends GameObject {
 
     final Texture llamaStanding = new Texture(Gdx.files.internal("llamaStanding.png"));
     final Texture llamaPunching = new Texture(Gdx.files.internal("llamaPunching.png"));
-    Texture llamaCrouching;
+    final Texture llamaCrouching = new Texture(Gdx.files.internal("llamaCrouching.png"));
 
     public Llama(float x, float  y, float h, World world, Batch batch) {
         super(new Texture(Gdx.files.internal("llamaStanding.png")), x, y, h, world, batch);

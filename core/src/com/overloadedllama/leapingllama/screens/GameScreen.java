@@ -182,15 +182,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         if (actions.get("jump")){
-            if (!llama.isStanding()) {
-                standUp();
-            } else {
-                jump();
-            }
+            jump();
         }
 
         if (actions.get("crouch")){
-            System.out.println("LLAMA CROUCHES!");
+            //System.out.println("LLAMA CROUCHES!");
             crouch();
         }
 
@@ -199,7 +195,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         if (actions.get("punch")){
-            punch();
+            if (llama.isStanding()) {
+                punch();
+            }
         }
 
         if(actions.get("play")){
@@ -224,13 +222,13 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
                 if(System.currentTimeMillis()-timeLastEnemies>2000){
-                    enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+                    //enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
                     timeLastEnemies = System.currentTimeMillis();
                     System.out.println("Enemy Created");
                 }
 
-                if (timePunching!= 0) {
-                    if (System.currentTimeMillis() - timePunching > 300){
+                if (timePunching != 0) {
+                    if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
                         llama.depunch();
                     }
                 }
@@ -268,22 +266,21 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
-    private void standUp() {
-        world.destroyBody(llama.getBody());
-        llama = new Llama(llama.getX(), llama.getY(), llama.getH() * 2, world, game.batch);
-        llama.setStanding(true);
-
-        actions.remove("crouch");
-        actions.put("crouch", false);
-    }
 
     private void crouch() {
         if (llama.isStanding()) {
+            // crouches
             world.destroyBody(llama.getBody());
-            llama = new Llama(llama.getX(), llama.getY(), llama.getH() / 2, world, game.batch, new Texture("llamaCrouching.png"));
+            llama = new Llama(llama.getX(), llama.getY(), llama.getH() / 2, world, game.batch, new Texture(Gdx.files.internal("llamaCrouching.png")));
             llama.setStanding(false);
+            actions.put("crouch", false);
+        } else {
+            // stands up
+            world.destroyBody(llama.getBody());
+            llama = new Llama(llama.getX(), llama.getY(), 2, world, game.batch, new Texture(Gdx.files.internal("llamaStanding.png")));
+            llama.setStanding(true);
+            actions.put("crouch", false);
         }
-
     }
 
     private void punch() {
@@ -291,7 +288,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         timePunching=System.currentTimeMillis();
         actions.remove("punch");
         actions.put("punch", false);
-        //enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
 
     }
 

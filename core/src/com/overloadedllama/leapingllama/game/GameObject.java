@@ -29,7 +29,7 @@ public class GameObject {
         w = h/texture.getHeight()*texture.getWidth();
         sprite = new Sprite(this.texture);
         sprite.setSize(w, h);
-        sprite.setOriginCenter();
+        sprite.setOrigin(x, y - h);
         setPosition(x,y, 0);
     }
 
