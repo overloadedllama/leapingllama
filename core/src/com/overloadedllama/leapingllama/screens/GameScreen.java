@@ -229,7 +229,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
-                        llama.depunch();
+                        llama.punch(false);
                     }
                 }
 
@@ -255,8 +255,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             case STOPPED:
 
 
-
-
                 break;
 
         }
@@ -270,21 +268,25 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     private void crouch() {
         if (llama.isStanding()) {
             // crouches
-            world.destroyBody(llama.getBody());
-            llama = new Llama(llama.getX(), llama.getY() - llama.getH()/4, llama.getH() / 2, world, game.batch, new Texture(Gdx.files.internal("llamaCrouching.png")));
+            //world.destroyBody(llama.getBody());
+            //llama = new Llama(llama.getX(), llama.getY() - llama.getH()/4, llama.getH() / 2, world, game.batch, new Texture(Gdx.files.internal("llamaCrouching.png")));
+            llama.crouch(true);
+
             llama.setStanding(false);
             actions.put("crouch", false);
         } else {
             // stands up
-            world.destroyBody(llama.getBody());
-            llama = new Llama(llama.getX(), llama.getY() + llama.getH() / 2, 2, world, game.batch, new Texture(Gdx.files.internal("llamaStanding.png")));
+           // world.destroyBody(llama.getBody());
+            //llama = new Llama(llama.getX(), llama.getY() + llama.getH() / 2, 2, world, game.batch, new Texture(Gdx.files.internal("llamaStanding.png")));
+            llama.crouch(false);
+
             llama.setStanding(true);
             actions.put("crouch", false);
         }
     }
 
     private void punch() {
-        llama.punch();
+        llama.punch(true);
         timePunching=System.currentTimeMillis();
         actions.remove("punch");
         actions.put("punch", false);
@@ -292,13 +294,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     private void shot() {
-        bullets.add(new Bullet(llama.getX() + llama.getW(), 1.5f, 0.1f, world, game.batch));
+        bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch));
         actions.remove("shot");
         actions.put("shot", false);
     }
 
     private void exit() {
         //here there will be to develop the stuff for save the checkpoint;
+        state = State.STOPPED;
+
         actions.remove("exit");
         actions.put("exit", false);
 
@@ -359,7 +363,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     @Override
     public void dispose() {
         stageUi.dispose();
-        //world.dispose();
 
     }
 }

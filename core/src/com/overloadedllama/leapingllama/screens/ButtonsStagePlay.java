@@ -20,6 +20,7 @@ public class ButtonsStagePlay {
     final float buttonSize = 100f;
 
     Stage stage;
+    ExtendViewport viewport;
 
     // tables
     Table buttonsMovement;
@@ -50,9 +51,11 @@ public class ButtonsStagePlay {
 
     public ButtonsStagePlay() {
 
+
+        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT);
+        stage = new Stage(viewport);
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
-        stage = new Stage(new ExtendViewport(tableWidth, tableHeight));
 
         // creation of Tables
         buttonsMovement = new Table();
@@ -155,7 +158,7 @@ public class ButtonsStagePlay {
 
                 fadeoutBackground = new Image(new Texture(Gdx.files.internal("quiteBlack.png")));
 
-                fadeoutBackground.setBounds(0,0, tableWidth, tableHeight);
+                fadeoutBackground.setBounds(0,0, viewport.getScreenWidth(), tableHeight);
                 stage.addActor(fadeoutBackground);
 
 

@@ -80,7 +80,7 @@ public class LoadScreen implements Screen {
 
         // creation of TextButton
         launchButton = new TextButton("Go!", textButtonSkin);
-        launchButton.setDisabled(true);
+        launchButton.setDisabled(false);
 
         // creation of TextFields
         nameLabel = new TextField("Insert username! ", textFieldSkin);
