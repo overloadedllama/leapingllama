@@ -65,8 +65,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public final float METER_WIDTH = WIDTH / UNITS_PER_METER;
     public final float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
 
-    float timeBetweenEnemies;
+    long timeLastEnemies;
+    long timePunching;
+
+
     float accumulator = 0;
+
 
 
     public GameScreen(final GameApp game) {
@@ -79,7 +83,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         viewport.apply();
 
         enemies = new ArrayList<>();
-        timeBetweenEnemies = 0;
+        timeLastEnemies = 0;
 
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
@@ -140,6 +144,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         enemies=new ArrayList<>();
         enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
+        timeLastEnemies = System.currentTimeMillis();
 
         bullets = new ArrayList<>();
     }
@@ -193,8 +198,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             pause();
         }
 
-        if (actions.get("fist")){
-            fist();
+        if (actions.get("punch")){
+            punch();
         }
 
         if(actions.get("play")){
@@ -218,12 +223,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 xSky += 1;
                 // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
-               /* if(Gdx.graphics.getDeltaTime()-timeBetweenEnemies>0.5){
-                    enemies.add(new Enemy(new Texture(Gdx.files.internal("enemy.png")), METER_WIDTH, 2, 0.5f, 0.5f, world, game.batch));
-                    timeBetweenEnemies = Gdx.graphics.getDeltaTime();
+                if(System.currentTimeMillis()-timeLastEnemies>2000){
+                    enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+                    timeLastEnemies = System.currentTimeMillis();
                     System.out.println("Enemy Created");
-                }*/
+                }
 
+                if (timePunching!= 0) {
+                    if (System.currentTimeMillis() - timePunching > 300){
+                        llama.depunch();
+                    }
+                }
 
                 llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
 
@@ -276,10 +286,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
-    private void fist() {
-        actions.remove("fist");
-        actions.put("fist", false);
-        enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
+    private void punch() {
+        llama.punch();
+        timePunching=System.currentTimeMillis();
+        actions.remove("punch");
+        actions.put("punch", false);
+        //enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
 
     }
 

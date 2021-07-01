@@ -11,8 +11,14 @@ public class Llama extends GameObject {
 
     boolean isStanding;
 
+    final Texture llamaStanding = new Texture(Gdx.files.internal("llamaStanding.png"));
+    final Texture llamaPunching = new Texture(Gdx.files.internal("llamaPunching.png"));
+    Texture llamaCrouching;
+
     public Llama(float x, float  y, float h, World world, Batch batch) {
         super(new Texture(Gdx.files.internal("llamaStanding.png")), x, y, h, world, batch);
+
+
 
         BodyDef llamaBodyDef = new BodyDef();
         llamaBodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -78,12 +84,13 @@ public class Llama extends GameObject {
     }
 
 
+
     public void punch() {
-        PolygonShape punchLlamaShape = new PolygonShape();
-        punchLlamaShape.setAsBox(w/2+0.5f, h/2);
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(w/2+0.1f, h/2);
 
         FixtureDef newFixtureDef = new FixtureDef();
-        newFixtureDef.shape = punchLlamaShape;
+        newFixtureDef.shape = shape;
         newFixtureDef.density = fixtureDef.density;
         newFixtureDef.friction = fixtureDef.friction;
         newFixtureDef.restitution = fixtureDef.restitution;
@@ -92,8 +99,29 @@ public class Llama extends GameObject {
 
         body.createFixture(newFixtureDef).setUserData(this);
 
-        punchLlamaShape.dispose();
+        shape.dispose();
 
-        sprite.set(new Sprite(new Texture(Gdx.files.internal("llamaPunching.png"))));
+        sprite.set(new Sprite(llamaPunching));
+        sprite.setSize(w, h);
+    }
+
+    public void depunch() {
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(w/2, h/2);
+
+        FixtureDef newFixtureDef = new FixtureDef();
+        newFixtureDef.shape = shape;
+        newFixtureDef.density = fixtureDef.density;
+        newFixtureDef.friction = fixtureDef.friction;
+        newFixtureDef.restitution = fixtureDef.restitution;
+
+        this.body.destroyFixture(this.getBody().getFixtureList().first());
+
+        body.createFixture(newFixtureDef).setUserData(this);
+
+        shape.dispose();
+
+        sprite.set(new Sprite(llamaStanding));
+        sprite.setSize(w, h);
     }
 }

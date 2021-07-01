@@ -7,8 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
@@ -31,14 +30,14 @@ public class ButtonsStagePlay {
     // ImageButtons
     ImageButton buttonJump;
     ImageButton buttonCrouch;
-    ImageButton buttonFist;
+    ImageButton buttonPunch;
     ImageButton buttonShot;
     ImageButton buttonPause;
 
     // Skins
     Skin buttonJumpSkin;
     Skin buttonPauseSkin;
-    Skin buttonFistSkin;
+    Skin buttonPunchSkin;
     Skin buttonShotSkin;
     Skin buttonCrouchSkin;
     Skin buttonSkin;
@@ -53,7 +52,7 @@ public class ButtonsStagePlay {
 
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
-        stage = new Stage(new FitViewport(tableWidth, tableHeight));
+        stage = new Stage(new ExtendViewport(tableWidth, tableHeight));
 
         // creation of Tables
         buttonsMovement = new Table();
@@ -68,8 +67,8 @@ public class ButtonsStagePlay {
         buttonCrouchSkin = new Skin(Gdx.files.internal("ui/crouchButton.json"), new TextureAtlas(Gdx.files.internal("ui/crouchButton.atlas")));
         buttonCrouch = new ImageButton(buttonCrouchSkin);
 
-        buttonFistSkin = new Skin(Gdx.files.internal("ui/fistButton.json"), new TextureAtlas(Gdx.files.internal("ui/fistButton.atlas")));
-        buttonFist = new ImageButton(buttonFistSkin);
+        buttonPunchSkin = new Skin(Gdx.files.internal("ui/fistButton.json"), new TextureAtlas(Gdx.files.internal("ui/fistButton.atlas")));
+        buttonPunch = new ImageButton(buttonPunchSkin);
 
         buttonShotSkin = new Skin(Gdx.files.internal("ui/shotButton.json"), new TextureAtlas(Gdx.files.internal("ui/shotButton.atlas")));
         buttonShot = new ImageButton(buttonShotSkin);
@@ -94,7 +93,7 @@ public class ButtonsStagePlay {
 
         buttonsAction.bottom().right();
         buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
-        buttonsAction.add(buttonFist).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsAction.add(buttonPunch).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
 
         buttonPauseMenuTable.top().center();
         buttonPauseMenuTable.add(buttonPlay).padLeft(tableWidth/2);
@@ -112,7 +111,7 @@ public class ButtonsStagePlay {
         actions.put("jump", false);
         actions.put("crouch", false);
         actions.put("shot", false);
-        actions.put("fist", false);
+        actions.put("punch", false);
         actions.put("pause", false);
         actions.put("play", false);
         actions.put("exit", false);
@@ -190,7 +189,6 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                // actions.remove("jump");
                 actions.put("exit", true);
 
             }
@@ -201,18 +199,16 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-               // actions.remove("jump");
                 actions.put("jump", true);
 
             }
         });
 
-        buttonFist.addListener(new ClickListener() {
+        buttonPunch.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-               // actions.remove("fist");
-                actions.put("fist", true);
+                actions.put("punch", true);
 
             }
         });
@@ -222,7 +218,6 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.remove("crouch");
                 actions.put("crouch", true);
             }
         });
@@ -232,7 +227,6 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.remove("shot");
                 actions.put("shot", true);
 
             }
@@ -244,7 +238,7 @@ public class ButtonsStagePlay {
 
     public void dispose() {
         buttonCrouchSkin.dispose();
-        buttonFistSkin.dispose();
+        buttonPunchSkin.dispose();
         buttonJumpSkin.dispose();
         buttonShotSkin.dispose();
         buttonPauseSkin.dispose();
