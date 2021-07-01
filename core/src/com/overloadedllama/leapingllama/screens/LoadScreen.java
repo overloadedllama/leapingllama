@@ -8,10 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -19,6 +17,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.assetman.AssetMan;
 
 public class LoadScreen implements Screen {
 
@@ -26,7 +25,10 @@ public class LoadScreen implements Screen {
     OrthographicCamera camera;
     ExtendViewport viewport;
 
+    private AssetMan manager;
+
     private Texture logo;
+    private Image logoImage;
 
     // stage and tables
     private Stage loadScreenStage;
@@ -47,6 +49,8 @@ public class LoadScreen implements Screen {
     public LoadScreen(final GameApp game) {
         this.game = game;
 
+        manager = new AssetMan();
+
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
         viewport.apply();
@@ -56,6 +60,15 @@ public class LoadScreen implements Screen {
 
     @Override
     public void show() {
+        logo = new Texture(Gdx.files.internal("logo.png"));
+        logoImage = new Image(logo);
+        logoImage.addAction(Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                manager.loadAllAssets();
+            }
+        }));
+
         loadScreenStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         loadScreenTable = new Table();
 
@@ -117,16 +130,10 @@ public class LoadScreen implements Screen {
 
         game.batch.begin();
         game.font.setColor(0 , 255, 0, 1);
-        logo = new Texture(Gdx.files.internal("logo.png"));
         game.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/4, GameApp.HEIGHT/2 - (float) logo.getHeight()/4, (float) logo.getWidth()/2, (float) logo.getHeight()/2);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
         game.batch.end();
 
-        /*
-        if (Gdx.input.isTouched()) {
-            game.setScreen(new MainMenuScreen(game));
-            dispose();
-        }*/
    }
 
     @Override

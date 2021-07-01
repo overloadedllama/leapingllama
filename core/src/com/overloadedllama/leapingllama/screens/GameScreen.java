@@ -1,7 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -10,13 +9,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.game.Bullet;
-import com.overloadedllama.leapingllama.game.Enemy;
-import com.overloadedllama.leapingllama.game.Ground;
-import com.overloadedllama.leapingllama.game.Llama;
+import com.overloadedllama.leapingllama.contactlistener.MyContactListener;
+import com.overloadedllama.leapingllama.game.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +26,6 @@ import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
 
 public class GameScreen extends ApplicationAdapter implements Screen{
-
 
     public enum State
     {
@@ -118,10 +113,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         });
     }
 
-
     public void gameOver() {
-        game.setScreen(new GameOverScreen(game));
-        //dispose();
+       // game.setScreen(new GameOverScreen(game));
+       // dispose();
     }
 
 
@@ -183,10 +177,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         if (actions.get("jump")){
-            jump();
+            if (!llama.isStanding()) {
+                standUp();
+            } else {
+                jump();
+            }
         }
 
         if (actions.get("crouch")){
+            System.out.println("LLAMA CROUCHES!");
             crouch();
         }
 
@@ -208,8 +207,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         stageUi.setActions(actions);
         debugRenderer.render(world, camera.combined);
-
-
 
         switch(state) {
 
@@ -256,30 +253,34 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         }
 
-
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
 
+    }
 
+    private void standUp() {
+        world.destroyBody(llama.getBody());
+        llama = new Llama(llama.getX(), llama.getY(), llama.getH() * 2, world, game.batch);
+        llama.setStanding(true);
 
-
-
-
-
+        actions.remove("crouch");
+        actions.put("crouch", false);
     }
 
     private void crouch() {
-        llama.crouch();
-        actions.remove("crouch");
-        actions.put("crouch", false);
+        if (llama.isStanding()) {
+            world.destroyBody(llama.getBody());
+            llama = new Llama(llama.getX(), llama.getY(), llama.getH() / 2, world, game.batch, new Texture("llamaCrouching.png"));
+            llama.setStanding(false);
+        }
+
     }
 
     private void fist() {
         actions.remove("fist");
         actions.put("fist", false);
-        if (enemies.size() != 1) {
-            enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
-        }
+        enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
+
     }
 
     private void shot() {
@@ -293,10 +294,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions.remove("exit");
         actions.put("exit", false);
 
+        dispose();
         game.setScreen(new MainMenuScreen(game));
 
 
-        dispose();
+
     }
 
     private void jump(){
@@ -348,7 +350,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     @Override
     public void dispose() {
-        world.dispose();
         stageUi.dispose();
+        //world.dispose();
+
     }
 }

@@ -1,9 +1,10 @@
-package com.overloadedllama.leapingllama.screens;
+package com.overloadedllama.leapingllama.contactlistener;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.game.Bullet;
 import com.overloadedllama.leapingllama.game.Enemy;
 import com.overloadedllama.leapingllama.game.Llama;
+import com.overloadedllama.leapingllama.screens.GameScreen;
 
 public class MyContactListener implements ContactListener {
 

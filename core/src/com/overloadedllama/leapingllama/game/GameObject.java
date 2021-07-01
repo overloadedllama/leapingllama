@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.*;
 
 public class GameObject {
 
-
     float x, y, w, h;
     Texture texture;
     Sprite sprite;
@@ -121,6 +120,7 @@ public class GameObject {
     public void setTexture(Texture texture) {
         this.texture = texture;
     }
+
 
     public void setWorld(World world) {
         this.world = world;

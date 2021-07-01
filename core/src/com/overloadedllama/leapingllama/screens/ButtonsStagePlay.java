@@ -217,15 +217,16 @@ public class ButtonsStagePlay {
             }
         });
 
+
         buttonCrouch.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-              //  actions.remove("crouch");
+                actions.remove("crouch");
                 actions.put("crouch", true);
-
             }
         });
+
 
         buttonShot.addListener(new ClickListener() {
             @Override
@@ -236,6 +237,9 @@ public class ButtonsStagePlay {
 
             }
         });
+
+
+
     }
 
     public void dispose() {
