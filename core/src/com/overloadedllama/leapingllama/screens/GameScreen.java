@@ -95,33 +95,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
-    public void removeBullet(Bullet b) {
-        bullets.remove(b);
-        final Body toRemove = b.getBody();
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                world.destroyBody(toRemove);
-            }
-        });
-    }
-
-    public void removeEnemy(Enemy e) {
-        enemies.remove(e);
-        final Body toRemove = e.getBody();
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                world.destroyBody(toRemove);
-            }
-        });
-    }
-
-    public void gameOver() {
-       // game.setScreen(new GameOverScreen(game));
-       // dispose();
-    }
-
 
     @Override
     public void show() {
@@ -182,11 +155,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         if (actions.get("jump")){
-            jump();
+            if (!llama.isJumping())
+                jump();
         }
 
         if (actions.get("crouch")){
-            //System.out.println("LLAMA CROUCHES!");
             crouch();
         }
 
@@ -221,8 +194,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 xSky += 1;
                 // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
-                if(System.currentTimeMillis()-timeLastEnemies>2000){
-                    //enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+                if(System.currentTimeMillis() - timeLastEnemies > 5000){
+                    enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
                     timeLastEnemies = System.currentTimeMillis();
                     System.out.println("Enemy Created");
                 }
@@ -242,7 +215,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 for (Bullet bullet : bullets) {
                     bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
                 }
-
 
                 break;
 
@@ -268,16 +240,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     private void crouch() {
         if (llama.isStanding()) {
             // crouches
-            //world.destroyBody(llama.getBody());
-            //llama = new Llama(llama.getX(), llama.getY() - llama.getH()/4, llama.getH() / 2, world, game.batch, new Texture(Gdx.files.internal("llamaCrouching.png")));
             llama.crouch(true);
 
             llama.setStanding(false);
             actions.put("crouch", false);
         } else {
             // stands up
-           // world.destroyBody(llama.getBody());
-            //llama = new Llama(llama.getX(), llama.getY() + llama.getH() / 2, 2, world, game.batch, new Texture(Gdx.files.internal("llamaStanding.png")));
             llama.crouch(false);
 
             llama.setStanding(true);
@@ -319,17 +287,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions.put("jump", false);
     }
 
-    private void stepWorld() {
-        float delta = Gdx.graphics.getDeltaTime();
 
-        accumulator += Math.min(delta, 0.25f);
-
-        if (accumulator >= STEP_TIME) {
-            accumulator -= STEP_TIME;
-
-            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-        }
-    }
 
     @Override
     public void resize(int width, int height) {
@@ -364,5 +322,48 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void dispose() {
         stageUi.dispose();
 
+    }
+
+    private void stepWorld() {
+        float delta = Gdx.graphics.getDeltaTime();
+
+        accumulator += Math.min(delta, 0.25f);
+
+        if (accumulator >= STEP_TIME) {
+            accumulator -= STEP_TIME;
+
+            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+        }
+    }
+
+    public void removeBullet(Bullet b) {
+        bullets.remove(b);
+        final Body toRemove = b.getBody();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                world.destroyBody(toRemove);
+            }
+        });
+    }
+
+    public void removeEnemy(Enemy e) {
+        enemies.remove(e);
+        final Body toRemove = e.getBody();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                world.destroyBody(toRemove);
+            }
+        });
+    }
+
+    public void gameOver() {
+        // game.setScreen(new GameOverScreen(game));
+        // dispose();
+    }
+
+    public Llama getLlama() {
+        return llama;
     }
 }

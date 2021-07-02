@@ -3,6 +3,7 @@ package com.overloadedllama.leapingllama.contactlistener;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.game.Bullet;
 import com.overloadedllama.leapingllama.game.Enemy;
+import com.overloadedllama.leapingllama.game.Ground;
 import com.overloadedllama.leapingllama.game.Llama;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 
@@ -27,8 +28,9 @@ public class MyContactListener implements ContactListener {
         if (isBulletEnemyContact(fa, fb)) {
             System.out.println("COLLISION BULLET-ENEMY DETECTED!");
         } else if (isLlamaEnemyContact(fa, fb)) {
-
             System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
+        } else if (isLlamaGroundContact(fa, fb)) {
+            System.out.println("COLLISION LLAMA-GROUND DETECTED!");
         }
 
 
@@ -81,6 +83,15 @@ public class MyContactListener implements ContactListener {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Enemy)
                 || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Llama)) {
             parent.gameOver();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isLlamaGroundContact(Fixture a, Fixture b) {
+        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ground)
+                || (a.getUserData() instanceof Ground && b.getUserData() instanceof Llama)) {
+            parent.getLlama().setJumping(false);
             return true;
         }
         return false;
