@@ -68,13 +68,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     long timeLastEnemies;
     long timePunching;
 
+    Level level;
 
     float accumulator = 0;
 
+    double distance = 0;
 
-
-    public GameScreen(final GameApp game) {
+    public GameScreen(final GameApp game, int levelNumber) {
         this.game = game;
+
 
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
@@ -93,6 +95,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         actions = new HashMap<>();
 
+        level = new Level(levelNumber);
     }
 
 
@@ -116,7 +119,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         //stagePause = new ButtonsStagePause();
 
         enemies=new ArrayList<>();
-        enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
+        //enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
         timeLastEnemies = System.currentTimeMillis();
 
         bullets = new ArrayList<>();
@@ -194,10 +197,10 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 xSky += 1;
                 // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
-                if(System.currentTimeMillis() - timeLastEnemies > 5000){
+                //if(System.currentTimeMillis() - timeLastEnemies > 5000){
                     //enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
-                    timeLastEnemies = System.currentTimeMillis();
-                }
+                  //  timeLastEnemies = System.currentTimeMillis();
+                //}
 
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
@@ -219,6 +222,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                     }
                 }
 
+                /*
+                level loading
+                 */
+
+                loadLevel(distance);
+
+
+
                 break;
 
             case PAUSE:
@@ -236,6 +247,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
+
+    }
+
+    private void loadLevel(double distance) {
+        ArrayList<String> strings = level.getActor(distance);
+
+        for (String s : strings){
+            if (s == "enemy"){
+                enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+            }
+        }
 
     }
 
@@ -330,10 +352,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         accumulator += Math.min(delta, 0.25f);
 
+        stageUi.setDistance(distance);
         if (accumulator >= STEP_TIME) {
             accumulator -= STEP_TIME;
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+
+            distance += .01f;
+            System.out.println(distance);
         }
     }
 

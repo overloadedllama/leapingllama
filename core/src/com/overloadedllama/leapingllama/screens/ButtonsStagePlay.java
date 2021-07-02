@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
+import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -40,7 +41,7 @@ public class ButtonsStagePlay {
     TextButton buttonSaveExit;
 
     // TextField
-    TextField score;
+   // TextField score;
 
     // Skins
     Skin buttonJumpSkin;
@@ -49,7 +50,14 @@ public class ButtonsStagePlay {
     Skin buttonShotSkin;
     Skin buttonCrouchSkin;
     Skin buttonSkin;
-    Skin scoreSkin;
+   // Skin scoreSkin;
+
+    //Distance
+    Label labelDistance;
+    double distance = 0;
+    String distanceText;
+
+
 
     HashMap<String, Boolean> actions;
 
@@ -87,19 +95,21 @@ public class ButtonsStagePlay {
         buttonPlay = new TextButton("RESUME", buttonSkin);
         buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
 
-        scoreSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        score = new TextField("0", scoreSkin);
-        score.setAlignment(Align.center);
+        //scoreSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        //score = new TextField("0", scoreSkin);
+        //score.setAlignment(Align.center);
 
         buttonPauseMenuTable.add(buttonPlay);
         buttonPauseMenuTable.add(buttonSaveExit);
 
+        labelDistance = new Label("", buttonSkin);
+        setDistance(0);
 
         float pad = 10f;
 
         buttonPauseTable.top().left();
         buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad).padTop(pad);
-        buttonPauseTable.add(score).padTop(pad).padLeft(GameApp.WIDTH / 2);
+       // buttonPauseTable.add(score).padTop(pad).padLeft(GameApp.WIDTH / 2);
 
         buttonsMovement.bottom().left();
         buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
@@ -113,6 +123,9 @@ public class ButtonsStagePlay {
         buttonPauseMenuTable.add(buttonPlay).padLeft(tableWidth/2);
         buttonPauseMenuTable.row();
         buttonPauseMenuTable.add(buttonSaveExit);
+
+        labelDistance.setPosition(tableWidth - 50f, tableHeight - 50f);
+        stage.addActor(labelDistance);
 
         stage.addActor(buttonPauseTable);
         stage.addActor(buttonsMovement);
@@ -266,4 +279,12 @@ public class ButtonsStagePlay {
         this.actions = actions;
     }
 
+    @SuppressLint("DefaultLocale")
+    public void setDistance(double distance) {
+        this.distance = distance;
+
+        distanceText = String.format("%.1f m", distance);
+        labelDistance.setText(distanceText);
+
+    }
 }
