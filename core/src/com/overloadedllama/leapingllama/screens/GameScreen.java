@@ -195,9 +195,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
 
                 if(System.currentTimeMillis() - timeLastEnemies > 5000){
-                    enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+                    //enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
                     timeLastEnemies = System.currentTimeMillis();
-                    System.out.println("Enemy Created");
                 }
 
                 if (timePunching != 0) {
@@ -212,8 +211,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                     enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
                 }
 
+                System.out.println("bullets array size: " + bullets.size());
                 for (Bullet bullet : bullets) {
                     bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
+                    if (isOutOfBonds(bullet)) {
+                        removeBullet(bullet);
+                    }
                 }
 
                 break;
@@ -256,14 +259,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     private void punch() {
         llama.punch(true);
         timePunching=System.currentTimeMillis();
-        actions.remove("punch");
         actions.put("punch", false);
 
     }
 
     private void shot() {
         bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch));
-        actions.remove("shot");
         actions.put("shot", false);
     }
 
@@ -271,7 +272,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         //here there will be to develop the stuff for save the checkpoint;
         state = State.STOPPED;
 
-        actions.remove("exit");
         actions.put("exit", false);
 
         dispose();
@@ -282,8 +282,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     private void jump(){
-        llama.jump();
-        actions.remove("jump");
+        if (!llama.isJumping()) {
+            llama.jump();
+        }
         actions.put("jump", false);
     }
 
@@ -357,6 +358,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             }
         });
     }
+
+    public boolean isOutOfBonds(GameObject go) {
+        return go.getBody().getPosition().x < 0 || go.getBody().getPosition().x > viewport.getWorldWidth();
+    }
+
+
 
     public void gameOver() {
         // game.setScreen(new GameOverScreen(game));

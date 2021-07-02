@@ -7,8 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
 import java.util.HashMap;
@@ -35,6 +35,13 @@ public class ButtonsStagePlay {
     ImageButton buttonShot;
     ImageButton buttonPause;
 
+    // TextButtons
+    TextButton buttonPlay;
+    TextButton buttonSaveExit;
+
+    // TextField
+    TextField score;
+
     // Skins
     Skin buttonJumpSkin;
     Skin buttonPauseSkin;
@@ -42,10 +49,7 @@ public class ButtonsStagePlay {
     Skin buttonShotSkin;
     Skin buttonCrouchSkin;
     Skin buttonSkin;
-
-    // TextButtons
-    TextButton buttonPlay;
-    TextButton buttonSaveExit;
+    Skin scoreSkin;
 
     HashMap<String, Boolean> actions;
 
@@ -83,20 +87,27 @@ public class ButtonsStagePlay {
         buttonPlay = new TextButton("RESUME", buttonSkin);
         buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
 
+        scoreSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        score = new TextField("0", scoreSkin);
+        score.setAlignment(Align.center);
+
         buttonPauseMenuTable.add(buttonPlay);
         buttonPauseMenuTable.add(buttonSaveExit);
 
 
+        float pad = 10f;
+
         buttonPauseTable.top().left();
-        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(15f).padTop(15f);
+        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad).padTop(pad);
+        buttonPauseTable.add(score).padTop(pad).padLeft(GameApp.WIDTH / 2);
 
         buttonsMovement.bottom().left();
-        buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
-        buttonsMovement.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(15f).padLeft(15f);
+        buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
+        buttonsMovement.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(pad).padLeft(pad);
 
         buttonsAction.bottom().right();
-        buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
-        buttonsAction.add(buttonPunch).width(buttonSize).height(buttonSize).padLeft(15f).padBottom(15f);
+        buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
+        buttonsAction.add(buttonPunch).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
 
         buttonPauseMenuTable.top().center();
         buttonPauseMenuTable.add(buttonPlay).padLeft(tableWidth/2);

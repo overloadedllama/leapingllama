@@ -26,31 +26,23 @@ public class MyContactListener implements ContactListener {
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
         if (isBulletEnemyContact(fa, fb)) {
-            System.out.println("COLLISION BULLET-ENEMY DETECTED!");
+            //System.out.println("COLLISION BULLET-ENEMY DETECTED!");
         } else if (isLlamaEnemyContact(fa, fb)) {
-            System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
+            //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
         } else if (isLlamaGroundContact(fa, fb)) {
-            System.out.println("COLLISION LLAMA-GROUND DETECTED!");
+            //System.out.println("COLLISION LLAMA-GROUND DETECTED!");
         }
 
-
-
     }
 
     @Override
-    public void endContact(Contact contact) {
-
-    }
+    public void endContact(Contact contact) {    }
 
     @Override
-    public void preSolve(Contact contact, Manifold oldManifold) {
-
-    }
+    public void preSolve(Contact contact, Manifold oldManifold) {    }
 
     @Override
-    public void postSolve(Contact contact, ContactImpulse impulse) {
-
-    }
+    public void postSolve(Contact contact, ContactImpulse impulse) {    }
 
 
     /**

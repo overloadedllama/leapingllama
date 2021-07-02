@@ -8,7 +8,6 @@ import com.badlogic.gdx.physics.box2d.*;
 
 public class Llama extends GameObject {
 
-
     boolean isStanding;
     boolean isJumping = false;
 
@@ -85,6 +84,7 @@ public class Llama extends GameObject {
         }
 
         sprite.setSize(w, h);
+        sprite.setPosition(body.getPosition().x, body.getPosition().y); // i'm not sure it works...
 
         this.body.destroyFixture(this.getBody().getFixtureList().first());
 
@@ -106,9 +106,7 @@ public class Llama extends GameObject {
 
 
         if (isPunching) {
-
             shape.setAsBox(w / 2 + 0.1f, h / 2);
-
 
             sprite.set(new Sprite(llamaPunching));
             sprite.setSize(w, h);
@@ -124,9 +122,7 @@ public class Llama extends GameObject {
 
         body.createFixture(newFixtureDef).setUserData(this);
 
-
         shape.dispose();
-
 
         sprite.setPosition(x, y);
     }
