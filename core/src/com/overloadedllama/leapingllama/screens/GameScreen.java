@@ -16,6 +16,7 @@ import com.overloadedllama.leapingllama.game.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
@@ -253,10 +254,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     private void loadLevel(double distance) {
         ArrayList<String> strings = level.getActor(distance);
 
-        for (String s : strings){
+        Iterator<String> i = strings.iterator();
+
+        while(i.hasNext()){
+            String s = i.next();
             if (s == "enemy"){
                 enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+                i.remove();
             }
+
         }
 
     }
@@ -358,7 +364,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
-            distance += .01f;
+            distance += .03f;
             System.out.println(distance);
         }
     }

@@ -26,11 +26,16 @@ public class Level {
             enemies = new ArrayList<Double>(Arrays.asList(1.2, 2.5));
             obstacles = new ArrayList<Double>(Arrays.asList(2.0, 3.5));
 
+
         }
+
 
         map.put("enemy", enemies);
         map.put("obstacles", obstacles);
     }
+
+
+
 
     public ArrayList<String> getActor(double distance){
         ArrayList<String> strings = new ArrayList<>();
@@ -38,17 +43,16 @@ public class Level {
         for (String s : map.keySet() ){
 
          //   ArrayList<Double> doubles = map.get(s);
+            Iterator<Double> i = map.get(s).iterator();
 
-            for (Double i : map.get(s)){
-                if (Math.abs(i-distance)<=0.1){
+            while (i.hasNext()){
+                Double d = i.next();
+                if (Math.abs(d-distance)<=0.1){
                     strings.add(s);
-                    //doubles.remove(i);
+                    i.remove();
                 }
 
             }
-
-            //map.put(s, doubles);
-
         }
 
         return strings;
