@@ -19,6 +19,6 @@ public class Bullet extends GameObject{
         shape.dispose();
 
         body.setLinearVelocity(3f, 0f);
-
+        body.setBullet(true);
     }
 }
