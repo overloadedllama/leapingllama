@@ -106,6 +106,7 @@ project(":core") {
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
 
         implementation 'com.google.android:android:4.1.1.4'
+        implementation 'org.json:json:20210307'
 
 
 
