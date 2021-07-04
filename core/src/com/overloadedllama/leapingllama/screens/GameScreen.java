@@ -54,6 +54,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     Ground ground;
     static ArrayList<Enemy> enemies;
     static ArrayList<Bullet> bullets;
+    static ArrayList<Platform> platforms;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -119,11 +120,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         //stagePause = new ButtonsStagePause();
 
-        enemies=new ArrayList<>();
+        enemies = new ArrayList<>();
         //enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
         timeLastEnemies = System.currentTimeMillis();
 
         bullets = new ArrayList<>();
+        platforms = new ArrayList<>();
+
+        platforms.add(new Platform(METER_WIDTH, 1, 0.2f, world, game.batch));
+
+
+
     }
 
     @Override
@@ -145,6 +152,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             bullet.draw();
         for (Enemy enemy : enemies)
             enemy.draw();
+        for (Platform platform : platforms)
+            platform.draw();
         game.batch.end();
 
 
@@ -196,12 +205,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 stepWorld();
 
                 xSky += 1;
-                // ground.setPosition(ground.getSprite().getX()-1, ground.getSprite().getY());
-
-                //if(System.currentTimeMillis() - timeLastEnemies > 5000){
-                    //enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
-                  //  timeLastEnemies = System.currentTimeMillis();
-                //}
 
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
@@ -209,38 +212,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                     }
                 }
 
-                llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
-
-                for (Enemy enemy : enemies) {
-                    enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
-                }
-
-                System.out.println("bullets array size: " + bullets.size());
-                for (Bullet bullet : bullets) {
-                    bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
-                    if (isOutOfBonds(bullet)) {
-                        removeBullet(bullet);
-                    }
-                }
-
+                updatePosition();
                 /*
                 level loading
                  */
-
                 loadLevel(distance);
-
-
-
-                break;
-
-            case PAUSE:
-
-
-
-                break;
-
-            case STOPPED:
-
 
                 break;
 
@@ -251,6 +227,29 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
+    private void updatePosition() {
+        llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
+
+        for (Enemy enemy : enemies) {
+            enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
+        }
+
+        System.out.println("bullets array size: " + bullets.size());
+        for (Bullet bullet : bullets) {
+            bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
+            if (isOutOfBonds(bullet)) {
+                removeBullet(bullet);
+            }
+        }
+
+        for (Platform platform : platforms){
+            platform.setPosition(platform.getBody().getPosition().x, platform.getBody().getPosition().y, platform.getBody().getAngle());
+            if (isOutOfBonds(platform)) {
+                removeObject(platform, platforms);
+            }
+        }
+    }
+
     private void loadLevel(double distance) {
         ArrayList<String> strings = level.getActor(distance);
 
@@ -259,7 +258,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         while(i.hasNext()){
             String s = i.next();
             if (s == "enemy"){
-                enemies.add(new Enemy( METER_WIDTH, 2,  1.2f, world, game.batch));
+                enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch));
                 i.remove();
             }
 
@@ -369,9 +368,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
     }
 
-    public void removeBullet(Bullet b) {
-        bullets.remove(b);
-        final Body toRemove = b.getBody();
+    public void removeObject(GameObject object, ArrayList arrayList) {
+        arrayList.remove(object);
+        final Body toRemove = object.getBody();
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
@@ -381,14 +380,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     public void removeEnemy(Enemy e) {
-        enemies.remove(e);
-        final Body toRemove = e.getBody();
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                world.destroyBody(toRemove);
-            }
-        });
+        removeObject(e, enemies);
+    }
+
+    public void removeBullet(Bullet b){
+        removeObject(b, bullets);
     }
 
     public boolean isOutOfBonds(GameObject go) {
