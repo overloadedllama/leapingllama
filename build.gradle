@@ -107,5 +107,11 @@ project(":core") {
 
         implementation 'com.google.android:android:4.1.1.4'
 
+
+
+        implementation 'com.google.code.gson:gson:2.8.7'
+        implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+
+
     }
 }
