@@ -7,8 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
-//import org.json.simple.*;
-//import org.json.simple.parser.*;
+import org.json.*;
 
 public class Level {
 
@@ -27,7 +26,7 @@ public class Level {
         map = new HashMap<>();
 
         // parsing file "JSONExample.json"
-       // Object obj = new JSONParser().parse(new FileReader("game.json"));
+       //Object obj = new JSONParser().parse(new FileReader("game.json"));
 
 
 
