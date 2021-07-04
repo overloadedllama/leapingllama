@@ -40,6 +40,10 @@ allprojects {
 
 
     }
+
+    configurations {
+        compile.exclude group: "junit", module: "junit"
+    }
 }
 
 project(":desktop") {

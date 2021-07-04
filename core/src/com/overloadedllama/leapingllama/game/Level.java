@@ -1,13 +1,21 @@
 package com.overloadedllama.leapingllama.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.Queue;
+import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.*;
 
-import org.json.*;
+
 
 public class Level {
 
@@ -25,10 +33,22 @@ public class Level {
         this.level = level;
         map = new HashMap<>();
 
+        JSONParser parser = new JSONParser();
+
+
         // parsing file "JSONExample.json"
-       //Object obj = new JSONParser().parse(new FileReader("game.json"));
+        try {
+            JSONObject jsonObject = (JSONObject) parser.parse(String.valueOf(Gdx.files.internal("game.json").read()));
+
+            JSONArray levels = (JSONArray) jsonObject.get("levels");
+            System.out.println(levels);
 
 
+
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
 
         switch (level){
