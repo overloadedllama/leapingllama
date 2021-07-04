@@ -3,7 +3,12 @@ package com.overloadedllama.leapingllama.game;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.utils.Queue;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
+
+//import org.json.simple.*;
+//import org.json.simple.parser.*;
 
 public class Level {
 
@@ -17,9 +22,15 @@ public class Level {
 
 
 
-    public Level(int level) {
+    public Level(int level){
         this.level = level;
         map = new HashMap<>();
+
+        // parsing file "JSONExample.json"
+       // Object obj = new JSONParser().parse(new FileReader("game.json"));
+
+
+
 
         switch (level){
             case 1:

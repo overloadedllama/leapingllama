@@ -127,7 +127,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
 
-        platforms.add(new Platform(METER_WIDTH, 1, 0.2f, world, game.batch));
+        platforms.add(new Platform(METER_WIDTH, 1, 0.2f, 3, world, game.batch));
 
 
 

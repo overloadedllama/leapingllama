@@ -8,10 +8,25 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
+import java.util.Random;
+
 public class Enemy extends GameObject{
 
     public Enemy(float x, float y, float h, World world, Batch batch){
-        super(new Texture(Gdx.files.internal("orange_alien.png")), x, y, h, world, batch);
+        super(new Texture(Gdx.files.internal("alien.png")), x, y, h, world, batch);
+
+        Random random = new Random();
+        int randomNumber = random.nextInt(2);
+
+        if(randomNumber == 1){
+            texture = new Texture(Gdx.files.internal("orange_alien.png"));
+            sprite.setTexture(texture);
+        }
+
+
+
+
+
 
 
 
