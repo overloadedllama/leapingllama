@@ -213,6 +213,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 }
 
                 updatePosition();
+                removeObjects();
+
                 /*
                 level loading
                  */
@@ -235,25 +237,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         System.out.println("bullets array size: " + bullets.size());
-        for (Iterator<Bullet> i = bullets.listIterator(); i.hasNext();) {
-            Bullet bullet = i.next();
+        for (Bullet bullet : bullets) {
             bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
             if (isOutOfBonds(bullet)) {
-                final Body toRemove = bullet.getBody();
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        world.destroyBody(toRemove);
-                    }
-                });
-                i.remove();
+                bullet.setDestroyable(true);
             }
         }
 
         for (Platform platform : platforms){
             platform.setPosition(platform.getBody().getPosition().x, platform.getBody().getPosition().y, platform.getBody().getAngle());
             if (isOutOfBonds(platform)) {
-                removeObject(platform, platforms);
+                platform.setDestroyable(true);
             }
         }
     }
@@ -375,30 +369,51 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
     }
 
-    public void removeObject(GameObject object, ArrayList<? extends GameObject> arrayList) {
-        arrayList.remove(object);
-        final Body toRemove = object.getBody();
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                world.destroyBody(toRemove);
+    private void removeObjects() {
+        // maybe with an Enum or something else is possible to collapse all for(...) in one
+        for (Iterator<Bullet> b = bullets.iterator(); b.hasNext(); ) {
+            final Bullet bullet = b.next();
+            if (bullet.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(bullet.getBody());
+                    }
+                });
+                b.remove();
             }
-        });
-    }
+        }
 
-    public void removeEnemy(Enemy e) {
-        removeObject(e, enemies);
-    }
+        for (Iterator<Enemy> e = enemies.iterator(); e.hasNext(); ) {
+            final Enemy enemy = e.next();
+            if (enemy.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(enemy.getBody());
+                    }
+                });
+                e.remove();
+            }
+        }
 
-    public void removeBullet(Bullet b){
-        removeObject(b, bullets);
+        for (Iterator<Platform> p = platforms.iterator(); p.hasNext(); ) {
+            final Platform platform = p.next();
+            if (platform.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(platform.getBody());
+                    }
+                });
+                p.remove();
+            }
+        }
     }
 
     public boolean isOutOfBonds(GameObject go) {
         return go.getBody().getPosition().x < 0 || go.getBody().getPosition().x > viewport.getWorldWidth();
     }
-
-
 
     public void gameOver() {
         // game.setScreen(new GameOverScreen(game));

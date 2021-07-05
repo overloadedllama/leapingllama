@@ -15,6 +15,7 @@ public class GameObject {
     World world;
     Batch batch;
     FixtureDef fixtureDef;
+    boolean destroyable;
 
     public GameObject(Texture texture, float x, float y, float h, World world, Batch batch) {
         this.x = x;
@@ -25,6 +26,7 @@ public class GameObject {
         this.texture = texture;
         this.batch = batch;
 
+        destroyable = false;
 
         w = h/texture.getHeight()*texture.getWidth();
         sprite = new Sprite(this.texture);
@@ -113,6 +115,8 @@ public class GameObject {
         this.body = body;
     }
 
+    public boolean isDestroyable() { return destroyable; }
+    public void setDestroyable(boolean destroyable) { this.destroyable = destroyable; }
 
     public Texture getTexture() {
         return texture;
@@ -120,7 +124,6 @@ public class GameObject {
     public void setTexture(Texture texture) {
         this.texture = texture;
     }
-
 
     public void setWorld(World world) {
         this.world = world;
