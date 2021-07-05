@@ -1,0 +1,14 @@
+{
+  "levels": {
+    "1": {
+      "enemies":[1.2, 4.5, 7.8],
+      "grounds": "[[3, 2], [8 , 3]]",
+      "platformsI": "[[1, 2], [8 , 3]]",
+      "platformsII": "",
+      "obstacles": "",
+      "money": "[5, 20]",
+      "bullets": "[[1, 3]]",
+      "boss": "[100]"
+    }
+  }
+}

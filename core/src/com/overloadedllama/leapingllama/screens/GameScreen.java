@@ -70,7 +70,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     long timeLastEnemies;
     long timePunching;
 
-    Level level;
+    LevelParser levelParser;
 
     float accumulator = 0;
 
@@ -97,7 +97,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         actions = new HashMap<>();
 
-        level = new Level(levelNumber);
+        levelParser = new LevelParser(1);
     }
 
 
@@ -253,7 +253,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     private void loadLevel(double distance) {
-        ArrayList<String> strings = level.getActor(distance);
+        ArrayList<String> strings = levelParser.getActor(distance);
 
         Iterator<String> i = strings.iterator();
 
@@ -303,7 +303,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions.put("exit", false);
 
         dispose();
-        game.setScreen(new MainMenuScreen(game, null));
+        game.setScreen(new MainMenuScreen(game));
 
 
 
