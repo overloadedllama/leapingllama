@@ -2,6 +2,7 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
@@ -26,6 +27,7 @@ public class Llama extends GameObject {
 
         llamaShape.dispose();
 
+        body.setFixedRotation(true);
         isStanding = true;
         this.assets = assets;
     }
@@ -113,4 +115,7 @@ public class Llama extends GameObject {
     public boolean isStanding() { return isStanding; }
     public void setStanding(boolean value) { isStanding = value; }
 
+    public void preserveX(float llamaX) {
+        body.setTransform(llamaX, body.getPosition().y, 0);
+    }
 }

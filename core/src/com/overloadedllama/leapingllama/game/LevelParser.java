@@ -15,7 +15,7 @@ public class LevelParser {
     HashMap<String, ArrayList<ArrayList<Double>>> mapActorsComplex;
 
     String [] actorsSimpleStrings = {"enemies", "money", "bullets", "obstacles"};
-    String [] actorsComplexStrings = {"platforms", "grounds"};
+    String [] actorsComplexStrings = {"platforms", "platformsII", "grounds"};
 
 
     public LevelParser(int levelNumber){

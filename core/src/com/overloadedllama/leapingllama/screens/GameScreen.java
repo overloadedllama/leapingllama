@@ -79,6 +79,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     double distance = 0;
 
+    float llamaX = 3;
+
     public GameScreen(final GameApp game, int levelNumber) {
         this.game = game;
         this.assets = game.getAssets();
@@ -110,7 +112,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
-        llama = new Llama(3, 1, 2, world, game.batch, assets);
+        llama = new Llama(llamaX, 1, 2, world, game.batch, assets);
         ground = new Ground( -1, 0, 0.6f, world, game.batch, assets);
         ground.setMyW(METER_WIDTH);
 
@@ -199,6 +201,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
                 stepWorld();
 
+
                 xSky += 1;
 
                 if (timePunching != 0) {
@@ -210,6 +213,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 updatePosition();
                 removeObjects();
                 loadLevel(distance);
+                llama.preserveX(llamaX);
 
                 break;
 
@@ -260,10 +264,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             }
 
             if (s.equals("money")){
-                enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch, assets));
-                i.remove();
+                //money constructor
+                //i.remove();
             }
 
+            if (s.equals("obstacles")){
+                //obstacle constructor
+              // i.remove();
+            }
 
 
 
@@ -277,7 +285,28 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             if (sa[0] != "" && sa[0].equals("platforms")){
                 float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
+                platforms.add(new Platform(METER_WIDTH+l/2, 2, 0.2f, l, world, game.batch, assets));
+                i.remove();
+
+            }
+
+            if (sa[0] != "" && sa[0].equals("grounds")){
+                float l =  Float.parseFloat( sa[1] );
+               // platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
+                i.remove();
+
+            }
+
+            if (sa[0] != "" && sa[0].equals("bullets")){
+                float l =  Float.parseFloat( sa[1] );
+                //platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
+               // i.remove();
+
+            }
+
+            if (sa[0] != "" && sa[0].equals("platformsII")){
+                float l =  Float.parseFloat( sa[1] );
+                platforms.add(new Platform(METER_WIDTH+l/2, 3.5f, 0.2f, l, world, game.batch, assets));
                 i.remove();
 
             }
