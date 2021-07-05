@@ -235,10 +235,18 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
 
         System.out.println("bullets array size: " + bullets.size());
-        for (Bullet bullet : bullets) {
+        for (Iterator<Bullet> i = bullets.listIterator(); i.hasNext();) {
+            Bullet bullet = i.next();
             bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
             if (isOutOfBonds(bullet)) {
-                removeBullet(bullet);
+                final Body toRemove = bullet.getBody();
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(toRemove);
+                    }
+                });
+                i.remove();
             }
         }
 
@@ -257,7 +265,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         while(i.hasNext()){
             String s = i.next();
-            if (s == "enemy"){
+            if (s.equals("enemy")){
                 enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch));
                 i.remove();
             }
@@ -273,14 +281,13 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             llama.crouch(true);
 
             llama.setStanding(false);
-            actions.put("crouch", false);
         } else {
             // stands up
             llama.crouch(false);
 
             llama.setStanding(true);
-            actions.put("crouch", false);
         }
+        actions.put("crouch", false);
     }
 
     private void punch() {
@@ -302,7 +309,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions.put("exit", false);
 
         dispose();
-        game.setScreen(new MainMenuScreen(game));
+        game.setScreen(new MainMenuScreen(game, null));
 
 
 
@@ -368,7 +375,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
     }
 
-    public void removeObject(GameObject object, ArrayList arrayList) {
+    public void removeObject(GameObject object, ArrayList<? extends GameObject> arrayList) {
         arrayList.remove(object);
         final Body toRemove = object.getBody();
         Gdx.app.postRunnable(new Runnable() {
@@ -396,6 +403,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void gameOver() {
         // game.setScreen(new GameOverScreen(game));
         // dispose();
+        System.out.println("GAME OVER");
     }
 
     public Llama getLlama() {
