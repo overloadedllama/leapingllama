@@ -209,10 +209,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
                 updatePosition();
                 removeObjects();
-
-                /*
-                level loading
-                 */
                 loadLevel(distance);
 
                 break;
@@ -249,24 +245,39 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     private void loadLevel(double distance) {
         ArrayList<String> strings = levelParser.getActor(distance);
-
+        System.out.println(strings);
         Iterator<String> i = strings.iterator();
 
         while(i.hasNext()){
             String s = i.next();
             System.out.println(s);
-            //Simply Actor
 
-            if (s.equals(levelParser.getActorsSimpleStrings()[0])){
+
+            //Simply Actor
+            if (s.equals("enemies")){
+                enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch, assets));
+                i.remove();
+            }
+
+            if (s.equals("money")){
                 enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch, assets));
                 i.remove();
             }
 
 
+
+
+
+
+
             //Complex Actor
             String [] sa = s.split("-");
-            if (sa[0].equals(levelParser.getActorsComplexStrings()[0])){
-                platforms.add(new Platform(METER_WIDTH, 1, 0.2f, Float.parseFloat( sa[1] ), world, game.batch, assets));
+
+
+
+            if (sa[0] != "" && sa[0].equals("platforms")){
+                float l =  Float.parseFloat( sa[1] );
+                platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
                 i.remove();
 
             }
@@ -419,7 +430,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     public boolean isOutOfBonds(GameObject go) {
-        return go.getBody().getPosition().x < 0 || go.getBody().getPosition().x > viewport.getWorldWidth();
+        return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth()*2;
     }
 
     public void gameOver() {
