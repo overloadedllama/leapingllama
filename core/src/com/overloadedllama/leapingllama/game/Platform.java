@@ -25,13 +25,15 @@ public class Platform extends GameObject{
         tileCount = (int) (w0/w);
 
 
-        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-        textureRegion = new TextureRegion(texture, 0,0, (int)w, (int)h);
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+
+
+        textureRegion = new TextureRegion(texture, 0,0, (int)w0/120, (int)h/120);
 
 
 
         sprite = new Sprite(textureRegion);
-        //sprite.setSize(w, h);
+        sprite.setSize(w, h);
 
 
         PolygonShape shape = new PolygonShape();

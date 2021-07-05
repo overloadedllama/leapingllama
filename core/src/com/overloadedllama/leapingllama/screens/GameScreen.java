@@ -62,7 +62,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
 
-    static float  UNITS_PER_METER = 128;
+    public static float  UNITS_PER_METER = 128;
 
     public final float METER_WIDTH = WIDTH / UNITS_PER_METER;
     public final float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
@@ -126,10 +126,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
-
-        platforms.add(new Platform(METER_WIDTH, 1, 0.2f, 3, world, game.batch));
-
-
 
     }
 
@@ -236,7 +232,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
         }
 
-        System.out.println("bullets array size: " + bullets.size());
+        //System.out.println("bullets array size: " + bullets.size());
         for (Bullet bullet : bullets) {
             bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
             if (isOutOfBonds(bullet)) {
@@ -259,10 +255,24 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         while(i.hasNext()){
             String s = i.next();
-            if (s.equals("enemy")){
+            System.out.println(s);
+            //Simply Actor
+
+            if (s.equals(levelParser.getActorsSimpleStrings()[0])){
                 enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch));
                 i.remove();
             }
+
+
+            //Complex Actor
+            String [] sa = s.split("-");
+            if (sa[0].equals(levelParser.getActorsComplexStrings()[0])){
+                platforms.add(new Platform(METER_WIDTH, 1, 0.2f, Float.parseFloat( sa[1] ), world, game.batch));
+                i.remove();
+
+            }
+
+
 
         }
 
@@ -365,7 +375,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
             distance += .03f;
-            System.out.println(distance);
+            //System.out.println(distance);
         }
     }
 
