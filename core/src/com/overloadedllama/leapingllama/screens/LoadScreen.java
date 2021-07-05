@@ -17,7 +17,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.assetman.AssetMan;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class LoadScreen implements Screen {
 
@@ -25,10 +25,12 @@ public class LoadScreen implements Screen {
     OrthographicCamera camera;
     ExtendViewport viewport;
 
-    private AssetMan manager;
+    private Assets assets;
+    private ClickListener clickListener;
+    private boolean startLoading = false;
+
 
     private Texture logo;
-    private Image logoImage;
 
     // stage and tables
     private Stage loadScreenStage;
@@ -48,8 +50,7 @@ public class LoadScreen implements Screen {
 
     public LoadScreen(final GameApp game) {
         this.game = game;
-
-        manager = new AssetMan();
+        this.assets = game.getAssets();
 
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
@@ -61,22 +62,21 @@ public class LoadScreen implements Screen {
     @Override
     public void show() {
         logo = new Texture(Gdx.files.internal("logo.png"));
-        logoImage = new Image(logo);
-        logoImage.addAction(Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                manager.loadAllAssets();
-            }
-        }));
 
         loadScreenStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         loadScreenTable = new Table();
+        loadScreenStage.addAction(Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                assets.loadAllAssets();
+                startLoading = true;
+            }
+        }));
+
 
         // creation of Skins
-        textFieldSkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
-                new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
-                new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        textFieldSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
+        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
 
         // creation of TextButton
         launchButton = new TextButton("Go!", textButtonSkin);
@@ -100,7 +100,7 @@ public class LoadScreen implements Screen {
 
         Gdx.input.setInputProcessor(loadScreenStage);
 
-        launchButton.addListener(new ClickListener() {
+        clickListener = new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
@@ -114,13 +114,18 @@ public class LoadScreen implements Screen {
                 Settings.setCurrentUser(user);
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
             }
-        });
+        };
 
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+
+        // only if there isn't any asset on loading queue yet the button works
+        if (assets.update() && startLoading) {
+            launchButton.addListener(clickListener);
+        }
 
         loadScreenStage.act();
         loadScreenStage.draw();
@@ -162,7 +167,5 @@ public class LoadScreen implements Screen {
     public void dispose() {
         logo.dispose();
 
-        textButtonSkin.dispose();
-        textFieldSkin.dispose();
     }
 }

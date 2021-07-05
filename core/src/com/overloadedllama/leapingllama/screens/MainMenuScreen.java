@@ -4,7 +4,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -16,15 +15,15 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.database.LlamaDbHandler;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class MainMenuScreen implements Screen {
 
     private final GameApp game;
-    private static final String TEST_USER = "test";
 
     OrthographicCamera camera;
     ExtendViewport viewport;
+    Assets assets;
 
     float defaultButtonWidth = 240F;
     float defaultButtonHeight = 100F;
@@ -57,6 +56,7 @@ public class MainMenuScreen implements Screen {
 
     public MainMenuScreen(final GameApp game) {
         this.game = game;
+        this.assets = game.getAssets();
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
         camera = new OrthographicCamera();
@@ -77,12 +77,12 @@ public class MainMenuScreen implements Screen {
         moneyTable = new Table();
 
         // creation of Skins
-        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        textFieldSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        moneyButtonSkin = new Skin(Gdx.files.internal("ui/coin.json"), new TextureAtlas(Gdx.files.internal("ui/coin.atlas")));
+        textButtonSkin = assets.getBig();
+        textFieldSkin = assets.getBig();
+        moneyButtonSkin = assets.getCoin();
+
 
         // creation of TextButtons
-        //textButtonSkin.getFont("pixeled").getData().setScale(1F);
         playButton = new TextButton("PLAY", textButtonSkin);
         shopButton = new TextButton("SHOP", textButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonSkin);
@@ -197,8 +197,5 @@ public class MainMenuScreen implements Screen {
     public void dispose() {
         mainMenuStage.dispose();
 
-        textFieldSkin.dispose();
-        textButtonSkin.dispose();
-        moneyButtonSkin.dispose();
     }
 }

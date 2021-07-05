@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.contactlistener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
 
@@ -42,6 +43,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     OrthographicCamera camera;
     Viewport viewport;
     GameApp game;
+
+    Assets assets;
 
     ButtonsStagePlay stageUi;
     World world;
@@ -78,8 +81,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     public GameScreen(final GameApp game, int levelNumber) {
         this.game = game;
-
-
+        this.assets = game.getAssets();
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
 
@@ -92,7 +94,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
-        sky = new Texture(Gdx.files.internal("sky.png"));
+        //sky = new Texture(Gdx.files.internal("sky.png"));
+        sky = game.getAssets().getTexture("sky");
         sky.setWrap(Repeat,Repeat);
 
         actions = new HashMap<>();
@@ -107,15 +110,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
-
-
-        llama = new Llama(3, 1, 2, world, game.batch);
-        ground = new Ground( -1, 0, 0.6f, world, game.batch);
+        llama = new Llama(3, 1, 2, world, game.batch, assets);
+        ground = new Ground( -1, 0, 0.6f, world, game.batch, assets);
         ground.setMyW(METER_WIDTH);
 
-
-
-        stageUi = new ButtonsStagePlay();
+        stageUi = new ButtonsStagePlay(game.getAssets());
         stageUi.setUpButtonAction();
 
         //stagePause = new ButtonsStagePause();
@@ -259,7 +258,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             //Simply Actor
 
             if (s.equals(levelParser.getActorsSimpleStrings()[0])){
-                enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch));
+                enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch, assets));
                 i.remove();
             }
 
@@ -267,7 +266,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             //Complex Actor
             String [] sa = s.split("-");
             if (sa[0].equals(levelParser.getActorsComplexStrings()[0])){
-                platforms.add(new Platform(METER_WIDTH, 1, 0.2f, Float.parseFloat( sa[1] ), world, game.batch));
+                platforms.add(new Platform(METER_WIDTH, 1, 0.2f, Float.parseFloat( sa[1] ), world, game.batch, assets));
                 i.remove();
 
             }
@@ -302,7 +301,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     private void shot() {
-        bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch));
+        bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
         actions.put("shot", false);
     }
 
@@ -314,8 +313,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         dispose();
         game.setScreen(new MainMenuScreen(game));
-
-
 
     }
 

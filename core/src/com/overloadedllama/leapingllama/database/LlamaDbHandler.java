@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 
 /**
  * some ideas: inserting data/time of user's best score,

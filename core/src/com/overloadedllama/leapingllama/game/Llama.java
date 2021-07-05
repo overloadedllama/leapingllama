@@ -1,22 +1,17 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.*;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class Llama extends GameObject {
 
     boolean isStanding;
     boolean isJumping = false;
 
-    final Texture llamaStanding = new Texture(Gdx.files.internal("llamaStanding.png"));
-    final Texture llamaPunching = new Texture(Gdx.files.internal("llamaPunching.png"));
-    final Texture llamaCrouching = new Texture(Gdx.files.internal("llamaCrouching.png"));
-
-    public Llama(float x, float y, float h, World world, Batch batch) {
-        super(new Texture(Gdx.files.internal("llamaStanding.png")), x, y, h, world, batch);
+    public Llama(float x, float y, float h, World world, Batch batch, Assets assets) {
+        super(assets.getTexture("llamaStanding"), x, y, h, world, batch);
 
 
         BodyDef llamaBodyDef = new BodyDef();
@@ -32,29 +27,12 @@ public class Llama extends GameObject {
         llamaShape.dispose();
 
         isStanding = true;
-    }
-
-    public Llama(float x, float y, float h, World world, Batch batch, Texture texture) {
-        super(texture, x, y, h, world, batch);
-
-        BodyDef llamaBodyDef = new BodyDef();
-        llamaBodyDef.type = BodyDef.BodyType.DynamicBody;
-        llamaBodyDef.position.set(x, y);
-
-
-        PolygonShape llamaShape = new PolygonShape();
-        llamaShape.setAsBox(w / 2, h / 2);
-
-        super.createBody(BodyDef.BodyType.DynamicBody, llamaShape, 1100, 0.05f, 0);
-
-        llamaShape.dispose();
-        isStanding = true;
+        this.assets = assets;
     }
 
     public void jump() {
         isJumping = true;
         body.applyForceToCenter(0, 1000000, true);
-        //System.out.println("jumping");
     }
 
     public void crouch(Boolean isCrouching) {
@@ -72,7 +50,7 @@ public class Llama extends GameObject {
 
             this.body.setTransform(x, y - h / 2, 0);
 
-            sprite.set(new Sprite(llamaCrouching));
+            sprite.set(new Sprite(assets.getTexture("llamaCrouching")));
 
         } else {
             // stands up
@@ -80,7 +58,7 @@ public class Llama extends GameObject {
 
             this.body.setTransform(x, y + h / 4, 0);
 
-            sprite.set(new Sprite(llamaStanding));
+            sprite.set(new Sprite(assets.getTexture("llamaStanding")));
         }
 
         sprite.setSize(w, h);
@@ -108,14 +86,14 @@ public class Llama extends GameObject {
         if (isPunching) {
             shape.setAsBox(w / 2 + 0.1f, h / 2);
 
-            sprite.set(new Sprite(llamaPunching));
-            sprite.setSize(w, h);
+            sprite.set(new Sprite(assets.getTexture("llamaPunching")));
         } else {
 
             shape.setAsBox(w / 2, h / 2);
-            sprite.set(new Sprite(llamaStanding));
-            sprite.setSize(w, h);
+            sprite.set(new Sprite(assets.getTexture("llamaStanding")));
         }
+
+        sprite.setSize(w, h);
 
         this.body.destroyFixture(this.getBody().getFixtureList().first());
         newFixtureDef.shape = shape;

@@ -14,10 +14,12 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class SettingScreen implements Screen {
     private final OrthographicCamera camera;
     private final ExtendViewport viewport;
+    private final Assets assets;
     GameApp game;
 
     private Stage settingsStage;
@@ -27,19 +29,17 @@ public class SettingScreen implements Screen {
     private final String ON = "on";
     private final String OFF = "off";
 
-    // ImageButtons
-    private ImageButton backButton;
-
     // TextButtons
     private TextButton musicButton;
     private TextButton soundButton;
+    private TextButton backButton;
 
     // Skins
-    private Skin imageButtonSkin;
     private Skin textButtonSkin;
 
     public SettingScreen(GameApp game) {
         this.game = game;
+        this.assets = game.getAssets();
         camera = new OrthographicCamera();
 
         viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
@@ -57,19 +57,15 @@ public class SettingScreen implements Screen {
         backButtonTable = new Table();
 
         // creation of the Skins
-        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
-                new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        imageButtonSkin = new Skin(Gdx.files.internal("backButton/backButton.json"),
-                new TextureAtlas(Gdx.files.internal("backButton/backButton.atlas")));
+        textButtonSkin = assets.getBig();
 
         // creation of TextButtons
         musicButton = new TextButton("MUSIC: " + Settings.getState("MUSIC"), textButtonSkin);
         musicButton.setDisabled(false);
         soundButton = new TextButton("SOUND: " + Settings.getState("SOUND"), textButtonSkin);
         musicButton.setDisabled(false);
-
-        // creation of ImageButtons
-        backButton = new ImageButton(imageButtonSkin);
+        backButton = new TextButton("BACK", textButtonSkin);
+        backButton.setDisabled(true);
 
         // adding items to settingTable and backButtonTable and them to settingsStage
         settingTable.add(musicButton).width(260F).height(120F);
@@ -162,9 +158,6 @@ public class SettingScreen implements Screen {
     @Override
     public void dispose() {
         settingsStage.dispose();
-
-        imageButtonSkin.dispose();
-        textButtonSkin.dispose();
 
     }
 }

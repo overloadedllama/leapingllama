@@ -64,10 +64,10 @@ public class LevelParser {
     public ArrayList<String> getActor(double distance){
 
         /*
-        *this method returns the name (strings) of the actors that are in proximity of the given distance.
-        *if those actor are complex, that is, they have also another information such as their length, the string returned
-        * is composed by the name of the actor minus that information.
-        *
+         * this method returns the name (strings) of the actors that are in proximity of the given distance.
+         * if those actor are complex, that is, they have also another information such as their length, the string returned
+         * is composed by the name of the actor minus that information.
+         *
          */
 
         ArrayList<String> strings = new ArrayList<>();
@@ -93,7 +93,7 @@ public class LevelParser {
             while (i.hasNext()){
                 double d = i.next()[0];
                 if (Math.abs(d-distance)<=0.1){
-                    strings.add(s+'-'+String.valueOf(i.next()[1]));
+                    strings.add(s + '-' + String.valueOf(i.next()[1]));
                     i.remove();
                 }
 

@@ -5,11 +5,13 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.screens.LoadScreen;
 
 public class GameApp extends Game {
 	public SpriteBatch batch;
 	public BitmapFont font;
+	private Assets assets;
 
 	public final static float WIDTH = 1280f;
 	public final static float HEIGHT = 720f;
@@ -19,6 +21,7 @@ public class GameApp extends Game {
 	public GameApp(Context context) {
 		this.context = context;
 		new Settings(context);
+		this.assets = new Assets();
 	}
 
 	@Override
@@ -41,8 +44,8 @@ public class GameApp extends Game {
 		font.dispose();
 	}
 
-	public Context getContext() {
-		return context;
-	}
+	public Context getContext() { return context; }
+
+	public Assets getAssets() { return assets; }
 }
 

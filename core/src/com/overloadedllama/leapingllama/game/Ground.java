@@ -1,23 +1,16 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
-import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class Ground extends GameObject{
 
-    public Ground(float x, float y, float h, World world, Batch batch) {
-        super(new Texture(Gdx.files.internal("ground.png")), x, y, h, world, batch);
-
-
-
-
-
-
+    public Ground(float x, float y, float h, World world, Batch batch, Assets assets) {
+        super(assets.getTexture("ground"), x, y, h, world, batch);
     }
 
     public void setMyW(float meter_width) {

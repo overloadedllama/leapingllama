@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class Platform extends GameObject{
     float v = 1;
@@ -17,8 +18,8 @@ public class Platform extends GameObject{
     int tileCount;
     TextureRegion textureRegion;
 
-    public Platform(float x, float y, float h, float lenght, World world, Batch batch) {
-        super(new Texture(Gdx.files.internal("platform.png")), x, y, h, world, batch);
+    public Platform(float x, float y, float h, float lenght, World world, Batch batch, Assets assets) {
+        super(assets.getTexture("platform"), x, y, h, world, batch);
 
         w0 = w;
         w = lenght;

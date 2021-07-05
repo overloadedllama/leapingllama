@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 import java.util.HashMap;
 
@@ -22,6 +23,7 @@ public class ButtonsStagePlay {
 
     Stage stage;
     ExtendViewport viewport;
+    Assets assets;
 
     // tables
     Table buttonsMovement;
@@ -61,8 +63,8 @@ public class ButtonsStagePlay {
 
     HashMap<String, Boolean> actions;
 
-    public ButtonsStagePlay() {
-
+    public ButtonsStagePlay(Assets assets) {
+        this.assets = assets;
 
         viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT);
         stage = new Stage(viewport);
@@ -76,28 +78,22 @@ public class ButtonsStagePlay {
         buttonPauseMenuTable = new Table();
 
         // creation of ImageButtons and their Skins
-        buttonJumpSkin = new Skin(Gdx.files.internal("ui/jumpButton.json"), new TextureAtlas(Gdx.files.internal("ui/jumpButton.atlas")));
+        buttonJumpSkin = assets.getJump();
+        buttonPauseSkin = assets.getPause();
+        buttonCrouchSkin = assets.getCrouch();
+        buttonShotSkin = assets.getShot();
+        buttonPunchSkin = assets.getFist();
+        buttonSkin = assets.getBig();
+
         buttonJump = new ImageButton(buttonJumpSkin);
-
-        buttonCrouchSkin = new Skin(Gdx.files.internal("ui/crouchButton.json"), new TextureAtlas(Gdx.files.internal("ui/crouchButton.atlas")));
         buttonCrouch = new ImageButton(buttonCrouchSkin);
-
-        buttonPunchSkin = new Skin(Gdx.files.internal("ui/fistButton.json"), new TextureAtlas(Gdx.files.internal("ui/fistButton.atlas")));
         buttonPunch = new ImageButton(buttonPunchSkin);
-
-        buttonShotSkin = new Skin(Gdx.files.internal("ui/shotButton.json"), new TextureAtlas(Gdx.files.internal("ui/shotButton.atlas")));
         buttonShot = new ImageButton(buttonShotSkin);
-
-        buttonPauseSkin = new Skin(Gdx.files.internal("ui/pauseButton.json"), new TextureAtlas(Gdx.files.internal("ui/pauseButton.atlas")));
         buttonPause = new ImageButton(buttonPauseSkin);
-
-        buttonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
         buttonPlay = new TextButton("RESUME", buttonSkin);
         buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
 
-        //scoreSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        //score = new TextField("0", scoreSkin);
-        //score.setAlignment(Align.center);
+
 
         buttonPauseMenuTable.add(buttonPlay);
         buttonPauseMenuTable.add(buttonSaveExit);
@@ -264,11 +260,7 @@ public class ButtonsStagePlay {
     }
 
     public void dispose() {
-        buttonCrouchSkin.dispose();
-        buttonPunchSkin.dispose();
-        buttonJumpSkin.dispose();
-        buttonShotSkin.dispose();
-        buttonPauseSkin.dispose();
+
     }
 
     public HashMap<String, Boolean> getActions() {

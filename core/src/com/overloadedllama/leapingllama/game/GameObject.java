@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
+import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class GameObject {
 
@@ -13,6 +14,7 @@ public class GameObject {
     Sprite sprite;
     Body body;
     World world;
+    Assets assets;
     Batch batch;
     FixtureDef fixtureDef;
     boolean destroyable;
