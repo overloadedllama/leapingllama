@@ -2,7 +2,6 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
@@ -10,6 +9,7 @@ public class Llama extends GameObject {
 
     boolean isStanding;
     boolean isJumping = false;
+    boolean isPunching = false;
 
     public Llama(float x, float y, float h, World world, Batch batch, Assets assets) {
         super(assets.getTexture("llamaStanding"), x, y, h, world, batch);
@@ -77,22 +77,21 @@ public class Llama extends GameObject {
 
     }
 
-    public void punch(Boolean isPunching) {
+    public void punch(Boolean punch) {
         PolygonShape shape = new PolygonShape();
         FixtureDef newFixtureDef = new FixtureDef();
         newFixtureDef.density = fixtureDef.density;
         newFixtureDef.friction = fixtureDef.friction;
         newFixtureDef.restitution = fixtureDef.restitution;
 
-
-        if (isPunching) {
+        if (punch) {
             shape.setAsBox(w / 2 + 0.1f, h / 2);
-
             sprite.set(new Sprite(assets.getTexture("llamaPunching")));
+            isPunching = true;
         } else {
-
             shape.setAsBox(w / 2, h / 2);
             sprite.set(new Sprite(assets.getTexture("llamaStanding")));
+            isPunching = false;
         }
 
         sprite.setSize(w, h);
@@ -111,9 +110,11 @@ public class Llama extends GameObject {
     public boolean isJumping() { return isJumping; }
     public void setJumping(boolean jumping) { isJumping = jumping; }
 
-
     public boolean isStanding() { return isStanding; }
     public void setStanding(boolean value) { isStanding = value; }
+
+    public boolean isPunching() { return isPunching; }
+    public void setPunching(boolean isPunching) { this.isPunching = isPunching; }
 
     public void preserveX(float llamaX) {
         body.setTransform(llamaX, body.getPosition().y, 0);

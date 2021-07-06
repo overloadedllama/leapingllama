@@ -63,10 +63,24 @@ public class MyContactListener implements ContactListener {
         return false;
     }
 
+    /**
+     * if there is any llama-enemy contact, check llama is punching, and in that
+     * case the enemy is destroyed, else game over
+     */
     private boolean isLlamaEnemyContact(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Enemy)
                 || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Llama)) {
-            parent.gameOver();
+
+            if (parent.getLlama().isPunching() &&
+                    parent.getLlama().getBody().getLinearVelocity().y > -0.001 &&
+                    parent.getLlama().getBody().getLinearVelocity().y < 0.001) {
+
+                if (a.getUserData() instanceof Enemy) { ((Enemy) a.getUserData()).setDestroyable(true); }
+                else { ((Enemy) b.getUserData()).setDestroyable(true); }
+            } else {
+                parent.gameOver();
+            }
+
             return true;
         }
         return false;

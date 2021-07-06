@@ -429,6 +429,10 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth()*2;
     }
 
+    public Llama getLlama() {
+        return llama;
+    }
+
     public void gameOver() {
         game.setScreen(new GameOverScreen(game, distance));
         dispose();
