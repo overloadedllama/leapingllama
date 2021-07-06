@@ -36,16 +36,8 @@ public class LoadScreen implements Screen {
     private Stage loadScreenStage;
     private Table loadScreenTable;
 
-    // TextButton
-    private TextButton launchButton;
-
-    // TextField
-    private TextField nameLabel;
-    private TextField nameText;
-
-    // Skins
-    private Skin textFieldSkin;
-    private Skin textButtonSkin;
+    private ProgressBar progressBar;
+    private Skin progressBarSkin;
 
 
     public LoadScreen(final GameApp game) {
@@ -73,48 +65,13 @@ public class LoadScreen implements Screen {
             }
         }));
 
+        progressBarSkin = new Skin(Gdx.files.internal("ui/progressBar.json"), new TextureAtlas("ui/progressBar.atlas"));
+        progressBar = new ProgressBar((float) 1, (float) 100, (float) 1, false, progressBarSkin);
 
-        // creation of Skins
-        textFieldSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        textButtonSkin = new Skin(Gdx.files.internal("ui/bigButton.json"), new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-
-        // creation of TextButton
-        launchButton = new TextButton("Go!", textButtonSkin);
-        launchButton.setDisabled(false);
-
-        // creation of TextFields
-        nameLabel = new TextField("Insert username! ", textFieldSkin);
-        nameLabel.setDisabled(true);
-        nameLabel.setAlignment(Align.center);
-        nameText = new TextField("test", textFieldSkin);
-        nameText.setDisabled(false);
-        nameText.setAlignment(Align.center);
-
-        // Adding items to loadTable
         loadScreenTable.top();
-        loadScreenTable.add(nameLabel).width(280F).height(100F).padRight(15F).padTop(15F);
-        loadScreenTable.add(nameText).width(280F).height(100F).padTop(15F);
-        loadScreenTable.add(launchButton).width(160F).height(100F).padLeft(15F).padTop(15F);
-
+        loadScreenTable.add(progressBar).height(120f).width(260f).padTop(30f);
         loadScreenStage.addActor(loadScreenTable);
 
-        Gdx.input.setInputProcessor(loadScreenStage);
-
-        clickListener = new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-
-                String user = nameText.getText();
-
-                if (!Settings.existsUser(user)) {
-                    Settings.insertNewUser(user);
-                }
-
-                Settings.setCurrentUser(user);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
-            }
-        };
 
     }
 
@@ -124,7 +81,10 @@ public class LoadScreen implements Screen {
 
         // only if there isn't any asset on loading queue yet the button works
         if (assets.update() && startLoading) {
-            launchButton.addListener(clickListener);
+            game.setScreen(new MainMenuScreen(game));
+        } else {
+            //System.out.println("PROGRESS BAR VALUE: " + assets.getProgress() * 100);
+            progressBar.setValue(assets.getProgress() * 100);
         }
 
         loadScreenStage.act();
@@ -166,6 +126,6 @@ public class LoadScreen implements Screen {
     @Override
     public void dispose() {
         logo.dispose();
-
+        progressBarSkin.dispose();
     }
 }

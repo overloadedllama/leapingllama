@@ -14,6 +14,7 @@ import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.contactlistener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
+import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,6 +135,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void render(float delta)     {
         ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
 
+        System.out.println("llama Vector2: " + llama.getBody().getLinearVelocity());
+
         game.batch.begin();
         game.batch.draw(sky,
                 // position and size of texture
@@ -156,22 +159,18 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         stageUi.drawer();
 
-
         actions = stageUi.getActions();
-        //System.out.println(actions);
 
         if (actions.get("shot")) {
             shot();
         }
 
         if (actions.get("jump")){
-            if (!llama.isJumping())
+            if (llama.getBody().getLinearVelocity().y == 0)
                 jump();
         }
 
-        if (actions.get("crouch")){
-            crouch();
-        }
+        crouch();
 
         if (actions.get("pause")){
             pause();
@@ -224,28 +223,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
-    private void updatePosition() {
-        llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
-
-        for (Enemy enemy : enemies) {
-            enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
-        }
-
-        //System.out.println("bullets array size: " + bullets.size());
-        for (Bullet bullet : bullets) {
-            bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
-            if (isOutOfBonds(bullet)) {
-                bullet.setDestroyable(true);
-            }
-        }
-
-        for (Platform platform : platforms){
-            platform.setPosition(platform.getBody().getPosition().x, platform.getBody().getPosition().y, platform.getBody().getAngle());
-            if (isOutOfBonds(platform)) {
-                platform.setDestroyable(true);
-            }
-        }
-    }
 
     private void loadLevel(double distance) {
         ArrayList<String> strings = levelParser.getActor(distance);
@@ -319,18 +296,28 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
     private void crouch() {
-        if (llama.isStanding()) {
+        if (actions.get("crouch")) {
             // crouches
-            llama.crouch(true);
+            if (llama.isStanding())
+                llama.crouch(true);
 
             llama.setStanding(false);
-        } else {
+            actions.put("crouch", true);
+        } else if (!actions.get("crouch")) {
             // stands up
-            llama.crouch(false);
+            if (!llama.isStanding())
+                llama.crouch(false);
 
             llama.setStanding(true);
+            actions.put("crouch", false);
         }
-        actions.put("crouch", false);
+    }
+
+    private void jump(){
+        if (!llama.isJumping()) {
+            llama.jump();
+        }
+        actions.put("jump", false);
     }
 
     private void punch() {
@@ -354,13 +341,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         dispose();
         game.setScreen(new MainMenuScreen(game));
 
-    }
-
-    private void jump(){
-        if (!llama.isJumping()) {
-            llama.jump();
-        }
-        actions.put("jump", false);
     }
 
 
@@ -413,6 +393,30 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             distance += .03f;
             //System.out.println(distance);
+        }
+    }
+
+
+    private void updatePosition() {
+        llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
+
+        for (Enemy enemy : enemies) {
+            enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
+        }
+
+        //System.out.println("bullets array size: " + bullets.size());
+        for (Bullet bullet : bullets) {
+            bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
+            if (isOutOfBonds(bullet)) {
+                bullet.setDestroyable(true);
+            }
+        }
+
+        for (Platform platform : platforms){
+            platform.setPosition(platform.getBody().getPosition().x, platform.getBody().getPosition().y, platform.getBody().getAngle());
+            if (isOutOfBonds(platform)) {
+                platform.setDestroyable(true);
+            }
         }
     }
 

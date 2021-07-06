@@ -1,14 +1,13 @@
-package com.overloadedllama.leapingllama.screens;
+package com.overloadedllama.leapingllama.stages;
 
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.assetman.Assets;
@@ -78,12 +77,12 @@ public class ButtonsStagePlay {
         buttonPauseMenuTable = new Table();
 
         // creation of ImageButtons and their Skins
-        buttonJumpSkin = assets.getJump();
-        buttonPauseSkin = assets.getPause();
-        buttonCrouchSkin = assets.getCrouch();
-        buttonShotSkin = assets.getShot();
-        buttonPunchSkin = assets.getFist();
-        buttonSkin = assets.getBig();
+        buttonJumpSkin = assets.getSkin("jump");
+        buttonPauseSkin = assets.getSkin("pause");
+        buttonCrouchSkin = assets.getSkin("crouch");
+        buttonShotSkin = assets.getSkin("shot");
+        buttonPunchSkin = assets.getSkin("punch");
+        buttonSkin = assets.getSkin("bigButton");
 
         buttonJump = new ImageButton(buttonJumpSkin);
         buttonCrouch = new ImageButton(buttonCrouchSkin);
@@ -164,8 +163,8 @@ public class ButtonsStagePlay {
 
     public void setUpButtonAction() {
         for (String s : actions.keySet()){
-            //actions.remove(s);
-            actions.put(s, false);
+            if (!s.equals("crouch"))
+                actions.put(s, false);
         }
 
 
@@ -173,7 +172,6 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //actions.remove("pause");
                 actions.put("pause", true);
 
                 fadeoutBackground = new Image(new Texture(Gdx.files.internal("quiteBlack.png")));
@@ -181,14 +179,11 @@ public class ButtonsStagePlay {
                 fadeoutBackground.setBounds(0,0, viewport.getScreenWidth(), tableHeight);
                 stage.addActor(fadeoutBackground);
 
-
-
                 buttonPlay.setPosition(tableWidth/2 - buttonPlay.getWidth()/2, tableHeight/2 - buttonPlay.getHeight()+20);
                 stage.addActor(buttonPlay);
 
                 buttonSaveExit.setPosition(tableWidth/2 - buttonPlay.getWidth()/2, tableHeight/2 - buttonPlay.getHeight()*2);
                 stage.addActor(buttonSaveExit);
-
 
             }
         });
@@ -198,7 +193,6 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                // actions.remove("jump");
                 actions.put("play", true);
 
                 fadeoutBackground.remove();
@@ -217,13 +211,11 @@ public class ButtonsStagePlay {
             }
         });
 
-
-        buttonJump.addListener(new ClickListener() {
+        buttonShot.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.put("jump", true);
-
+                actions.put("shot", true);
             }
         });
 
@@ -232,31 +224,36 @@ public class ButtonsStagePlay {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 actions.put("punch", true);
-
             }
         });
 
-
-        buttonCrouch.addListener(new ClickListener() {
+        buttonCrouch.addListener(new ActorGestureListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchDown(event, x, y, pointer, button);
                 actions.put("crouch", true);
             }
-        });
 
-
-        buttonShot.addListener(new ClickListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                actions.put("shot", true);
-
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                actions.put("crouch", false);
             }
         });
 
+        buttonJump.addListener(new ActorGestureListener() {
+            @Override
+            public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchDown(event, x, y, pointer, button);
+                actions.put("jump", true);
+            }
 
-
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                actions.put("jump", false);
+            }
+        });
     }
 
     public void dispose() {

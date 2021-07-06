@@ -72,16 +72,15 @@ public class MyContactListener implements ContactListener {
         return false;
     }
 
+    // at the moment this is is useless
     private boolean isLlamaGroundPlatformContact(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ground)
                 || (a.getUserData() instanceof Ground && b.getUserData() instanceof Llama)) {
-            parent.getLlama().setJumping(false);
             return true;
         }
 
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Platform)
                 || (a.getUserData() instanceof Platform && b.getUserData() instanceof Llama)) {
-            parent.getLlama().setJumping(false);
             return true;
         }
 

@@ -12,6 +12,9 @@ public class Assets {
         this.manager = new AssetManager();
     }
 
+    /**
+     * loads every asset needed, except for loadScreen's assets
+     */
     public void loadAllAssets() {
         // adds all the skins to the loading queue
         SkinLoader.SkinParameter bigButton = new SkinLoader.SkinParameter("ui/bigButton.atlas");
@@ -22,7 +25,7 @@ public class Assets {
         SkinLoader.SkinParameter pauseButton = new SkinLoader.SkinParameter("ui/pauseButton.atlas");
         SkinLoader.SkinParameter coin = new SkinLoader.SkinParameter("ui/coin.atlas");
 
-        // loads all the skins
+        // loading skins
         manager.load("ui/bigButton.json", Skin.class, bigButton);
         manager.load("ui/coin.json", Skin.class, coin);
         manager.load("ui/crouchButton.json", Skin.class, crouchButton);
@@ -43,25 +46,20 @@ public class Assets {
         manager.load("world/platform.png", Texture.class);
         manager.load("screen_backgrounds/game_over.png", Texture.class);
 
-        manager.finishLoading();
-    }
-
-    public void unloadBigLittleButtons() {
-        manager.unload("ui/bigButton.json");
-        manager.unload("ui/littleButton.json");
     }
 
     // switch case here
-    public Skin getBig() { return manager.get("ui/bigButton.json"); }
-    public Skin getCoin() { return manager.get("ui/coin.json"); }
-    public Skin getCrouch() { return manager.get("ui/crouchButton.json"); }
-    public Skin getFist() { return manager.get("ui/fistButton.json"); }
-    public Skin getJump() { return manager.get("ui/jumpButton.json"); }
-    public Skin getShot() { return manager.get("ui/shotButton.json"); }
-    public Skin getPause() { return manager.get("ui/pauseButton.json"); }
-
-    public boolean update() {
-        return manager.update();
+    public Skin getSkin(String skin) {
+        switch (skin) {
+            case "bigButton":  return manager.get("ui/bigButton.json");
+            case "coin":  return manager.get("ui/coin.json");
+            case "crouch":  return manager.get("ui/crouchButton.json");
+            case "punch":  return manager.get("ui/fistButton.json");
+            case "jump":  return manager.get("ui/jumpButton.json");
+            case "shot": return manager.get("ui/shotButton.json");
+            case "pause":  return manager.get("ui/pauseButton.json");
+        }
+        return null;
     }
 
     public Texture getTexture(String texture) {
@@ -78,5 +76,9 @@ public class Assets {
         }
         return null;
     }
+
+    public boolean update() { return manager.update(); }
+
+    public float getProgress() { return manager.getProgress(); }
 
 }

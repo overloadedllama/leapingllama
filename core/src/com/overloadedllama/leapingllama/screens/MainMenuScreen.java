@@ -77,10 +77,9 @@ public class MainMenuScreen implements Screen {
         moneyTable = new Table();
 
         // creation of Skins
-        textButtonSkin = assets.getBig();
-        textFieldSkin = assets.getBig();
-        moneyButtonSkin = assets.getCoin();
-
+        textButtonSkin = assets.getSkin("bigButton");
+        textFieldSkin = assets.getSkin("bigButton");
+        moneyButtonSkin = assets.getSkin("coin");
 
         // creation of TextButtons
         playButton = new TextButton("PLAY", textButtonSkin);
