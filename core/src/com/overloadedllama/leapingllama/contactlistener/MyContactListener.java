@@ -1,6 +1,7 @@
 package com.overloadedllama.leapingllama.contactlistener;
 
 import com.badlogic.gdx.physics.box2d.*;
+import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 
@@ -75,8 +76,13 @@ public class MyContactListener implements ContactListener {
                     parent.getLlama().getBody().getLinearVelocity().y > -0.001 &&
                     parent.getLlama().getBody().getLinearVelocity().y < 0.001) {
 
-                if (a.getUserData() instanceof Enemy) { ((Enemy) a.getUserData()).setDestroyable(true); }
-                else { ((Enemy) b.getUserData()).setDestroyable(true); }
+                if (a.getUserData() instanceof Enemy) {
+                    ((Enemy) a.getUserData()).setDestroyable(true);
+                    Settings.playSound("punch");
+                } else {
+                    ((Enemy) b.getUserData()).setDestroyable(true);
+                    Settings.playSound("punch");
+                }
             } else {
                 parent.gameOver();
             }

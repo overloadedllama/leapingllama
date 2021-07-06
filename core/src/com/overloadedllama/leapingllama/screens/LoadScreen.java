@@ -85,6 +85,7 @@ public class LoadScreen implements Screen {
 
         // only if there isn't any asset on loading queue yet the button works
         if (assets.update() && startLoading) {
+            Settings.setSoundsMusics();
             game.setScreen(new MainMenuScreen(game));
         } else {
             //System.out.println("PROGRESS BAR VALUE: " + assets.getProgress() * 100);

@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.contactlistener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
@@ -332,6 +333,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     private void shot() {
         bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
+        Settings.playSound("shot");
         actions.put("shot", false);
     }
 

@@ -2,6 +2,9 @@ package com.overloadedllama.leapingllama;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
+import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 
 /**
@@ -12,7 +15,10 @@ import com.overloadedllama.leapingllama.database.LlamaDbHandler;
  *
  * Maybe method should refer to currentUser only
  */
-public class Settings {
+public final class Settings {
+    @SuppressLint("StaticFieldLeak")
+    private static LlamaDbHandler llamaDbHandler;
+    private static Assets assets;
 
     private static final String TEST_USER = "test";
     private static String currentUser = TEST_USER;
@@ -23,19 +29,29 @@ public class Settings {
     private static final String OFF = "off";
 
     // if MUSIC/SOUND/GORE == true, then it is set ON, else OFF
-    private static boolean MUSIC = true;
     private static boolean SOUND = true;
+    private static float SOUND_VOLUME = 1;
+
+    private static boolean MUSIC = true;
+    private static float MUSIC_VOLUME = 1;
+
     private static boolean GORE = true;
 
     // if true is set for dx-players, else for sx-players
     private static boolean LX_DX;
 
-    @SuppressLint("StaticFieldLeak")
-    private static LlamaDbHandler llamaDbHandler;
+    // Sounds
+    private static Sound punch;
+    private static Sound shot;
+    private static Sound fall;
+
+
 
     // METHODS
-    public Settings(Context context) {
+    public Settings(Context context, Assets assets) {
         llamaDbHandler = new LlamaDbHandler(context);
+        Settings.assets = assets;
+
     }
 
     public static String getCurrentUser() { return currentUser; }
@@ -116,4 +132,28 @@ public class Settings {
         return false;
     }
 
+
+    // SOUNDS
+
+    // get sounds from Assets on creation
+    public static void setSoundsMusics() {
+        punch = assets.getSound("punch");
+        shot = assets.getSound("shot");
+        fall = assets.getSound("fall");
+    }
+
+    public static void playSound(final String sound) {
+
+        if (!SOUND)
+            return;
+
+        switch (sound) {
+            case "punch": punch.play(SOUND_VOLUME); break;
+            case "shot": shot.play(SOUND_VOLUME); break;
+            case "fall": fall.play(SOUND_VOLUME); break;
+        }
+
+    }
 }
+
+

@@ -2,10 +2,16 @@ package com.overloadedllama.leapingllama.assetman;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Assets are loaded here in Assets through LibGdx class AssetManager
+ * Once loaded, they are actually accessed by getAsset() methods (such as getSkin(), getSound()...)
+ *
+ * Sounds are managed only in Settings class using playSound()
+ */
 public class Assets {
     private final AssetManager manager;
 
@@ -49,10 +55,13 @@ public class Assets {
         manager.load("screen_backgrounds/quiteBlack.png", Texture.class);
         manager.load("llama/llamaWalking.png", Texture.class);
 
+        // loading sounds
+        manager.load("sounds/punch.wav", Sound.class);
+        manager.load("sounds/gun1.mp3", Sound.class);
+        manager.load("sounds/fall1.mp3", Sound.class);
 
     }
 
-    // switch case here
     public Skin getSkin(String skin) {
         switch (skin) {
             case "bigButton":  return manager.get("ui/bigButton.json");
@@ -85,7 +94,14 @@ public class Assets {
         return null;
     }
 
-
+    public Sound getSound(String sound) {
+        switch (sound) {
+            case "punch": return manager.get("sounds/punch.wav");
+            case "shot": return manager.get("sounds/gun1.mp3");
+            case "fall": return manager.get("sounds/fall1.mp3");
+        }
+        return null;
+    }
 
     public boolean update() { return manager.update(); }
 
