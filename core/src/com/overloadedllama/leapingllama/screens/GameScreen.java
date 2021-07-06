@@ -91,7 +91,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         this.assets = game.getAssets();
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
-
+        System.out.println(METER_WIDTH);
         viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
