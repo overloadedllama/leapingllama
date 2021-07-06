@@ -7,42 +7,47 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
+
 public class Ground extends GameObject{
 
-    public Ground(float x, float y, float h, World world, Batch batch, Assets assets) {
+    TextureRegion textureRegion;
+
+    public Ground(float x, float y, float h,  float length, float v, World world, Batch batch, Assets assets) {
         super(assets.getTexture("ground"), x, y, h, world, batch);
-    }
 
-    public void setMyW(float meter_width) {
-        w = meter_width;
+        w=length;
 
-        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
-        TextureRegion imgTextureRegion = new TextureRegion(texture);
-        imgTextureRegion.setRegion(0,0, w, h);
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
 
 
-        sprite = new Sprite(imgTextureRegion);
+        textureRegion = new TextureRegion(texture, 0,0, w , h*2 );
+
+        sprite = new Sprite(textureRegion);
         sprite.setSize(w, h);
 
 
+        PolygonShape shape = new PolygonShape();
 
-        PolygonShape groundShape = new PolygonShape();
-        groundShape.setAsBox(w, h); //dunno why h instead of h/2, but it works ;)
+        shape.setAsBox(w / 2, h / 2);
 
-        super.createBody(BodyDef.BodyType.StaticBody, groundShape, 20, 0.5f, 0);
+        createBody(BodyDef.BodyType.KinematicBody, shape, 1, 0.01f, 0);
 
-        groundShape.dispose();
+        shape.dispose();
+
+        body.setLinearVelocity(-v, 0f);
 
     }
 
     @Override
     public void draw(){
-        batch.draw(texture,
+       /* batch.draw(texture,
                 // position and size of texture
                 -1, 0, w +2, h,
                 // srcX, srcY, srcWidth, srcHeight
                 (int) x, (int)y, texture.getWidth(), texture.getHeight(),
                 // flipX, flipY
-                true, false);
+                true, false);*/
+        batch.draw(textureRegion, x-w/2, y-h/2, w, h);
+
     }
 }

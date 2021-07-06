@@ -56,10 +56,10 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     HashMap<String, Boolean> actions;
 
     Llama llama;
-    Ground ground;
     static ArrayList<Enemy> enemies;
     static ArrayList<Bullet> bullets;
     static ArrayList<Platform> platforms;
+    static ArrayList<Ground> grounds;
 
     Box2DDebugRenderer debugRenderer;
 
@@ -83,6 +83,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     double distance = 0;
 
     float llamaX = 3;
+    float velocity = 2;
+
 
     public GameScreen(final GameApp game, int levelNumber) {
         this.game = game;
@@ -116,8 +118,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         world.setContactListener(new MyContactListener(this));
 
         llama = new Llama(llamaX, 1, 2, world, game.batch, assets);
-        ground = new Ground( -1, 0, 0.6f, world, game.batch, assets);
-        ground.setMyW(METER_WIDTH);
+
 
         stageUi = new ButtonsStagePlay(game.getAssets());
         stageUi.setUpButtonAction();
@@ -130,7 +131,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
-
+        grounds = new ArrayList<>();
         Settings.playMusic("gameMusic");
 
     }
@@ -139,6 +140,29 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void render(float delta)     {
         ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
 
+        switch(state) {
+
+            case RUN:
+
+
+                stepWorld();
+
+
+
+                if (timePunching != 0) {
+                    if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
+                        llama.punch(false);
+                    }
+                }
+
+                updatePosition();
+                removeObjects();
+                loadLevel(distance);
+                llama.preserveX(llamaX);
+
+                break;
+
+        }
         //System.out.println("llama Vector2: " + llama.getBody().getLinearVelocity());
 
         game.batch.begin();
@@ -152,7 +176,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
         llama.draw(stateTime);
-        ground.draw();
+        for (Ground ground : grounds)
+            ground.draw();
         for (Bullet bullet : bullets)
             bullet.draw();
         for (Enemy enemy : enemies)
@@ -200,30 +225,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         stageUi.setActions(actions);
         debugRenderer.render(world, camera.combined);
 
-        switch(state) {
 
-            case RUN:
-
-
-                stepWorld();
-
-
-                xSky += 1;
-
-                if (timePunching != 0) {
-                    if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
-                        llama.punch(false);
-                    }
-                }
-
-                updatePosition();
-                removeObjects();
-                loadLevel(distance);
-                llama.preserveX(llamaX);
-
-                break;
-
-        }
 
         camera.update();
         game.batch.setProjectionMatrix(camera.combined);
@@ -269,14 +271,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             if (sa[0] != "" && sa[0].equals("platforms")){
                 float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH+l/2, 2, 0.2f, l, world, game.batch, assets));
+                platforms.add(new Platform(METER_WIDTH+l/2, 1.8f, 0.4f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
 
             if (sa[0] != "" && sa[0].equals("grounds")){
                 float l =  Float.parseFloat( sa[1] );
-               // platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
+                grounds.add(new Ground( -1, 0, 0.6f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
@@ -290,7 +292,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             if (sa[0] != "" && sa[0].equals("platformsII")){
                 float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH+l/2, 3.5f, 0.2f, l, world, game.batch, assets));
+                platforms.add(new Platform(METER_WIDTH+l/2, 3.5f, 0.4f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
@@ -362,8 +364,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
-            distance += .03f;
+            distance += .05f;
             stateTime += delta;
+            xSky += 0.1;
 
             //System.out.println(distance);
         }
@@ -389,6 +392,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             if (isOutOfBonds(platform)) {
                 platform.setDestroyable(true);
             }
+        }
+
+        for(Ground ground : grounds){
+            ground.setPosition(ground.getBody().getPosition().x, ground.getBody().getPosition().y, ground.getBody().getAngle());
+
         }
     }
 

@@ -2,7 +2,7 @@
   "levels": {
     "1": {
       "enemies":[1.2, 5.3],
-      "grounds": [],
+      "grounds": [[0,25],[27,100]],
       "platforms": [[5, 2], [20, 7]],
       "platformsII": [[7, 13]],
       "obstacles": [],

@@ -16,6 +16,7 @@ public class Llama extends GameObject {
     boolean isStanding;
     boolean isJumping = false;
     boolean isPunching = false;
+    boolean isCrouching = false;
 
     Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
     Texture walkSheet;
@@ -70,7 +71,7 @@ public class Llama extends GameObject {
         newFixtureDef.density = fixtureDef.density;
         newFixtureDef.friction = fixtureDef.friction;
         newFixtureDef.restitution = fixtureDef.restitution;
-
+        this.isCrouching = isCrouching;
         if (isCrouching) {
             // then crouches
             h /= 2;
@@ -148,15 +149,24 @@ public class Llama extends GameObject {
     }
 
     public void draw(float stateTime){
-        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
 
 
-        sprite = new Sprite(currentFrame);
+       if (isPunching || isCrouching ){
 
-        sprite.setSize(w, h);
-        sprite.setPosition(x -w/2, y-h/2);
+           draw();
+       }else {
 
-        sprite.draw(batch);
+
+           TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
+
+           sprite = new Sprite(currentFrame);
+
+           sprite.setSize(w, h);
+           sprite.setPosition(x - w / 2, y - h / 2);
+
+           sprite.draw(batch);
+       }
     }
 
 }

@@ -11,13 +11,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class Platform extends GameObject{
-    float v = 1;
     float w0;
 
     int tileCount;
     TextureRegion textureRegion;
 
-    public Platform(float x, float y, float h, float length, World world, Batch batch, Assets assets) {
+    public Platform(float x, float y, float h, float length, float v, World world, Batch batch, Assets assets) {
         super(assets.getTexture("platform"), x, y, h, world, batch);
 
         w0 = w;
@@ -25,10 +24,10 @@ public class Platform extends GameObject{
         tileCount = (int) (w0/w);
 
 
-        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
+        texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
 
 
-        textureRegion = new TextureRegion(texture, 0,0, w0 * 16, h * 16);
+        textureRegion = new TextureRegion(texture, 0,0, w , h*2 );
 
 
 
