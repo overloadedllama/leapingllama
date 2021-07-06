@@ -165,6 +165,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             shot();
         }
 
+        System.out.println("llama ...y: " + llama.getBody().getLinearVelocity());
         if (actions.get("jump")){
             if (llama.getBody().getLinearVelocity().y == 0)
                 jump();
@@ -314,9 +315,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     private void jump(){
-        if (!llama.isJumping()) {
-            llama.jump();
-        }
+        llama.jump();
+
         actions.put("jump", false);
     }
 
