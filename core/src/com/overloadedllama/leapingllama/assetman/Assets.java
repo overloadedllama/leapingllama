@@ -3,6 +3,7 @@ package com.overloadedllama.leapingllama.assetman;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets {
@@ -46,6 +47,8 @@ public class Assets {
         manager.load("world/platform.png", Texture.class);
         manager.load("screen_backgrounds/game_over.png", Texture.class);
         manager.load("screen_backgrounds/quiteBlack.png", Texture.class);
+        manager.load("llama/llamaWalking.png", Texture.class);
+
 
     }
 
@@ -76,9 +79,13 @@ public class Assets {
             case "platform": return manager.get("world/platform.png");
             case "game_over": return manager.get("screen_backgrounds/game_over.png");
             case "quiteBlack": return manager.get("screen_backgrounds/quiteBlack.png");
+            case "llamaWalking": return manager.get("llama/llamaWalking.png");
+
         }
         return null;
     }
+
+
 
     public boolean update() { return manager.update(); }
 

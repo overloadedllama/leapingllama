@@ -77,6 +77,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     LevelParser levelParser;
 
     float accumulator = 0;
+    float stateTime = 0;
 
     double distance = 0;
 
@@ -146,7 +147,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
                 // flipX, flipY
                 false, false);
 
-        llama.draw();
+
+        llama.draw(stateTime);
         ground.draw();
         for (Bullet bullet : bullets)
             bullet.draw();
@@ -356,6 +358,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
             distance += .03f;
+            stateTime += delta;
+
             //System.out.println(distance);
         }
     }

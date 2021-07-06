@@ -1,15 +1,26 @@
 package com.overloadedllama.leapingllama.game;
 
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.TextureData;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class Llama extends GameObject {
 
+    private static final int FRAME_COLS = 4, FRAME_ROWS = 1;
+
+
     boolean isStanding;
     boolean isJumping = false;
     boolean isPunching = false;
+
+    Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
+    Texture walkSheet;
 
     public Llama(float x, float y, float h, World world, Batch batch, Assets assets) {
         super(assets.getTexture("llamaStanding"), x, y, h, world, batch);
@@ -30,6 +41,24 @@ public class Llama extends GameObject {
         body.setFixedRotation(true);
         isStanding = true;
         this.assets = assets;
+
+        walkSheet = assets.getTexture("llamaWalking");
+
+        TextureRegion[][] tmp = TextureRegion.split(walkSheet,
+                walkSheet.getWidth() / FRAME_COLS,
+                walkSheet.getHeight() / FRAME_ROWS);
+
+        TextureRegion[] walkFrames = new TextureRegion[FRAME_COLS * FRAME_ROWS];
+
+        int index = 0;
+        for (int i = 0; i < FRAME_ROWS; i++) {
+            for (int j = 0; j < FRAME_COLS; j++) {
+                walkFrames[index++] = tmp[i][j];
+            }
+        }
+
+        walkAnimation = new Animation<TextureRegion>(0.16f, walkFrames);
+
     }
 
     public void jump() {
@@ -119,4 +148,17 @@ public class Llama extends GameObject {
     public void preserveX(float llamaX) {
         body.setTransform(llamaX, body.getPosition().y, 0);
     }
+
+    public void draw(float stateTime){
+        TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+
+
+        sprite = new Sprite(currentFrame);
+
+        sprite.setSize(w, h);
+        sprite.setPosition(x -w/2, y-h/2);
+
+        sprite.draw(batch);
+    }
+
 }
