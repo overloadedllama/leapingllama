@@ -2,7 +2,7 @@ package com.overloadedllama.leapingllama;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
@@ -45,6 +45,9 @@ public final class Settings {
     private static Sound shot;
     private static Sound fall;
 
+    // Music
+    private static Music gameMusic;
+
 
 
     // METHODS
@@ -55,23 +58,18 @@ public final class Settings {
     }
 
     public static String getCurrentUser() { return currentUser; }
-
     public static void setCurrentUser(String user) { currentUser = user; }
 
     public static boolean isMUSIC() { return MUSIC; }
-
     public static void setMUSIC(boolean MUSIC) { Settings.MUSIC = MUSIC; }
 
     public static boolean isSOUND() { return SOUND; }
-
     public static void setSOUND(boolean SOUND) { Settings.SOUND = SOUND; }
 
     public static boolean isLxDx() { return LX_DX; }
-
     public static void setLxDx(boolean lxDx) { LX_DX = lxDx; }
 
     public static boolean isGORE() { return GORE; }
-
     public static void setGORE(boolean GORE) { Settings.GORE = GORE; }
 
     // this method converts boolean values returned by above methods into String values
@@ -140,9 +138,11 @@ public final class Settings {
         punch = assets.getSound("punch");
         shot = assets.getSound("shot");
         fall = assets.getSound("fall");
+
+        gameMusic = assets.getMusic("music");
     }
 
-    public static void playSound(final String sound) {
+    public static void playSound(String sound) {
 
         if (!SOUND)
             return;
@@ -154,6 +154,22 @@ public final class Settings {
         }
 
     }
+
+    public static void playMusic(String music) {
+        if (!MUSIC)
+            return;
+
+        switch (music) {
+            case "gameMusic": gameMusic.setLooping(true); gameMusic.play(); break;
+        }
+    }
+
+    public static void stopMusic(String music) {
+        switch (music) {
+            case "gameMusic": gameMusic.stop();
+        }
+    }
+
 }
 
 

@@ -2,6 +2,7 @@ package com.overloadedllama.leapingllama.assetman;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -57,8 +58,11 @@ public class Assets {
 
         // loading sounds
         manager.load("sounds/punch.wav", Sound.class);
-        manager.load("sounds/gun1.mp3", Sound.class);
-        manager.load("sounds/fall1.mp3", Sound.class);
+        manager.load("sounds/laser.wav", Sound.class);
+        //manager.load("sounds/fall1.mp3", Sound.class);
+
+        // loading musics
+        manager.load("musics/music.wav", Music.class);
 
     }
 
@@ -97,8 +101,15 @@ public class Assets {
     public Sound getSound(String sound) {
         switch (sound) {
             case "punch": return manager.get("sounds/punch.wav");
-            case "shot": return manager.get("sounds/gun1.mp3");
-            case "fall": return manager.get("sounds/fall1.mp3");
+            case "shot": return manager.get("sounds/laser.wav");
+            //case "fall": return manager.get("sounds/fall1.mp3");
+        }
+        return null;
+    }
+
+    public Music getMusic(String music) {
+        switch (music) {
+            case "music": return manager.get("musics/music.wav");
         }
         return null;
     }
@@ -106,5 +117,7 @@ public class Assets {
     public boolean update() { return manager.update(); }
 
     public float getProgress() { return manager.getProgress(); }
+
+    public void disposeAll() { manager.dispose(); }
 
 }

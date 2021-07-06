@@ -131,6 +131,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
 
+        Settings.playMusic("gameMusic");
+
     }
 
     @Override
@@ -343,6 +345,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         actions.put("exit", false);
 
+        Settings.stopMusic("gameMusic");
         dispose();
         game.setScreen(new MainMenuScreen(game));
 
