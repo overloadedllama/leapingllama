@@ -1,17 +1,14 @@
 package com.overloadedllama.leapingllama.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -57,11 +54,19 @@ public class LoadScreen implements Screen {
 
         loadScreenStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         loadScreenTable = new Table();
+
+        // loading assets and user's data/settings on background
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
                 assets.loadAllAssets();
                 startLoading = true;
+            }
+        }));
+        loadScreenStage.addAction(Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                Settings.getUserBestScore();
             }
         }));
 
@@ -71,7 +76,6 @@ public class LoadScreen implements Screen {
         loadScreenTable.top();
         loadScreenTable.add(progressBar).height(120f).width(260f).padTop(30f);
         loadScreenStage.addActor(loadScreenTable);
-
 
     }
 

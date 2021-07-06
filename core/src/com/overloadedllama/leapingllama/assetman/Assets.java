@@ -45,6 +45,7 @@ public class Assets {
         manager.load("world/ground.png", Texture.class);
         manager.load("world/platform.png", Texture.class);
         manager.load("screen_backgrounds/game_over.png", Texture.class);
+        manager.load("screen_backgrounds/quiteBlack.png", Texture.class);
 
     }
 
@@ -73,6 +74,8 @@ public class Assets {
             case "sky": return manager.get("world/sky.png");
             case "ground": return manager.get("world/ground.png");
             case "platform": return manager.get("world/platform.png");
+            case "game_over": return manager.get("screen_backgrounds/game_over.png");
+            case "quiteBlack": return manager.get("screen_backgrounds/quiteBlack.png");
         }
         return null;
     }

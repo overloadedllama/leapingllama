@@ -25,9 +25,14 @@ public class LlamaDbHelper extends SQLiteOpenHelper {
         db.execSQL(LlamaDbContracts.SQL_SETTINGS_CREATE);
     }
 
+    /**
+     * NOT final version, deletes ALL the tables entries on upgrade...
+     * @param db the game db
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(LlamaDbContracts.SQL_PLAYER_DROP);
+        db.execSQL(LlamaDbContracts.SQL_SETTINGS_DROP);
         onCreate(db);
     }
 

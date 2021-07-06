@@ -2,7 +2,6 @@ package com.overloadedllama.leapingllama.stages;
 
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -174,7 +173,7 @@ public class ButtonsStagePlay {
                 super.clicked(event, x, y);
                 actions.put("pause", true);
 
-                fadeoutBackground = new Image(new Texture(Gdx.files.internal("quiteBlack.png")));
+                fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
 
                 fadeoutBackground.setBounds(0,0, viewport.getScreenWidth(), tableHeight);
                 stage.addActor(fadeoutBackground);

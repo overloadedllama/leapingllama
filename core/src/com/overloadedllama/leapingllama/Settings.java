@@ -17,6 +17,8 @@ public class Settings {
     private static final String TEST_USER = "test";
     private static String currentUser = TEST_USER;
 
+    private static double userBestScore = -1;
+
     private static final String ON = "on";
     private static final String OFF = "off";
 
@@ -83,12 +85,35 @@ public class Settings {
         llamaDbHandler.insertNewUser(user);
     }
 
-    public static int getUserMoney(String user) {
-        return llamaDbHandler.getUserMoney(user);
+
+    // NEXT METHODS REFER ONLY TO CURRENT USER
+
+    public static int getUserMoney() {
+        return llamaDbHandler.getUserMoney(currentUser);
     }
 
-    public static int getUserBestScore(String user) {
-        return llamaDbHandler.getUserBestScore(user);
+    /**
+     * if userBestScore has not been loaded yet it is called the relative method before return
+     * @return the current user best score
+     */
+    public static double getUserBestScore() {
+        if (userBestScore == -1) {
+            userBestScore = llamaDbHandler.getUserBestScore(currentUser);
+        }
+        return userBestScore;
+    }
+
+    /**
+     * call the llamaDbHandler method to check and eventually set the new current user best score
+     * @param lastScore the last current user score (as distance reached)
+     * @return true if lastScore if higher than the bestScore, else false
+     */
+    public static boolean checkSetNewUserBestScore(double lastScore) {
+        if (llamaDbHandler.checkSetNewUserBestScore(currentUser, lastScore)) {
+            userBestScore = lastScore;
+            return true;
+        }
+        return false;
     }
 
 }

@@ -8,9 +8,9 @@ import java.util.Set;
 /**
  * Table Player:
  *      user VARCHAR(20) PK,
- *      score INT DEFAULT 0,
- *      money INT DEFAULT 0,
- *      level INT DEFAULT 0
+ *      score REAL NOT NULL DEFAULT 0,
+ *      money INT NOT NULL DEFAULT 0,
+ *      level INT NOT NULL DEFAULT 0
  *
  * Table Settings:
  *      user VARCHAR(20) PK REFERENCES Player
@@ -60,13 +60,14 @@ public class LlamaDbContracts {
     public static final String SQL_PLAYER_CREATE =
             "CREATE TABLE " + Player.TABLE_NAME + " (" +
                     Player.PRIMARY_KEY + " VARCHAR(20) PRIMARY KEY, " +
-                    Player.SCORE_COLUMN + " INT NOT NULL DEFAULT 0, " +
+                    Player.SCORE_COLUMN + " REAL NOT NULL DEFAULT 0, " +
                     Player.MONEY_COLUMN + " INT NOT NULL DEFAULT 0, " +
                     Player.LEVEL_COLUMN + " INT NOT NULL DEFAULT 0)";
 
 
     public static final String SQL_PLAYER_DROP =
             "DROP TABLE IF EXISTS " + Player.TABLE_NAME;
+
 
     /**
      * Strings referred to Settings Table

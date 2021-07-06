@@ -6,8 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
+
 
 /**
  * some ideas: inserting data/time of user's best score,
@@ -129,10 +128,10 @@ public class LlamaDbHandler {
     }
 
     // check and set (eventually) the new user's best score
-    public void checkSetNewUserBestScore(String user, int score) {
+    public boolean checkSetNewUserBestScore(String user, double score) {
         int BestScore = getUserBestScore(user);
 
-        if (BestScore < score) {
+        if (score > BestScore) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             ContentValues newBest = new ContentValues();
@@ -148,8 +147,10 @@ public class LlamaDbHandler {
             if (count != 1) {
                 throw new SQLException();
             }
-
+            return true;
         }
+
+        return false;
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
+import android.annotation.SuppressLint;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -86,7 +87,7 @@ public class MainMenuScreen implements Screen {
         shopButton = new TextButton("SHOP", textButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonSkin);
         creditsButton = new TextButton("CREDIT", textButtonSkin);
-        String userMoney = "" + Settings.getUserMoney(Settings.getCurrentUser());
+        String userMoney = "" + Settings.getUserMoney();
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
 
         //labels
@@ -98,7 +99,8 @@ public class MainMenuScreen implements Screen {
         user.setAlignment(Align.center);
 
        //Label
-        bestScore = new Label("BEST SCORE: " + Settings.getUserBestScore(Settings.getCurrentUser()) , textFieldSkin);
+        @SuppressLint("DefaultLocale") String bestScoreText = String.format("%.1f", Settings.getUserBestScore());
+        bestScore = new Label("BEST SCORE: " + bestScoreText, textFieldSkin);
         bestScore.setAlignment(Align.center);
         bestScore.setColor(255, 251, 209, 255); //NOT WORKING
 

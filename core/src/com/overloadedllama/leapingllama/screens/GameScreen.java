@@ -135,7 +135,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     public void render(float delta)     {
         ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
 
-        System.out.println("llama Vector2: " + llama.getBody().getLinearVelocity());
+        //System.out.println("llama Vector2: " + llama.getBody().getLinearVelocity());
 
         game.batch.begin();
         game.batch.draw(sky,
@@ -343,43 +343,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     }
 
-
-
-    @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-
-        stageUi.resizer();
-    }
-
-    @Override
-    public void pause() {
-
-        state = State.PAUSE;
-
-        actions.remove("pause");
-        actions.put("pause", false);
-    }
-
-    @Override
-    public void resume() {
-        state = State.RUN;
-
-        actions.remove("play");
-        actions.put("play", false);
-    }
-
-    @Override
-    public void hide() {
-       pause();
-    }
-
-    @Override
-    public void dispose() {
-        stageUi.dispose();
-
-    }
-
     private void stepWorld() {
         float delta = Gdx.graphics.getDeltaTime();
 
@@ -395,7 +358,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             //System.out.println(distance);
         }
     }
-
 
     private void updatePosition() {
         llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
@@ -467,12 +429,42 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     public void gameOver() {
-        // game.setScreen(new GameOverScreen(game));
-        // dispose();
-        System.out.println("GAME OVER");
+        game.setScreen(new GameOverScreen(game, distance));
+        dispose();
     }
 
-    public Llama getLlama() {
-        return llama;
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height);
+
+        stageUi.resizer();
+    }
+
+    @Override
+    public void pause() {
+
+        state = State.PAUSE;
+
+        actions.remove("pause");
+        actions.put("pause", false);
+    }
+
+    @Override
+    public void resume() {
+        state = State.RUN;
+
+        actions.remove("play");
+        actions.put("play", false);
+    }
+
+    @Override
+    public void hide() {
+        pause();
+    }
+
+    @Override
+    public void dispose() {
+        stageUi.dispose();
+
     }
 }
