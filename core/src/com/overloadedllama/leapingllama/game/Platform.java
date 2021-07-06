@@ -12,24 +12,23 @@ import com.overloadedllama.leapingllama.assetman.Assets;
 
 public class Platform extends GameObject{
     float v = 1;
-    float lenght;
     float w0;
 
     int tileCount;
     TextureRegion textureRegion;
 
-    public Platform(float x, float y, float h, float lenght, World world, Batch batch, Assets assets) {
+    public Platform(float x, float y, float h, float length, World world, Batch batch, Assets assets) {
         super(assets.getTexture("platform"), x, y, h, world, batch);
 
         w0 = w;
-        w = lenght;
+        w = length;
         tileCount = (int) (w0/w);
 
 
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);
 
 
-        textureRegion = new TextureRegion(texture, 0,0, (int)w0/120, (int)h/120);
+        textureRegion = new TextureRegion(texture, 0,0, w0 * 16, h * 16);
 
 
 
