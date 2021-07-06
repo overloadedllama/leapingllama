@@ -82,7 +82,7 @@ public class LevelParser {
 
             while (i.hasNext()){
                 Double d = i.next();
-                if (Math.abs(d-distance)<=0.1){
+                if (d<=distance+0.1){
                     strings.add(s);
                     i.remove();
                 }
@@ -96,7 +96,7 @@ public class LevelParser {
 
             while (i.hasNext()){
                 ArrayList<Double> d = i.next();
-                if (Math.abs(d.get(0)-distance)<=0.1){
+                if (d.get(0)<=distance+0.1){
 
                     strings.add(s+'-'+String.valueOf(d.get(1)));
                     i.remove();

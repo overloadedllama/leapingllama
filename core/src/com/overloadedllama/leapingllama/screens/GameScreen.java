@@ -234,7 +234,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
     private void loadLevel(double distance) {
-        ArrayList<String> strings = levelParser.getActor(distance);
+        ArrayList<String> strings = levelParser.getActor(distance+METER_WIDTH-llamaX);
         System.out.println(strings);
         Iterator<String> i = strings.iterator();
 
@@ -245,7 +245,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             //Simply Actor
             if (s.equals("enemies")){
-                enemies.add(new Enemy(METER_WIDTH, 2,  1.2f, world, game.batch, assets));
+                enemies.add(new Enemy(METER_WIDTH, 2,  1f, world, game.batch, assets));
                 i.remove();
             }
 
@@ -271,14 +271,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             if (sa[0] != "" && sa[0].equals("platforms")){
                 float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH+l/2, 1.8f, 0.4f, l, velocity, world, game.batch, assets));
+                platforms.add(new Platform(METER_WIDTH, 1.8f, 0.4f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
 
             if (sa[0] != "" && sa[0].equals("grounds")){
                 float l =  Float.parseFloat( sa[1] );
-                grounds.add(new Ground( -1, 0, 0.6f, l, velocity, world, game.batch, assets));
+                grounds.add(new Ground( METER_WIDTH, 0, 0.6f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
@@ -292,7 +292,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
             if (sa[0] != "" && sa[0].equals("platformsII")){
                 float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH+l/2, 3.5f, 0.4f, l, velocity, world, game.batch, assets));
+                platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
