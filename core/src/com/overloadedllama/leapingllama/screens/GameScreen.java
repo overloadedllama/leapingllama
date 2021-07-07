@@ -83,7 +83,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     float accumulator = 0;
     float stateTime = 0;
 
-    double distance = 0;
+    double distance;
 
     float llamaX = 3;
     float velocity = 2;
@@ -113,7 +113,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         actions = new HashMap<>();
 
-        levelParser = new LevelParser(1);
+        levelParser = new LevelParser(0);
     }
 
 
@@ -124,7 +124,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         world.setContactListener(new MyContactListener(this));
 
         llama = new Llama(llamaX, 1, 2, world, game.batch, assets);
-
+        distance = llamaX;
 
         stageUi = new ButtonsStagePlay(game.getAssets());
         stageUi.setUpButtonAction();
@@ -138,6 +138,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
         grounds = new ArrayList<>();
+        // add this for debug
+        grounds.add(new Ground(0, 0, 0.6f, 10, velocity, world, game.batch, assets));
+
         Settings.playMusic("gameMusic");
 
     }
@@ -267,11 +270,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             switch (queueObject.getClassObject()) {
                 case "enemies": enemies.add(new Enemy(METER_WIDTH, 2, 1f, world, game.batch, assets)); break;
                 case "grounds": grounds.add(new Ground(METER_WIDTH, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platforms": platforms.add(new Platform(METER_WIDTH, 2.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformsII": platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformI": platforms.add(new Platform(METER_WIDTH, 2.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformII": platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
             }
         }
     }
+
 
 
 
@@ -425,9 +429,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     public void gameOver() {
+        /*
         game.setScreen(new GameOverScreen(game, distance));
         Settings.stopMusic("gameMusic");
         dispose();
+        */
     }
 
     @Override

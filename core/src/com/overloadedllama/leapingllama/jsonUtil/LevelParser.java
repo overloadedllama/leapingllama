@@ -7,18 +7,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import java.util.*;
 
 
-/**
- * QUEUE
- *
- * gets all the arrays from game.json or wherever they are,
- * now i try with simple double arrays, where even position = x-coordinate, odd position = object length for Ground and Platforms,
- * while odd position = number of items for Money and Munitions
- * Once arrays are built starts Queue filling
- *
- * In the end the queue is completed, and through getQueue() method it is passed to GameScreen
- */
-
 public class LevelParser {
+    int levelNumber;
 
     PriorityQueue<QueueObject> queue;
     ArrayList<Double> enemies;
@@ -33,24 +23,39 @@ public class LevelParser {
     ArrayList<Double> munitions;
     ArrayList<Double> munitionsNum;
 
-
-    int levelNumber;
-
+    public final String ENEMIES = "enemies";
+    public final String MONEY = "money";
+    public final String MUNITIONS = "munitions";
+    public final String PLATFORM1 = "platformI";
+    public final String PLATFORM2 = "platformII";
+    public final String GROUND = "grounds";
     String[] actorStrings = {
             "enemies",
             "money",
             "munitions",
-            "platforms",
-            "platformsII",
+            "platformI",
+            "platformII",
             "grounds" };
 
+    public final String MONEY_NUM = "moneyNum";
+    public final String MUNITIONS_NUM = "munitionsNum";
+    public final String PLATFORM1_LEN = "platformILength";
+    public final String PLATFORM2_LEN = "platformIILength";
+    public final String GROUND_LEN = "groundsLength";
     String[] actorSupportStrings = {
             "moneyNum",
             "munitionsNum",
-            "platformsLength",
-            "platformsIILength",
+            "platformILength",
+            "platformIILength",
             "groundsLength"  };
 
+
+    /**
+     * First create the arrays from json file game.json, divided into actor and supports, which contains info for relative actor
+     * Then, if is not detected any issue, all the elements generate a new QueueObject which is added to the PriorityQueue
+     *
+     * @param levelNumber the level
+     */
     public LevelParser(int levelNumber) {
         this.levelNumber = levelNumber;
 
@@ -72,55 +77,65 @@ public class LevelParser {
 
         // get the actors arrays from json file
         for (String actorString : actorStrings) {
-            double[] doublesArray = root.get("levels").get(String.valueOf(levelNumber)).get(actorString).asDoubleArray();
-            for (double d : doublesArray) {
-                switch (actorString) {
-                    case "grounds":
-                        grounds.add(d);
-                        break;
-                    case "enemies":
-                        enemies.add(d);
-                        break;
-                    case "platforms":
-                        platforms.add(d);
-                        break;
-                    case "platformsII":
-                        platformsII.add(d);
-                        break;
-                    case "munitions":
-                        munitions.add(d);
-                        break;
-                    case "money":
-                        money.add(d);
-                        break;
+            try {
+                double[] doublesArray = root.get("levels").get(String.valueOf(levelNumber)).get(actorString).asDoubleArray();
+
+                for (double d : doublesArray) {
+                    switch (actorString) {
+                        case GROUND:
+                            grounds.add(d);
+                            break;
+                        case ENEMIES:
+                            enemies.add(d);
+                            break;
+                        case PLATFORM1:
+                            platforms.add(d);
+                            break;
+                        case PLATFORM2:
+                            platformsII.add(d);
+                            break;
+                        case MUNITIONS:
+                            munitions.add(d);
+                            break;
+                        case MONEY:
+                            money.add(d);
+                            break;
+                    }
                 }
+            } catch (java.lang.NullPointerException e) {
+                System.out.println("String '" + actorString + "' doesn't match in json file.");
             }
         }
 
         for (String actorSupportString : actorSupportStrings) {
-            double[] doublesArray = root.get("levels").get(String.valueOf(levelNumber)).get(actorSupportString).asDoubleArray();
-            for (double d : doublesArray) {
-                switch (actorSupportString) {
-                    case "groundsLength":
-                        groundsLen.add(d);
-                        break;
-                    case "platformsLength":
-                        platformsLen.add(d);
-                        break;
-                    case "platformsIILength":
-                        platformsIILen.add(d);
-                        break;
-                    case "munitionsNum":
-                        munitionsNum.add(d);
-                        break;
-                    case "moneyNum":
-                        moneyNum.add(d);
-                        break;
+            try {
+                double[] doublesArray = root.get("levels").get(String.valueOf(levelNumber)).get(actorSupportString).asDoubleArray();
+                for (double d : doublesArray) {
+                    switch (actorSupportString) {
+                        case GROUND_LEN:
+                            groundsLen.add(d);
+                            break;
+                        case PLATFORM1_LEN:
+                            platformsLen.add(d);
+                            break;
+                        case PLATFORM2_LEN:
+                            platformsIILen.add(d);
+                            break;
+                        case MUNITIONS_NUM:
+                            munitionsNum.add(d);
+                            break;
+                        case MONEY_NUM:
+                            moneyNum.add(d);
+                            break;
+                    }
                 }
+            } catch (java.lang.NullPointerException e) {
+                System.out.println("String '" + actorSupportString + "' doesn't match in json file.");
             }
         }
 
-        if (  moneyNum.size() != money.size() ||
+
+        if (    moneyNum.size() != money.size() ||
                 munitionsNum.size() != munitions.size() ||
                 grounds.size() != groundsLen.size() ||
                 platformsIILen.size() != platformsII.size() ||
@@ -128,10 +143,6 @@ public class LevelParser {
             throw new IllegalArgumentException();
         }
 
-        // for each actor, gets the relative array and check is not null,
-        // if its element must be considered as "single value", such as enemies which
-        // since now, has just x-coordinate, length and numItem are set -1,
-        // else it check how to go on with checking if this actor has length or not
         for (String actorString : actorStrings) {
             ArrayList<Double> array = getActorArray(actorString);
 
@@ -161,17 +172,17 @@ public class LevelParser {
 
     private ArrayList<Double> getActorArray(String actorString) {
         switch (actorString) {
-            case "enemies":
+            case ENEMIES:
                 return enemies;
-            case "grounds":
+            case GROUND:
                 return grounds;
-            case "money":
+            case MONEY:
                 return money;
-            case "munitions":
+            case MUNITIONS:
                 return munitions;
-            case "platforms":
+            case PLATFORM1:
                 return platforms;
-            case "platformsII":
+            case PLATFORM2:
                 return platformsII;
         }
         return null;
@@ -179,22 +190,22 @@ public class LevelParser {
 
     private ArrayList<Double> getSupportArray(String actorString) {
         switch (actorString) {
-            case "grounds":
+            case GROUND:
                 return groundsLen;
-            case "money":
+            case MONEY:
                 return moneyNum;
-            case "munitions":
+            case MUNITIONS:
                 return munitionsNum;
-            case "platforms":
+            case PLATFORM1:
                 return platformsLen;
-            case "platformsII":
+            case PLATFORM2:
                 return platformsIILen;
         }
         return null;
     }
 
     private boolean hasLength(String actorString) {
-        return actorString.equals("grounds") || actorString.equals("platforms") || actorString.equals("platformsII");
+        return actorString.equals("grounds") || actorString.equals("platformI") || actorString.equals("platformII");
     }
 
     private boolean isBasicArray(String actorString) {
