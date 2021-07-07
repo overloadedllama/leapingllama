@@ -1,0 +1,55 @@
+
+backButton.png
+size: 512, 512
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+back
+  rotate: false
+  xy: 1, 122
+  size: 40, 40
+  orig: 40, 40
+  offset: 0, 0
+  index: -1
+buttonLittleNormal
+  rotate: false
+  xy: 1, 164
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+buttonLittlePressed
+  rotate: false
+  xy: 138, 301
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+pixeled
+  rotate: false
+  xy: 1, 406
+  size: 506, 99
+  orig: 506, 99
+  offset: 0, 0
+  index: -1
+pixeled
+  rotate: false
+  xy: 1, 406
+  size: 506, 99
+  orig: 506, 99
+  offset: 0, 0
+  index: -1
+pixeledSmall
+  rotate: false
+  xy: 1, 383
+  size: 505, 21
+  orig: 505, 21
+  offset: 0, 0
+  index: -1
+up
+  rotate: false
+  xy: 1, 246
+  size: 135, 135
+  orig: 135, 135
+  offset: 0, 0
+  index: -1

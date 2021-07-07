@@ -65,13 +65,13 @@ public class ShopScreen implements Screen {
         shopTable = new Table();
 
         // creation of backButton
-        backButtonSkin = new Skin(Gdx.files.internal("backButton/backButton.json"),
-                new TextureAtlas(Gdx.files.internal("backButton/backButton.atlas")));
+        backButtonSkin = new Skin(Gdx.files.internal("ui/backButton.json"),
+                new TextureAtlas(Gdx.files.internal("ui/backButton.atlas")));
         backButton = new ImageButton(backButtonSkin);
 
         // creation of userMoney
-        userMoneySkin = new Skin(Gdx.files.internal("text_field/text_field.json"),
-                new TextureAtlas(Gdx.files.internal("text_field/text_field.atlas")));
+        userMoneySkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
+                new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
         userMoneyText = new TextField("money: " + userMoney, userMoneySkin);
 
         shopTable.top().left();
