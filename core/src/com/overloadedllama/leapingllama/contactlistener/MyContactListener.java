@@ -104,14 +104,23 @@ public class MyContactListener implements ContactListener {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Platform)
                 || (a.getUserData() instanceof Platform && b.getUserData() instanceof Llama)) {
 
+            Platform p;
+            Llama l;
+            if (a.getUserData() instanceof  Llama) {
+                l = ((Llama) a.getUserData());
+                p = ((Platform) b.getUserData());
+            } else {
+                l = ((Llama) b.getUserData());
+                p = ((Platform) a.getUserData());
+            }
+
+
             WorldManifold worldManifold = contact.getWorldManifold();
-            for (Vector2 p : worldManifold.getPoints()) {
-                if (a.getUserData() instanceof Llama && p.y > ((Llama) a.getUserData()).getY()) {
-                    System.out.println("BODY CONTACT LLAMA-PLATFORM");
+            for (Vector2 vector2 : worldManifold.getPoints()) {
+                //System.out.println("CONTACT LLAMA-PLATFORM: llama.X = " + l.getX() + " - platform.X = " + p.getX() + " - platform.X+W = " + (p.getX() + p.getW()));
+
+                if (vector2.y > l.getY() && !(l.getX() > p.getX() && l.getX() < p.getX() + p.getW())) {
                     parent.gameOver();
-                } else if (b.getUserData() instanceof Llama && p.y > ((Llama) a.getUserData()).getY()) {
-                    parent.gameOver();
-                    System.out.println("BODY CONTACT LLAMA-PLATFORM");
                 }
             }
 

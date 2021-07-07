@@ -15,11 +15,14 @@ import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.contactlistener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
+import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
+import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.PriorityQueue;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
@@ -38,7 +41,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         STOPPED
     }
 
-
+    PriorityQueue<QueueObject> queue;
+    LevelParser levelParser;
     private State state = State.RUN;
 
 
@@ -75,7 +79,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     long timeLastEnemies;
     long timePunching;
 
-    LevelParser levelParser;
 
     float accumulator = 0;
     float stateTime = 0;
@@ -240,75 +243,39 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
 
+    /**
+     *
+     * @param distance the distance which llama reached now
+     */
     private void loadLevel(double distance) {
-        ArrayList<String> strings = levelParser.getActor(distance+METER_WIDTH-llamaX);
-        //System.out.println(strings);
-        Iterator<String> i = strings.iterator();
 
-        while(i.hasNext()){
-            String s = i.next();
-            //System.out.println(s);
+        queue = levelParser.getQueue();
 
 
-            //Simply Actor
-            if (s.equals("enemies")){
-                enemies.add(new Enemy(METER_WIDTH, 2,  1f, world, game.batch, assets));
-                i.remove();
+        QueueObject queueObject = queue.peek();
+        if (queueObject == null)
+            return;
+
+//        if (queueObject.getX() < distance + METER_WIDTH * 2) {
+        if (queueObject.getX() < distance) {
+            System.out.println("llama.X: " + llama.getX() + " - Distance: " + distance + " - " + queueObject);
+            queueObject = queue.poll();
+            if (queueObject == null)
+                return;
+
+            // this should not throws NullPointerException, thanks to above peek()
+            switch (queueObject.getClassObject()) {
+                case "enemies": enemies.add(new Enemy(METER_WIDTH, 2, 1f, world, game.batch, assets)); break;
+                case "grounds": grounds.add(new Ground(METER_WIDTH, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platforms": platforms.add(new Platform(METER_WIDTH, 2.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformsII": platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
             }
-
-            if (s.equals("money")){
-                //money constructor
-                //i.remove();
-            }
-
-            if (s.equals("obstacles")){
-                //obstacle constructor
-              // i.remove();
-            }
-
-
-
-
-
-
-            //Complex Actor
-            String [] sa = s.split("-");
-
-
-
-            if (!sa[0].equals("") && sa[0].equals("platforms")){
-                float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH, 1.8f, 0.4f, l, velocity, world, game.batch, assets));
-                i.remove();
-
-            }
-
-            if (!sa[0].equals("") && sa[0].equals("grounds")){
-                float l =  Float.parseFloat( sa[1] );
-                grounds.add(new Ground( METER_WIDTH, 0, 0.6f, l, velocity, world, game.batch, assets));
-                i.remove();
-
-            }
-
-            if (!sa[0].equals("") && sa[0].equals("bullets")){
-                float l =  Float.parseFloat( sa[1] );
-                //platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
-               // i.remove();
-
-            }
-
-            if (!sa[0].equals("") && sa[0].equals("platformsII")){
-                float l =  Float.parseFloat( sa[1] );
-                platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, l, velocity, world, game.batch, assets));
-                i.remove();
-
-            }
-
-
-
         }
-
     }
+
+
+
+
 
 
     private void crouch() {

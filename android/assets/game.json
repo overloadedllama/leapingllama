@@ -2,12 +2,17 @@
   "levels": {
     "1": {
       "enemies":[12, 15],
-      "grounds": [[0,25],[30,100]],
-      "platforms": [[10, 2], [25, 7]],
-      "platformsII": [[12, 13]],
+      "grounds": [0, 30],
+      "groundsLength": [25, 100],
+      "platforms": [25],
+      "platformsLength": [7],
+      "platformsII": [12],
+      "platformsIILength": [13],
       "obstacles": [],
       "money": [],
-      "bullets": []
+      "moneyNum": [],
+      "munitions": [],
+      "munitionsNum": []
     }
   }
 }
