@@ -23,9 +23,7 @@ public class LoadScreen implements Screen {
     ExtendViewport viewport;
 
     private Assets assets;
-    private ClickListener clickListener;
     private boolean startLoading = false;
-
 
     private Texture logo;
 
@@ -66,6 +64,9 @@ public class LoadScreen implements Screen {
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
+                if (!Settings.existsUser(Settings.TEST_USER)) {
+                    Settings.insertNewUser(Settings.TEST_USER);
+                }
                 Settings.getUserBestScore();
             }
         }));

@@ -85,13 +85,16 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     float llamaX = 3;
     float velocity = 2;
 
+    int money = 0;
+    int bulletsGun = 10;
+
 
     public GameScreen(final GameApp game, int levelNumber) {
         this.game = game;
         this.assets = game.getAssets();
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
-        System.out.println(METER_WIDTH);
+        //System.out.println(METER_WIDTH);
         viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
@@ -192,7 +195,11 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         actions = stageUi.getActions();
 
         if (actions.get("shot")) {
-            shot();
+            if (bulletsGun > 0) {
+                shot();
+                --bulletsGun;
+                stageUi.setBullets(bulletsGun);
+            }
         }
 
         //System.out.println("llama ...y: " + llama.getBody().getLinearVelocity());
@@ -235,12 +242,12 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     private void loadLevel(double distance) {
         ArrayList<String> strings = levelParser.getActor(distance+METER_WIDTH-llamaX);
-        System.out.println(strings);
+        //System.out.println(strings);
         Iterator<String> i = strings.iterator();
 
         while(i.hasNext()){
             String s = i.next();
-            System.out.println(s);
+            //System.out.println(s);
 
 
             //Simply Actor
@@ -269,28 +276,28 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
 
 
-            if (sa[0] != "" && sa[0].equals("platforms")){
+            if (!sa[0].equals("") && sa[0].equals("platforms")){
                 float l =  Float.parseFloat( sa[1] );
                 platforms.add(new Platform(METER_WIDTH, 1.8f, 0.4f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
 
-            if (sa[0] != "" && sa[0].equals("grounds")){
+            if (!sa[0].equals("") && sa[0].equals("grounds")){
                 float l =  Float.parseFloat( sa[1] );
                 grounds.add(new Ground( METER_WIDTH, 0, 0.6f, l, velocity, world, game.batch, assets));
                 i.remove();
 
             }
 
-            if (sa[0] != "" && sa[0].equals("bullets")){
+            if (!sa[0].equals("") && sa[0].equals("bullets")){
                 float l =  Float.parseFloat( sa[1] );
                 //platforms.add(new Platform(METER_WIDTH+l/2, 1, 0.2f, l, world, game.batch, assets));
                // i.remove();
 
             }
 
-            if (sa[0] != "" && sa[0].equals("platformsII")){
+            if (!sa[0].equals("") && sa[0].equals("platformsII")){
                 float l =  Float.parseFloat( sa[1] );
                 platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, l, velocity, world, game.batch, assets));
                 i.remove();
@@ -452,6 +459,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     public void gameOver() {
         game.setScreen(new GameOverScreen(game, distance));
+        Settings.stopMusic("gameMusic");
         dispose();
     }
 

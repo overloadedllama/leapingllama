@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.contactlistener;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.game.*;
@@ -27,7 +28,7 @@ public class MyContactListener implements ContactListener {
             //System.out.println("COLLISION BULLET-ENEMY DETECTED!");
         } else if (isLlamaEnemyContact(fa, fb)) {
             //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
-        } else if (isLlamaGroundPlatformContact(fa, fb)) {
+        } else if (isLlamaGroundPlatformContact(fa, fb, contact)) {
             //System.out.println("COLLISION LLAMA-GROUND DETECTED!");
         }
 
@@ -93,14 +94,28 @@ public class MyContactListener implements ContactListener {
     }
 
     // at the moment this is is useless
-    private boolean isLlamaGroundPlatformContact(Fixture a, Fixture b) {
+    private boolean isLlamaGroundPlatformContact(Fixture a, Fixture b, Contact contact) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ground)
                 || (a.getUserData() instanceof Ground && b.getUserData() instanceof Llama)) {
             return true;
         }
 
+        // if is a contact llama-platform where the llama hits it with head, llama dies
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Platform)
                 || (a.getUserData() instanceof Platform && b.getUserData() instanceof Llama)) {
+
+            WorldManifold worldManifold = contact.getWorldManifold();
+            for (Vector2 p : worldManifold.getPoints()) {
+                if (a.getUserData() instanceof Llama && p.y > ((Llama) a.getUserData()).getY()) {
+                    System.out.println("BODY CONTACT LLAMA-PLATFORM");
+                    parent.gameOver();
+                } else if (b.getUserData() instanceof Llama && p.y > ((Llama) a.getUserData()).getY()) {
+                    parent.gameOver();
+                    System.out.println("BODY CONTACT LLAMA-PLATFORM");
+                }
+            }
+
+
             return true;
         }
 

@@ -20,7 +20,7 @@ public final class Settings {
     private static LlamaDbHandler llamaDbHandler;
     private static Assets assets;
 
-    private static final String TEST_USER = "test";
+    public static final String TEST_USER = "test";
     private static String currentUser = TEST_USER;
 
     private static double userBestScore = -1;
@@ -38,7 +38,7 @@ public final class Settings {
     private static boolean GORE = true;
 
     // if true is set for dx-players, else for sx-players
-    private static boolean LX_DX;
+    private static boolean LX_DX = true;
 
     // Sounds
     private static Sound punch;

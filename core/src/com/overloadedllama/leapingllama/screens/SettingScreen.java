@@ -31,6 +31,7 @@ public class SettingScreen implements Screen {
     // TextButtons
     private TextButton musicButton;
     private TextButton soundButton;
+    private TextButton lxDxButton;
     private TextButton backButton;
 
     // Skins
@@ -63,16 +64,21 @@ public class SettingScreen implements Screen {
         musicButton.setDisabled(false);
         soundButton = new TextButton("SOUND: " + Settings.getState("SOUND"), textButtonSkin);
         musicButton.setDisabled(false);
+        lxDxButton = new TextButton("GAME BUTTONS: LX-DX", textButtonSkin);
+        lxDxButton.setDisabled(false);
         backButton = new TextButton("BACK", textButtonSkin);
         backButton.setDisabled(true);
 
         // adding items to settingTable and backButtonTable and them to settingsStage
-        settingTable.add(musicButton).width(260F).height(120F);
+        float w = 300f, h = 120f;
+        settingTable.add(musicButton).width(w).height(h);
         settingTable.row();
-        settingTable.add(soundButton).width(260F).height(120F).padTop(10F);
+        settingTable.add(soundButton).width(w).height(h).padTop(10f);
+        settingTable.row();
+        settingTable.add(lxDxButton).width(w).height(h).pad(10f);
 
         backButtonTable.top().left();
-        backButtonTable.add(backButton).width(120F).height(80);
+        backButtonTable.add(backButton).width(w).height(80f);
 
         settingsStage.addActor(settingTable);
         settingsStage.addActor(backButtonTable);
@@ -111,6 +117,20 @@ public class SettingScreen implements Screen {
                 }
             }
         });
+
+        lxDxButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (Settings.isLxDx()) {
+                    Settings.setLxDx(false);
+                    lxDxButton.setText("GAME BUTTONS: DX-LX");
+                } else {
+                    Settings.setLxDx(true);
+                    lxDxButton.setText("GAME BUTTONS: LX-DX");
+                }
+            }
+        });
+
     }
 
     @Override

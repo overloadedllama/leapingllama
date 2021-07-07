@@ -7,8 +7,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
 import java.util.HashMap;
@@ -23,10 +25,13 @@ public class ButtonsStagePlay {
     ExtendViewport viewport;
     Assets assets;
 
+    Image fadeoutBackground;
+
     // tables
     Table buttonsMovement;
     Table buttonsAction;
     Table buttonPauseTable;
+    Table labelsTable;
     Table buttonPauseMenuTable;
 
     // ImageButtons
@@ -40,8 +45,10 @@ public class ButtonsStagePlay {
     TextButton buttonPlay;
     TextButton buttonSaveExit;
 
-    // TextField
-   // TextField score;
+    // Labels
+    Label labelDistance;
+    Label labelMoney;
+    Label labelBullets;
 
     // Skins
     Skin buttonJumpSkin;
@@ -50,16 +57,13 @@ public class ButtonsStagePlay {
     Skin buttonShotSkin;
     Skin buttonCrouchSkin;
     Skin buttonSkin;
-   // Skin scoreSkin;
 
     //Distance
-    Label labelDistance;
     double distance = 0;
     String distanceText;
 
-
-
     HashMap<String, Boolean> actions;
+
 
     public ButtonsStagePlay(Assets assets) {
         this.assets = assets;
@@ -74,8 +78,9 @@ public class ButtonsStagePlay {
         buttonsAction = new Table();
         buttonPauseTable = new Table();
         buttonPauseMenuTable = new Table();
+        labelsTable = new Table();
 
-        // creation of ImageButtons and their Skins
+        // skins from Assets
         buttonJumpSkin = assets.getSkin("jump");
         buttonPauseSkin = assets.getSkin("pause");
         buttonCrouchSkin = assets.getSkin("crouch");
@@ -83,33 +88,46 @@ public class ButtonsStagePlay {
         buttonPunchSkin = assets.getSkin("punch");
         buttonSkin = assets.getSkin("bigButton");
 
+        // creation of ImageButtons,
         buttonJump = new ImageButton(buttonJumpSkin);
         buttonCrouch = new ImageButton(buttonCrouchSkin);
         buttonPunch = new ImageButton(buttonPunchSkin);
         buttonShot = new ImageButton(buttonShotSkin);
         buttonPause = new ImageButton(buttonPauseSkin);
+
+        // TextButtons,
         buttonPlay = new TextButton("RESUME", buttonSkin);
         buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
 
-
+        // Labels
+        labelDistance = new Label("", buttonSkin);
+        labelMoney = new Label("0", buttonSkin);
+        labelBullets = new Label("10", buttonSkin);
+        labelBullets.setAlignment(Align.center);
+        labelMoney.setAlignment(Align.center);
+        labelDistance.setAlignment(Align.center);
 
         buttonPauseMenuTable.add(buttonPlay);
         buttonPauseMenuTable.add(buttonSaveExit);
 
-        labelDistance = new Label("", buttonSkin);
         setDistance(0);
 
         float pad = 10f;
 
         buttonPauseTable.top().left();
-        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad).padTop(pad);
-       // buttonPauseTable.add(score).padTop(pad).padLeft(GameApp.WIDTH / 2);
+        buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad);
 
-        buttonsMovement.bottom().left();
+        if (Settings.isLxDx()) {
+            buttonsMovement.bottom().left();
+            buttonsAction.bottom().right();
+        } else {
+            buttonsMovement.bottom().right();
+            buttonsAction.bottom().left();
+        }
+
         buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
         buttonsMovement.add(buttonCrouch).width(buttonSize).height(buttonSize).padBottom(pad).padLeft(pad);
 
-        buttonsAction.bottom().right();
         buttonsAction.add(buttonShot).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
         buttonsAction.add(buttonPunch).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
 
@@ -118,12 +136,16 @@ public class ButtonsStagePlay {
         buttonPauseMenuTable.row();
         buttonPauseMenuTable.add(buttonSaveExit);
 
-        labelDistance.setPosition(tableWidth - 50f, tableHeight - 50f);
-        stage.addActor(labelDistance);
+        float labelW = 140f, labelH = 80f;
+        labelsTable.top().right();
+        labelsTable.add(labelBullets).width(labelW).height(labelH).padRight(pad);
+        labelsTable.add(labelMoney).width(labelW).height(labelH).padRight(pad);
+        labelsTable.add(labelDistance).width(labelW).height(labelH).padRight(pad);
 
         stage.addActor(buttonPauseTable);
         stage.addActor(buttonsMovement);
         stage.addActor(buttonsAction);
+        stage.addActor(labelsTable);
 
         Gdx.input.setInputProcessor(stage);
 
@@ -136,9 +158,6 @@ public class ButtonsStagePlay {
         actions.put("pause", false);
         actions.put("play", false);
         actions.put("exit", false);
-
-
-
 
     }
 
@@ -156,9 +175,11 @@ public class ButtonsStagePlay {
 
         buttonsMovement.invalidateHierarchy();
         buttonsMovement.setSize(tableWidth, tableHeight);
+
+        labelsTable.invalidateHierarchy();
+        labelsTable.setSize(tableWidth, tableHeight);
     }
 
-    Image fadeoutBackground;
 
     public void setUpButtonAction() {
         for (String s : actions.keySet()){
@@ -266,6 +287,15 @@ public class ButtonsStagePlay {
     public void setActions(HashMap<String, Boolean> actions) {
         this.actions = actions;
     }
+
+    public void setBullets(int n) {
+        labelBullets.setText("" + n);
+    }
+
+    public void setMoney(int n) {
+        labelMoney.setText("" + n);
+    }
+
 
     @SuppressLint("DefaultLocale")
     public void setDistance(double distance) {
