@@ -6,6 +6,7 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
+import com.overloadedllama.leapingllama.game.TestConstant;
 
 /**
  * We can convert Settings into an Interface, more readable?
@@ -14,7 +15,7 @@ import com.overloadedllama.leapingllama.database.LlamaDbHandler;
  * the smartphone.
  *
  */
-public final class Settings {
+public final class Settings implements TestConstant {
     @SuppressLint("StaticFieldLeak")
     private static LlamaDbHandler llamaDbHandler;
     private static Assets assets;
@@ -42,7 +43,6 @@ public final class Settings {
     // Sounds
     private static Sound punch;
     private static Sound shot;
-    private static Sound fall;
 
     // Music
     private static Music gameMusic;
@@ -133,32 +133,28 @@ public final class Settings {
     }
 
 
-    // SOUNDS
+    // SOUNDS AND MUSICS
 
     /**
      * this method can't be called into constructor method because assets aren't loaded yet
      *
      */
     public static void setSoundsMusics() {
-        punch = assets.getSound("punch");
-        shot = assets.getSound("shot");
-        fall = assets.getSound("fall");
+        punch = assets.getSound(PUNCH);
+        shot = assets.getSound(SHOT);
 
-        gameMusic = assets.getMusic("gameMusic1");
-        mainMenuMusic = assets.getMusic("mainMenuMusic");
+        gameMusic = assets.getMusic(GAME_MUSIC1);
+        mainMenuMusic = assets.getMusic(MAIN_MENU_MUSIC);
     }
 
     public static void playSound(String sound) {
-
         if (!SOUND)
             return;
 
         switch (sound) {
-            case "punch": punch.play(SOUND_VOLUME); break;
-            case "shot": shot.play(SOUND_VOLUME); break;
-            case "fall": fall.play(SOUND_VOLUME); break;
+            case PUNCH: punch.play(SOUND_VOLUME); break;
+            case SHOT: shot.play(SOUND_VOLUME); break;
         }
-
     }
 
     public static void playMusic(String music) {
@@ -166,16 +162,16 @@ public final class Settings {
             return;
 
         switch (music) {
-            case "gameMusic1": gameMusic.setLooping(true); gameMusic.play(); break;
-            case "mainMenuMusic": mainMenuMusic.setLooping(true); mainMenuMusic.play(); break;
+            case GAME_MUSIC1: gameMusic.setLooping(true); gameMusic.play(); break;
+            case MAIN_MENU_MUSIC: mainMenuMusic.setLooping(true); mainMenuMusic.play(); break;
 
         }
     }
 
     public static void stopMusic(String music) {
         switch (music) {
-            case "gameMusic1": gameMusic.stop();
-            case "mainMenuMusic": mainMenuMusic.stop();
+            case GAME_MUSIC1: gameMusic.stop();
+            case MAIN_MENU_MUSIC: mainMenuMusic.stop();
         }
     }
 

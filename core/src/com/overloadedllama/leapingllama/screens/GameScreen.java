@@ -33,7 +33,7 @@ import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 //this is the screen of the gameplay, i start to set up the environment.
 
 
-public class GameScreen extends ApplicationAdapter implements Screen {
+public class GameScreen extends ApplicationAdapter implements Screen, TestConstant {
 
     public enum State
     {
@@ -85,6 +85,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
     float stateTime = 0;
 
     double distance;
+    double levelLength;
 
     float llamaX = 3;
     float velocity = 2;
@@ -113,6 +114,8 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         actions = new HashMap<>();
 
         levelParser = new LevelParser(0);
+        levelLength = levelParser.getLevelLength();
+        System.out.println("LEVEL LENGTH: " + levelLength);
     }
 
 
@@ -197,7 +200,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
         actions = stageUi.getActions();
 
-        if (actions.get("shot")) {
+        if (actions.get(SHOT)) {
             if (bulletsGun > 0) {
                 shot();
                 --bulletsGun;
@@ -206,7 +209,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         }
 
         //System.out.println("llama ...y: " + llama.getBody().getLinearVelocity());
-        if (actions.get("jump")){
+        if (actions.get(JUMP)){
             // sometimes getLinearVelocity().y near -3.442763E-10...
             if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001)
                 jump();
@@ -214,21 +217,21 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
         crouch();
 
-        if (actions.get("pause")) {
+        if (actions.get(PAUSE)) {
             pause();
         }
 
-        if (actions.get("punch")) {
+        if (actions.get(PUNCH)) {
             if (llama.isStanding()) {
                 punch();
             }
         }
 
-        if(actions.get("play")) {
+        if(actions.get(PLAY)) {
             resume();
         }
 
-        if(actions.get("exit")){
+        if(actions.get(EXIT)){
             exit();
         }
 
@@ -269,56 +272,56 @@ public class GameScreen extends ApplicationAdapter implements Screen {
                 xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
             }
             switch (queueObject.getClassObject()) {
-                case "enemies": enemies.add(new Enemy(xCreation, 2, 1f, world, game.batch, assets)); break;
-                case "grounds": grounds.add(new Ground(xCreation, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformI": platforms.add(new Platform(xCreation, 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformII": platforms.add(new Platform(xCreation, 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case ENEMIES: enemies.add(new Enemy(xCreation, 2, 1f, world, game.batch, assets)); break;
+                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case PLATFORM1: platforms.add(new Platform(xCreation, 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case PLATFORM2: platforms.add(new Platform(xCreation, 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
             }
         }
     }
 
     private void crouch() {
-        if (actions.get("crouch")) {
+        if (actions.get(CROUCH)) {
             // crouches
             if (llama.isStanding())
                 llama.crouch(true);
 
             llama.setStanding(false);
-            actions.put("crouch", true);
-        } else if (!actions.get("crouch")) {
+            actions.put(CROUCH, true);
+        } else if (!actions.get(CROUCH)) {
             // stands up
             if (!llama.isStanding())
                 llama.crouch(false);
 
             llama.setStanding(true);
-            actions.put("crouch", false);
+            actions.put(CROUCH, false);
         }
     }
 
     private void jump(){
         llama.jump();
 
-        actions.put("jump", false);
+        actions.put(JUMP, false);
     }
 
     private void punch() {
         llama.punch(true);
         timePunching=System.currentTimeMillis();
-        actions.put("punch", false);
+        actions.put(PUNCH, false);
 
     }
 
     private void shot() {
         bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
-        Settings.playSound("shot");
-        actions.put("shot", false);
+        Settings.playSound(SHOT);
+        actions.put(SHOT, false);
     }
 
     private void exit() {
         //here there will be to develop the stuff for save the checkpoint;
         state = State.STOPPED;
 
-        actions.put("exit", false);
+        actions.put(EXIT, false);
 
         Settings.stopMusic(game.getAssets().GAME_MUSIC1);
         dispose();
@@ -422,12 +425,12 @@ public class GameScreen extends ApplicationAdapter implements Screen {
      */
     public <T extends GameObject> boolean isOutOfBonds(T go) {
 
-
+        /*
         if (go instanceof Enemy || go instanceof Bullet) {
             return go.getBody().getPosition().x < -viewport.getWorldWidth() ||
                     go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
                     go.getBody().getPosition().y < 0;
-        } /*else if (go instanceof Platform || go instanceof Ground) {
+        } else if (go instanceof Platform || go instanceof Ground) {
             return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
         }
          */
@@ -459,16 +462,16 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
         state = State.PAUSE;
 
-        actions.remove("pause");
-        actions.put("pause", false);
+        actions.remove(PAUSE);
+        actions.put(PAUSE, false);
     }
 
     @Override
     public void resume() {
         state = State.RUN;
 
-        actions.remove("play");
-        actions.put("play", false);
+        actions.remove(PLAY);
+        actions.put(PLAY, false);
     }
 
     @Override

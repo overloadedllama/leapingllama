@@ -3,12 +3,15 @@ package com.overloadedllama.leapingllama.jsonUtil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.overloadedllama.leapingllama.game.TestConstant;
 
 import java.util.*;
 
 
-public class LevelParser {
+public class LevelParser implements TestConstant {
     int levelNumber;
+
+    double levelLength;
 
     PriorityQueue<QueueObject> queue;
     ArrayList<Double> enemies;
@@ -18,33 +21,23 @@ public class LevelParser {
     ArrayList<Double> platformsLen;
     ArrayList<Double> platformsII;
     ArrayList<Double> platformsIILen;
-    ArrayList<Double> money;
-    ArrayList<Double> moneyNum;
-    ArrayList<Double> munitions;
-    ArrayList<Double> munitionsNum;
+    ArrayList<Double> coins;
+    ArrayList<Double> coinsNum;
+    ArrayList<Double> ammo;
+    ArrayList<Double> ammoNum;
 
-    public final String ENEMIES = "enemies";
-    public final String MONEY = "money";
-    public final String MUNITIONS = "munitions";
-    public final String PLATFORM1 = "platformI";
-    public final String PLATFORM2 = "platformII";
-    public final String GROUND = "grounds";
     String[] actorStrings = {
             "enemies",
-            "money",
-            "munitions",
+            "coins",
+            "ammo",
             "platformI",
             "platformII",
             "grounds" };
 
-    public final String MONEY_NUM = "moneyNum";
-    public final String MUNITIONS_NUM = "munitionsNum";
-    public final String PLATFORM1_LEN = "platformILength";
-    public final String PLATFORM2_LEN = "platformIILength";
-    public final String GROUND_LEN = "groundsLength";
+
     String[] actorSupportStrings = {
-            "moneyNum",
-            "munitionsNum",
+            "coinsNum",
+            "ammoNum",
             "platformILength",
             "platformIILength",
             "groundsLength"  };
@@ -68,14 +61,21 @@ public class LevelParser {
         platformsLen  = new ArrayList<>();
         platformsII = new ArrayList<>();
         platformsIILen = new ArrayList<>();
-        money = new ArrayList<>();
-        moneyNum = new ArrayList<>();
-        munitions = new ArrayList<>();
-        munitionsNum  = new ArrayList<>();
+        coins = new ArrayList<>();
+        coinsNum = new ArrayList<>();
+        ammo = new ArrayList<>();
+        ammoNum  = new ArrayList<>();
 
         JsonValue root = new JsonReader().parse(Gdx.files.internal("game.json"));
 
-        // get the actors arrays from json file
+        // gets the level length
+        try {
+            levelLength = root.get("levels").get(String.valueOf(levelNumber)).get(LEVEL_LENGTH).asDouble();
+        } catch (java.lang.Exception e) {
+            System.out.println("String '" + LEVEL_LENGTH + "' doesn't match in json file.");
+        }
+
+        // gets the actors arrays from json file, both for actors and supports
         for (String actorString : actorStrings) {
             try {
                 double[] doublesArray = root.get("levels").get(String.valueOf(levelNumber)).get(actorString).asDoubleArray();
@@ -94,11 +94,11 @@ public class LevelParser {
                         case PLATFORM2:
                             platformsII.add(d);
                             break;
-                        case MUNITIONS:
-                            munitions.add(d);
+                        case AMMO:
+                            ammo.add(d);
                             break;
-                        case MONEY:
-                            money.add(d);
+                        case COINS:
+                            coins.add(d);
                             break;
                     }
                 }
@@ -121,11 +121,11 @@ public class LevelParser {
                         case PLATFORM2_LEN:
                             platformsIILen.add(d);
                             break;
-                        case MUNITIONS_NUM:
-                            munitionsNum.add(d);
+                        case AMMO_NUM:
+                            ammoNum.add(d);
                             break;
-                        case MONEY_NUM:
-                            moneyNum.add(d);
+                        case COINS_NUM:
+                            coinsNum.add(d);
                             break;
                     }
                 }
@@ -135,10 +135,10 @@ public class LevelParser {
         }
 
 
-        if (    moneyNum.size() != money.size() ||
-                munitionsNum.size() != munitions.size() ||
+        if (    coins.size() != coinsNum.size() ||
+                ammo.size() != ammoNum.size() ||
                 grounds.size() != groundsLen.size() ||
-                platformsIILen.size() != platformsII.size() ||
+                platformsII.size() != platformsIILen.size() ||
                 platforms.size() !=  platformsLen.size()) {
             throw new IllegalArgumentException();
         }
@@ -176,10 +176,10 @@ public class LevelParser {
                 return enemies;
             case GROUND:
                 return grounds;
-            case MONEY:
-                return money;
-            case MUNITIONS:
-                return munitions;
+            case COINS:
+                return coins;
+            case AMMO:
+                return ammo;
             case PLATFORM1:
                 return platforms;
             case PLATFORM2:
@@ -192,10 +192,10 @@ public class LevelParser {
         switch (actorString) {
             case GROUND:
                 return groundsLen;
-            case MONEY:
-                return moneyNum;
-            case MUNITIONS:
-                return munitionsNum;
+            case COINS:
+                return coinsNum;
+            case AMMO:
+                return ammoNum;
             case PLATFORM1:
                 return platformsLen;
             case PLATFORM2:
@@ -205,15 +205,19 @@ public class LevelParser {
     }
 
     private boolean hasLength(String actorString) {
-        return actorString.equals("grounds") || actorString.equals("platformI") || actorString.equals("platformII");
+        return actorString.equals(GROUND) || actorString.equals(PLATFORM1) || actorString.equals(PLATFORM2);
     }
 
     private boolean isBasicArray(String actorString) {
-        return actorString.equals("enemies");
+        return actorString.equals(ENEMIES);
     }
 
     // should be checked if the queue isn't empty?
     public PriorityQueue<QueueObject> getQueue() {
         return queue;
+    }
+
+    public double getLevelLength() {
+        return levelLength;
     }
 }

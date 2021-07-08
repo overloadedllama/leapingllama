@@ -12,11 +12,12 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.assetman.Assets;
+import com.overloadedllama.leapingllama.game.TestConstant;
 
 import java.util.HashMap;
 
 
-public class ButtonsStagePlay {
+public class ButtonsStagePlay implements TestConstant {
 
     float tableWidth, tableHeight;
     final float buttonSize = 100f;
@@ -81,11 +82,11 @@ public class ButtonsStagePlay {
         labelsTable = new Table();
 
         // skins from Assets
-        buttonJumpSkin = assets.getSkin("jump");
-        buttonPauseSkin = assets.getSkin("pause");
-        buttonCrouchSkin = assets.getSkin("crouch");
-        buttonShotSkin = assets.getSkin("shot");
-        buttonPunchSkin = assets.getSkin("punch");
+        buttonJumpSkin = assets.getSkin(JUMP);
+        buttonPauseSkin = assets.getSkin(PAUSE);
+        buttonCrouchSkin = assets.getSkin(CROUCH);
+        buttonShotSkin = assets.getSkin(SHOT);
+        buttonPunchSkin = assets.getSkin(PUNCH);
         buttonSkin = assets.getSkin("bigButton");
 
         // creation of ImageButtons,
@@ -151,13 +152,13 @@ public class ButtonsStagePlay {
 
         //creation of the dictionary
         actions = new HashMap<>(7);
-        actions.put("jump", false);
-        actions.put("crouch", false);
-        actions.put("shot", false);
-        actions.put("punch", false);
-        actions.put("pause", false);
-        actions.put("play", false);
-        actions.put("exit", false);
+        actions.put(JUMP, false);
+        actions.put(CROUCH, false);
+        actions.put(SHOT, false);
+        actions.put(PUNCH, false);
+        actions.put(PAUSE, false);
+        actions.put(PLAY, false);
+        actions.put(EXIT, false);
 
     }
 
@@ -183,7 +184,7 @@ public class ButtonsStagePlay {
 
     public void setUpButtonAction() {
         for (String s : actions.keySet()){
-            if (!s.equals("crouch"))
+            if (!s.equals(CROUCH))
                 actions.put(s, false);
         }
 
@@ -192,7 +193,7 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.put("pause", true);
+                actions.put(PAUSE, true);
 
                 fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
                 fadeoutBackground.setBounds(0,0, viewport.getScreenWidth(), tableHeight);
@@ -212,7 +213,7 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.put("play", true);
+                actions.put(PLAY, true);
 
                 fadeoutBackground.remove();
                 buttonPlay.remove();
@@ -225,7 +226,7 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.put("exit", true);
+                actions.put(EXIT, true);
 
             }
         });
@@ -234,7 +235,7 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.put("shot", true);
+                actions.put(SHOT, true);
             }
         });
 
@@ -242,7 +243,7 @@ public class ButtonsStagePlay {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                actions.put("punch", true);
+                actions.put(PUNCH, true);
             }
         });
 
@@ -250,13 +251,13 @@ public class ButtonsStagePlay {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                actions.put("crouch", true);
+                actions.put(CROUCH, true);
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
-                actions.put("crouch", false);
+                actions.put(CROUCH, false);
             }
         });
 
@@ -264,13 +265,13 @@ public class ButtonsStagePlay {
             @Override
             public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchDown(event, x, y, pointer, button);
-                actions.put("jump", true);
+                actions.put(JUMP, true);
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 super.touchUp(event, x, y, pointer, button);
-                actions.put("jump", false);
+                actions.put(JUMP, false);
             }
         });
     }
