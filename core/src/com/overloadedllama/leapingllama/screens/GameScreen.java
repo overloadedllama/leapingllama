@@ -3,6 +3,7 @@ package com.overloadedllama.leapingllama.screens;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -147,8 +148,8 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
     @Override
     public void render(float delta)     {
-        ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
-
+        //ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
+        ScreenUtils.clear(new Color(Color.BLACK));
         switch(state) {
 
             case RUN:
@@ -175,7 +176,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         //System.out.println("llama Vector2: " + llama.getBody().getLinearVelocity());
 
         game.batch.begin();
-        game.batch.draw(sky,
+       /* game.batch.draw(sky,
                 // position and size of texture
                 -1, 0, viewport.getScreenWidth()/UNITS_PER_METER +2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
@@ -192,7 +193,7 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         for (Enemy enemy : enemies)
             enemy.draw();
         for (Platform platform : platforms)
-            platform.draw();
+            platform.draw();*/
         game.batch.end();
 
 
@@ -259,19 +260,18 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         if (queueObject == null)
             return;
 
-//        if (queueObject.getX() < distance + METER_WIDTH * 2) {
-        if (queueObject.getX() < distance) {
+        // ???????????????????????
+        if (queueObject.getX() + queueObject.getLength() / 2 < distance) {
             System.out.println("llama.X: " + llama.getX() + " - Distance: " + distance + " - " + queueObject);
             queueObject = queue.poll();
             if (queueObject == null)
                 return;
 
-            // this should not throws NullPointerException, thanks to above peek()
             switch (queueObject.getClassObject()) {
                 case "enemies": enemies.add(new Enemy(METER_WIDTH, 2, 1f, world, game.batch, assets)); break;
-                case "grounds": grounds.add(new Ground(METER_WIDTH, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformI": platforms.add(new Platform(METER_WIDTH, 2.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformII": platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "grounds": grounds.add(new Ground((float) (METER_WIDTH + queueObject.getLength() / 2), 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformI": platforms.add(new Platform((float) (METER_WIDTH + queueObject.getLength() / 2), 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformII": platforms.add(new Platform((float) (METER_WIDTH + queueObject.getLength() / 2), 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
             }
         }
     }
@@ -336,13 +336,14 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         accumulator += Math.min(delta, 0.25f);
 
-        stageUi.setDistance(distance);
+
         if (accumulator >= STEP_TIME) {
             accumulator -= STEP_TIME;
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
             distance += .05f;
+            stageUi.setDistance(distance);
             stateTime += delta;
             xSky += 0.1;
 
@@ -421,7 +422,9 @@ public class GameScreen extends ApplicationAdapter implements Screen{
     }
 
     public boolean isOutOfBonds(GameObject go) {
-        return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth()*2;
+        //return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth()*2;
+        return false;
+
     }
 
     public Llama getLlama() {
