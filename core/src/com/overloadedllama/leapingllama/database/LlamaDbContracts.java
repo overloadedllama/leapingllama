@@ -2,15 +2,14 @@ package com.overloadedllama.leapingllama.database;
 
 import android.provider.BaseColumns;
 
-import java.util.Set;
-
-
 /**
  * Table Player:
  *      user VARCHAR(20) PK,
  *      score REAL NOT NULL DEFAULT 0,
  *      money INT NOT NULL DEFAULT 0,
  *      level INT NOT NULL DEFAULT 0
+ *
+ * Are music/sounds really necessaries?
  *
  * Table Settings:
  *      user VARCHAR(20) PK REFERENCES Player

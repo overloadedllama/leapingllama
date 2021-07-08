@@ -176,6 +176,7 @@ public class MainMenuStage extends Stage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                Settings.stopMusic(assets.MAIN_MENU_MUSIC);
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game, 0));
             }
         });
@@ -185,6 +186,7 @@ public class MainMenuStage extends Stage {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
+                    Settings.stopMusic(assets.MAIN_MENU_MUSIC);
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game, 1));
                 }
             });
@@ -195,6 +197,7 @@ public class MainMenuStage extends Stage {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
+                    Settings.stopMusic(assets.MAIN_MENU_MUSIC);
                     ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game, 2));
                 }
             });

@@ -141,7 +141,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         // add this for debug
         grounds.add(new Ground(0, 0, 0.6f, 10, velocity, world, game.batch, assets));
 
-        Settings.playMusic("gameMusic");
+        Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
     }
 
@@ -317,7 +317,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
         actions.put("exit", false);
 
-        Settings.stopMusic("gameMusic");
+        Settings.stopMusic(game.getAssets().GAME_MUSIC1);
         dispose();
         game.setScreen(new MainMenuScreen(game));
 
@@ -429,7 +429,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
     public void gameOver() {
         /*
         game.setScreen(new GameOverScreen(game, distance));
-        Settings.stopMusic("gameMusic");
+        Settings.stopMusic(game.getAssets().GAME_MUSIC1");
         dispose();
         */
     }

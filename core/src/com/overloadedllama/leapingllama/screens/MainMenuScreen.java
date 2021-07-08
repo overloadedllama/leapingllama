@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
+import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.stages.MainMenuStage;
 
 public class MainMenuScreen implements Screen {
@@ -26,6 +27,7 @@ public class MainMenuScreen implements Screen {
         camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
         camera.update();
 
+        Settings.playMusic(game.getAssets().MAIN_MENU_MUSIC);
     }
 
     @Override

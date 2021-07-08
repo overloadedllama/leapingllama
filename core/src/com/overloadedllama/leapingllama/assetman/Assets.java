@@ -16,6 +16,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class Assets {
     private final AssetManager manager;
 
+    public final String GAME_MUSIC1 = "gameMusic1";
+    public final String MAIN_MENU_MUSIC = "mainMenuMusic";
+
     public Assets() {
         this.manager = new AssetManager();
     }
@@ -62,7 +65,8 @@ public class Assets {
         //manager.load("sounds/fall1.mp3", Sound.class);
 
         // loading musics
-        manager.load("musics/music.wav", Music.class);
+        manager.load("musics/gameMusic1.mp3", Music.class);
+        manager.load("musics/mainMenuMusic.mp3", Music.class);
 
     }
 
@@ -102,14 +106,14 @@ public class Assets {
         switch (sound) {
             case "punch": return manager.get("sounds/punch.wav");
             case "shot": return manager.get("sounds/laser.wav");
-            //case "fall": return manager.get("sounds/fall1.mp3");
         }
         return null;
     }
 
     public Music getMusic(String music) {
         switch (music) {
-            case "music": return manager.get("musics/music.wav");
+            case GAME_MUSIC1: return manager.get("musics/gameMusic1.mp3");
+            case MAIN_MENU_MUSIC: return manager.get("musics/mainMenuMusic.mp3");
         }
         return null;
     }
