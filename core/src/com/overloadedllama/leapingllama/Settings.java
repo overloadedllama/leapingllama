@@ -13,7 +13,6 @@ import com.overloadedllama.leapingllama.database.LlamaDbHandler;
  * a class that contains all the game settings and methods used to change them on
  * the smartphone.
  *
- * Maybe method should refer to currentUser only
  */
 public final class Settings {
     @SuppressLint("StaticFieldLeak")

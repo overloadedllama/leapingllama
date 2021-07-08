@@ -44,6 +44,7 @@ public class MainMenuStage extends Stage {
     private TextButton level2;
     private TextButton level0;
     private TextButton endlessMode;
+    private TextButton quitButton;
 
     // TextField
     private TextField user;
@@ -84,6 +85,7 @@ public class MainMenuStage extends Stage {
         shopButton = new TextButton("SHOP", textButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonSkin);
         creditsButton = new TextButton("CREDIT", textButtonSkin);
+        quitButton = new TextButton("QUIT", textButtonSkin);
         String userMoney = "" + Settings.getUserMoney();
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
         level0 = new TextButton("LEVEL 0", textButtonSkin);
@@ -125,6 +127,8 @@ public class MainMenuStage extends Stage {
         mainMenuTable.add(settingsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
         mainMenuTable.row();
         mainMenuTable.add(creditsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
+        mainMenuTable.row();
+        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
 
         addActor(userTable);
         addActor(bestScoreTable);
@@ -171,6 +175,13 @@ public class MainMenuStage extends Stage {
             }
         });
 
+        quitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+                assets.disposeAll();
+            }
+        });
 
         level0.addListener(new ClickListener() {
             @Override

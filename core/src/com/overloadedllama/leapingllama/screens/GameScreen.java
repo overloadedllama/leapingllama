@@ -3,6 +3,7 @@ package com.overloadedllama.leapingllama.screens;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
@@ -97,7 +98,6 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         this.assets = game.getAssets();
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
-        //System.out.println(METER_WIDTH);
         viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
         viewport.apply();
 
@@ -107,7 +107,6 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
-        //sky = new Texture(Gdx.files.internal("sky.png"));
         sky = game.getAssets().getTexture("sky");
         sky.setWrap(Repeat,Repeat);
 
@@ -132,14 +131,13 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         //stagePause = new ButtonsStagePause();
 
         enemies = new ArrayList<>();
-        //enemies.add(new Enemy(METER_WIDTH, 1, 1.2f, world, game.batch));
         timeLastEnemies = System.currentTimeMillis();
 
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
         grounds = new ArrayList<>();
         // add this for debug
-        grounds.add(new Ground(0, 0, 0.6f, 10, velocity, world, game.batch, assets));
+        //grounds.add(new Ground(0, 0, 0.6f, 20, velocity, world, game.batch, assets));
 
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
@@ -147,8 +145,8 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
     @Override
     public void render(float delta)     {
-        ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
-
+        //ScreenUtils.clear(0.56f, 0.73f, 0.8f, 1);
+        ScreenUtils.clear(new Color(Color.BLACK));
         switch(state) {
 
             case RUN:
@@ -172,10 +170,9 @@ public class GameScreen extends ApplicationAdapter implements Screen {
                 break;
 
         }
-        //System.out.println("llama Vector2: " + llama.getBody().getLinearVelocity());
 
         game.batch.begin();
-        game.batch.draw(sky,
+       /* game.batch.draw(sky,
                 // position and size of texture
                 -1, 0, viewport.getScreenWidth()/UNITS_PER_METER +2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
@@ -192,7 +189,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         for (Enemy enemy : enemies)
             enemy.draw();
         for (Platform platform : platforms)
-            platform.draw();
+            platform.draw();*/
         game.batch.end();
 
 
@@ -248,7 +245,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
 
     /**
      *
-     * @param distance the distance which llama reached now
+     * @param distance the distance reached by llama
      */
     private void loadLevel(double distance) {
 
@@ -259,17 +256,23 @@ public class GameScreen extends ApplicationAdapter implements Screen {
             return;
 
         // ???????????????????????
-        if (queueObject.getX() + queueObject.getLength() / 2 < distance) {
+        if (queueObject.getX() - queueObject.getLength() < distance) {
             System.out.println("llama.X: " + llama.getX() + " - Distance: " + distance + " - " + queueObject);
             queueObject = queue.poll();
             if (queueObject == null)
                 return;
 
+            float xCreation;
+            if (queueObject.getX() < METER_WIDTH) {
+                xCreation = (float) queueObject.getX();
+            } else {
+                xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
+            }
             switch (queueObject.getClassObject()) {
-                case "enemies": enemies.add(new Enemy(METER_WIDTH, 2, 1f, world, game.batch, assets)); break;
-                case "grounds": grounds.add(new Ground((float) (METER_WIDTH + queueObject.getLength() / 2), 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformI": platforms.add(new Platform((float) (METER_WIDTH + queueObject.getLength() / 2), 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformII": platforms.add(new Platform((float) (METER_WIDTH + queueObject.getLength() / 2), 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "enemies": enemies.add(new Enemy(xCreation, 2, 1f, world, game.batch, assets)); break;
+                case "grounds": grounds.add(new Ground(xCreation, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformI": platforms.add(new Platform(xCreation, 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformII": platforms.add(new Platform(xCreation, 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
             }
         }
     }
@@ -411,14 +414,24 @@ public class GameScreen extends ApplicationAdapter implements Screen {
         }
     }
 
-    // platform, ground, enemy, bullet, llama
+    /**
+     * for Enemy and Bullets checks if they are also felt out of ground
+     * @param go the object checked
+     * @param <T> accepts all objects which extend GameObject class
+     * @return true if the Object is out of bounds, else false
+     */
     public <T extends GameObject> boolean isOutOfBonds(T go) {
 
+
         if (go instanceof Enemy || go instanceof Bullet) {
-            return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth() * 2;
-        } else if (go instanceof Platform || go instanceof Ground) {
+            return go.getBody().getPosition().x < -viewport.getWorldWidth() ||
+                    go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
+                    go.getBody().getPosition().y < 0;
+        } /*else if (go instanceof Platform || go instanceof Ground) {
             return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
         }
+         */
+
         return false;
     }
 
@@ -429,7 +442,7 @@ public class GameScreen extends ApplicationAdapter implements Screen {
     public void gameOver() {
         /*
         game.setScreen(new GameOverScreen(game, distance));
-        Settings.stopMusic(game.getAssets().GAME_MUSIC1");
+        Settings.stopMusic("gameMusic");
         dispose();
         */
     }

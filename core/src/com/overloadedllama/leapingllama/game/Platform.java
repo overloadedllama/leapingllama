@@ -32,9 +32,8 @@ public class Platform extends GameObject{
 
         sprite = new Sprite(textureRegion);
         sprite.setSize(w, h);
-        sprite.setOriginCenter();
-        setPosition(x, y, 0);
-        //sprite.setPosition(x, y);
+        sprite.setOrigin(x, y);
+        sprite.setPosition(x - w / 2, y);
 
 
         PolygonShape shape = new PolygonShape();
