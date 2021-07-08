@@ -175,7 +175,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         }
 
         game.batch.begin();
-       /* game.batch.draw(sky,
+        game.batch.draw(sky,
                 // position and size of texture
                 -1, 0, viewport.getScreenWidth()/UNITS_PER_METER +2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
@@ -192,7 +192,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         for (Enemy enemy : enemies)
             enemy.draw();
         for (Platform platform : platforms)
-            platform.draw();*/
+            platform.draw();
         game.batch.end();
 
 
@@ -250,32 +250,40 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
      *
      * @param distance the distance reached by llama
      */
+    boolean firstTime = true;
+
     private void loadLevel(double distance) {
 
-        queue = levelParser.getQueue();
+        if (firstTime) {
+            queue = levelParser.getQueue();
+            firstTime = false;
+        }
 
         QueueObject queueObject = queue.peek();
         if (queueObject == null)
             return;
 
         // ???????????????????????
-        if (queueObject.getX() - queueObject.getLength() < distance) {
+        if (queueObject.getX() - queueObject.getLength()/2 < distance+METER_WIDTH) {
             System.out.println("llama.X: " + llama.getX() + " - Distance: " + distance + " - " + queueObject);
             queueObject = queue.poll();
             if (queueObject == null)
                 return;
 
             float xCreation;
+            float lCreation;
             if (queueObject.getX() < METER_WIDTH) {
                 xCreation = (float) queueObject.getX();
+                lCreation = (float) (queueObject.getLength() + METER_WIDTH- queueObject.getX());
             } else {
                 xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
+                lCreation = (float) queueObject.getLength();
             }
             switch (queueObject.getClassObject()) {
-                case ENEMIES: enemies.add(new Enemy(xCreation, 2, 1f, world, game.batch, assets)); break;
-                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case PLATFORM1: platforms.add(new Platform(xCreation, 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case PLATFORM2: platforms.add(new Platform(xCreation, 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, game.batch, assets)); break;
+                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, (float) lCreation, velocity, world, game.batch, assets)); break;
+                case PLATFORM1: platforms.add(new Platform(xCreation, 1.8f, 0.2f, (float) lCreation, velocity, world, game.batch, assets)); break;
+                case PLATFORM2: platforms.add(new Platform(xCreation, 3.5f, 0.2f, (float) lCreation, velocity, world, game.batch, assets)); break;
             }
         }
     }

@@ -25,7 +25,7 @@ public class Enemy extends GameObject{
         PolygonShape enemyShape = new PolygonShape();
         enemyShape.setAsBox(w/2, h/2);
 
-        super.createBody(BodyDef.BodyType.DynamicBody, enemyShape, 20, 0.01f, 0.4f);
+        super.createBody(BodyDef.BodyType.DynamicBody, enemyShape, 20, 1f, 0f);
 
         enemyShape.dispose();
 
