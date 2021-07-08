@@ -10,17 +10,21 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * some ideas: inserting data/time of user's best score,
- * add the possibility to delete user's progresses,
+ *
+ * REMAP ALL WITH SWITCH-CASE
+ *
  */
 
 public class LlamaDbHandler {
 
-    private static int userBestScore;
-    private static int userMoney;
-
     Context context;
 
     private final LlamaDbHelper dbHelper;
+
+    // BASIC ELEMENTS
+    public final String MONEY = "money";
+    public final String LEVEL = "level";
+    public final String BEST_SCORE = "bestScore";
 
     public LlamaDbHandler(Context context) {
         this.context = context;
@@ -83,34 +87,28 @@ public class LlamaDbHandler {
         }
     }
 
-    // gets the user's money
-    public int getUserMoney(String user) {
+    public double getUserPlayerTableData(String user, String basic) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        String[] projection = { LlamaDbContracts.Player.MONEY_COLUMN };
+        String[] projection;
+        switch (basic) {
+            case MONEY:
+                projection = new String[] { LlamaDbContracts.Player.MONEY_COLUMN };
+                break;
+            case LEVEL:
+                projection = new String[] { LlamaDbContracts.Player.LEVEL_COLUMN };
+                break;
+            case BEST_SCORE:
+                projection = new String[] { LlamaDbContracts.Player.SCORE_COLUMN };
+                break;
+            default:
+                projection = null;
+                break;
+        }
 
-        String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
-        String[] selectionArgs = { user };
-
-        Cursor cursor = db.query(
-                LlamaDbContracts.Player.TABLE_NAME,
-                projection, selection, selectionArgs,
-                null,null, null
-        );
-
-        cursor.moveToFirst();
-        userMoney = cursor.getInt(0);
-        cursor.close();
-        return userMoney;
-    }
-
-    // gets the user's best score
-    public int getUserBestScore(String user) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] projection = {
-                LlamaDbContracts.Player.SCORE_COLUMN
-        };
+        if (projection == null) {
+            throw new IllegalArgumentException();
+        }
 
         String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
         String[] selectionArgs = { user };
@@ -122,14 +120,16 @@ public class LlamaDbHandler {
         );
 
         cursor.moveToFirst();
-        userBestScore = cursor.getInt(0);
+        double userBasic = cursor.getDouble(0);
         cursor.close();
-        return userBestScore;
+        return userBasic;
     }
+
+
 
     // check and set (eventually) the new user's best score
     public boolean checkSetNewUserBestScore(String user, double score) {
-        int BestScore = getUserBestScore(user);
+        double BestScore = getUserPlayerTableData(user, BEST_SCORE);
 
         if (score > BestScore) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -163,7 +163,7 @@ public class LlamaDbHandler {
     public boolean checkSetUserMoney(String user, int money) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        userMoney = getUserMoney(user);
+        int userMoney = (int) getUserPlayerTableData(user, MONEY);
 
         userMoney = userMoney + money;
 
@@ -194,34 +194,13 @@ public class LlamaDbHandler {
         }
     }
 
-    public int getUserLevel(String user) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] projection = {
-                LlamaDbContracts.Player.LEVEL_COLUMN
-        };
-
-        String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
-        String[] selectionArgs = { user };
-
-        Cursor cursor = db.query(
-                LlamaDbContracts.Player.TABLE_NAME,
-                projection, selection, selectionArgs,
-                null,null, null
-        );
-
-        cursor.moveToFirst();
-        int levelUser = cursor.getInt(0);
-        cursor.close();
-        return levelUser;
-    }
 
     // set the new user level, which is the previous increased by 1
     public void setUserLevel(String user, int level) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues nextLevel = new ContentValues();
-        nextLevel.put(LlamaDbContracts.Player.LEVEL_COLUMN, getUserLevel(user) + 1);
+        nextLevel.put(LlamaDbContracts.Player.LEVEL_COLUMN, getUserPlayerTableData(user, LEVEL) + 1);
 
         String selection = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
         String[] selectionArgs = { user };
@@ -231,6 +210,8 @@ public class LlamaDbHandler {
                 nextLevel, selection, selectionArgs
         );
     }
+
+
 
     public boolean isMusicOn(String user) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();

@@ -97,9 +97,11 @@ public class SettingScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (Settings.isMUSIC()) {
                     Settings.setMUSIC(false);
+                    Settings.stopMusic("mainMenuMusic");
                     musicButton.getLabel().setText("MUSIC: " + OFF);
                 } else {
                     Settings.setMUSIC(true);
+                    Settings.playMusic("mainMenuMusic");
                     musicButton.getLabel().setText("MUSIC: " + ON);
                 }
             }

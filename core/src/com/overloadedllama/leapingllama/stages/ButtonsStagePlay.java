@@ -195,7 +195,6 @@ public class ButtonsStagePlay {
                 actions.put("pause", true);
 
                 fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
-
                 fadeoutBackground.setBounds(0,0, viewport.getScreenWidth(), tableHeight);
                 stage.addActor(fadeoutBackground);
 

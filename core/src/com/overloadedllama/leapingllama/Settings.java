@@ -13,7 +13,6 @@ import com.overloadedllama.leapingllama.database.LlamaDbHandler;
  * a class that contains all the game settings and methods used to change them on
  * the smartphone.
  *
- * Maybe method should refer to currentUser only
  */
 public final class Settings {
     @SuppressLint("StaticFieldLeak")
@@ -47,6 +46,7 @@ public final class Settings {
 
     // Music
     private static Music gameMusic;
+    private static Music mainMenuMusic;
 
 
 
@@ -102,9 +102,11 @@ public final class Settings {
 
     // NEXT METHODS REFER ONLY TO CURRENT USER
 
-    public static int getUserMoney() {
-        return llamaDbHandler.getUserMoney(currentUser);
-    }
+    public static int getUserMoney() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MONEY); }
+
+    public static int getUserLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.LEVEL); }
+
+    public static void setUserLevel(int level) { llamaDbHandler.setUserLevel(currentUser, level); }
 
     /**
      * if userBestScore has not been loaded yet it is called the relative method before return
@@ -112,7 +114,7 @@ public final class Settings {
      */
     public static double getUserBestScore() {
         if (userBestScore == -1) {
-            userBestScore = llamaDbHandler.getUserBestScore(currentUser);
+            userBestScore = llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.BEST_SCORE);
         }
         return userBestScore;
     }
@@ -133,13 +135,17 @@ public final class Settings {
 
     // SOUNDS
 
-    // get sounds from Assets on creation
+    /**
+     * this method can't be called into constructor method because assets aren't loaded yet
+     *
+     */
     public static void setSoundsMusics() {
         punch = assets.getSound("punch");
         shot = assets.getSound("shot");
         fall = assets.getSound("fall");
 
-        gameMusic = assets.getMusic("music");
+        gameMusic = assets.getMusic("gameMusic1");
+        mainMenuMusic = assets.getMusic("mainMenuMusic");
     }
 
     public static void playSound(String sound) {
@@ -160,13 +166,16 @@ public final class Settings {
             return;
 
         switch (music) {
-            case "gameMusic": gameMusic.setLooping(true); gameMusic.play(); break;
+            case "gameMusic1": gameMusic.setLooping(true); gameMusic.play(); break;
+            case "mainMenuMusic": mainMenuMusic.setLooping(true); mainMenuMusic.play(); break;
+
         }
     }
 
     public static void stopMusic(String music) {
         switch (music) {
-            case "gameMusic": gameMusic.stop();
+            case "gameMusic1": gameMusic.stop();
+            case "mainMenuMusic": mainMenuMusic.stop();
         }
     }
 
