@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -33,6 +32,9 @@ public class Platform extends GameObject{
 
         sprite = new Sprite(textureRegion);
         sprite.setSize(w, h);
+        sprite.setOriginCenter();
+        setPosition(x, y, 0);
+        //sprite.setPosition(x, y);
 
 
         PolygonShape shape = new PolygonShape();

@@ -170,6 +170,14 @@ public final class Settings {
         }
     }
 
+    public static int getUserLevel() {
+        return llamaDbHandler.getUserLevel(currentUser);
+    }
+
+    public static void setUserLevel(int level) {
+        llamaDbHandler.setUserLevel(currentUser, level);
+    }
+
 }
 
 

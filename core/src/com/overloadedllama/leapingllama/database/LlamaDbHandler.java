@@ -10,7 +10,9 @@ import android.database.sqlite.SQLiteDatabase;
 
 /**
  * some ideas: inserting data/time of user's best score,
- * add the possibility to delete user's progresses,
+ *
+ * REMAP ALL WITH SWITCH-CASE
+ *
  */
 
 public class LlamaDbHandler {

@@ -32,7 +32,7 @@ import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 //this is the screen of the gameplay, i start to set up the environment.
 
 
-public class GameScreen extends ApplicationAdapter implements Screen{
+public class GameScreen extends ApplicationAdapter implements Screen {
 
     public enum State
     {
@@ -217,17 +217,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         crouch();
 
-        if (actions.get("pause")){
+        if (actions.get("pause")) {
             pause();
         }
 
-        if (actions.get("punch")){
+        if (actions.get("punch")) {
             if (llama.isStanding()) {
                 punch();
             }
         }
 
-        if(actions.get("play")){
+        if(actions.get("play")) {
             resume();
         }
 
@@ -254,33 +254,25 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         queue = levelParser.getQueue();
 
-
         QueueObject queueObject = queue.peek();
         if (queueObject == null)
             return;
 
-//        if (queueObject.getX() < distance + METER_WIDTH * 2) {
-        if (queueObject.getX() < distance) {
+        // ???????????????????????
+        if (queueObject.getX() + queueObject.getLength() / 2 < distance) {
             System.out.println("llama.X: " + llama.getX() + " - Distance: " + distance + " - " + queueObject);
             queueObject = queue.poll();
             if (queueObject == null)
                 return;
 
-            // this should not throws NullPointerException, thanks to above peek()
             switch (queueObject.getClassObject()) {
                 case "enemies": enemies.add(new Enemy(METER_WIDTH, 2, 1f, world, game.batch, assets)); break;
-                case "grounds": grounds.add(new Ground(METER_WIDTH, 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformI": platforms.add(new Platform(METER_WIDTH, 2.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
-                case "platformII": platforms.add(new Platform(METER_WIDTH, 3.5f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "grounds": grounds.add(new Ground((float) (METER_WIDTH + queueObject.getLength() / 2), 0, 0.6f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformI": platforms.add(new Platform((float) (METER_WIDTH + queueObject.getLength() / 2), 2.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
+                case "platformII": platforms.add(new Platform((float) (METER_WIDTH + queueObject.getLength() / 2), 3.8f, 0.4f, (float) queueObject.getLength(), velocity, world, game.batch, assets)); break;
             }
         }
     }
-
-
-
-
-
-
 
     private void crouch() {
         if (actions.get("crouch")) {
@@ -336,17 +328,17 @@ public class GameScreen extends ApplicationAdapter implements Screen{
 
         accumulator += Math.min(delta, 0.25f);
 
-        stageUi.setDistance(distance);
+
         if (accumulator >= STEP_TIME) {
             accumulator -= STEP_TIME;
 
             world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
             distance += .05f;
+            stageUi.setDistance(distance);
             stateTime += delta;
             xSky += 0.1;
 
-            //System.out.println(distance);
         }
     }
 
@@ -357,7 +349,6 @@ public class GameScreen extends ApplicationAdapter implements Screen{
             enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
         }
 
-        //System.out.println("bullets array size: " + bullets.size());
         for (Bullet bullet : bullets) {
             bullet.setPosition(bullet.getBody().getPosition().x, bullet.getBody().getPosition().y, bullet.getBody().getAngle());
             if (isOutOfBonds(bullet)) {
@@ -420,8 +411,15 @@ public class GameScreen extends ApplicationAdapter implements Screen{
         }
     }
 
-    public boolean isOutOfBonds(GameObject go) {
-        return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth()*2;
+    // platform, ground, enemy, bullet, llama
+    public <T extends GameObject> boolean isOutOfBonds(T go) {
+
+        if (go instanceof Enemy || go instanceof Bullet) {
+            return go.getBody().getPosition().x < -viewport.getWorldWidth() || go.getBody().getPosition().x > viewport.getWorldWidth() * 2;
+        } else if (go instanceof Platform || go instanceof Ground) {
+            return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
+        }
+        return false;
     }
 
     public Llama getLlama() {

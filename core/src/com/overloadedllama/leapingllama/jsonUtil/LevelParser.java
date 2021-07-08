@@ -151,7 +151,7 @@ public class LevelParser {
 
             if (isBasicArray(actorString)) {
                 for (Double aDouble : array) {
-                    queue.add(new QueueObject(actorString, aDouble, -1, -1));
+                    queue.add(new QueueObject(actorString, aDouble, 0, -1));
                 }
             } else {
                 ArrayList<Double> arraySupport = getSupportArray(actorString);
@@ -162,7 +162,7 @@ public class LevelParser {
                     if (hasLength(actorString)) {
                         queue.add(new QueueObject(actorString, array.get(i), arraySupport.get(i), -1));
                     } else {
-                        queue.add(new QueueObject(actorString, array.get(i), -1, arraySupport.get(i).intValue()));
+                        queue.add(new QueueObject(actorString, array.get(i), 0, arraySupport.get(i).intValue()));
                     }
                 }
             }
