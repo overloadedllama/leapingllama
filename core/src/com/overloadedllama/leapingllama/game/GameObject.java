@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
-public class GameObject {
+public class GameObject implements TestConstant {
 
     float x, y, w, h;
     Texture texture;
