@@ -6,7 +6,7 @@ import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 
-public class MyContactListener implements ContactListener {
+public class MyContactListener implements ContactListener, TestConstant {
 
     final GameScreen parent;
 
@@ -29,7 +29,7 @@ public class MyContactListener implements ContactListener {
         } else if (isLlamaEnemyContact(fa, fb)) {
             //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
         } else if (isLlamaGroundPlatformContact(fa, fb, contact)) {
-            //System.out.println("COLLISION LLAMA-GROUND DETECTED!");
+            System.out.println("COLLISION LLAMA-GROUND DETECTED!");
         }
 
     }
@@ -45,6 +45,8 @@ public class MyContactListener implements ContactListener {
 
 
     private boolean isBulletEnemyContact(Fixture a, Fixture b) {
+
+
 
             if ((a.getUserData() instanceof Bullet && b.getUserData() instanceof Enemy)
                     || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Bullet)) {
@@ -95,6 +97,17 @@ public class MyContactListener implements ContactListener {
 
     // at the moment this is is useless
     private boolean isLlamaGroundPlatformContact(Fixture a, Fixture b, Contact contact) {
+
+        short bitsA = a.getFilterData().categoryBits;
+        short bitsB = b.getFilterData().categoryBits;
+
+        boolean llamaGroundCollision = (bitsA == CATEGORY_LLAMA && bitsB == CATEGORY_GROUND) || (bitsB == CATEGORY_LLAMA && bitsA == CATEGORY_GROUND);
+
+        if (llamaGroundCollision) {
+            System.out.println("COLLISION LLAMA-GROUND DETECTED!");
+        }
+
+        /*
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ground)
                 || (a.getUserData() instanceof Ground && b.getUserData() instanceof Llama)) {
             return true;
@@ -119,14 +132,12 @@ public class MyContactListener implements ContactListener {
             for (Vector2 vector2 : worldManifold.getPoints()) {
                 //System.out.println("CONTACT LLAMA-PLATFORM: llama.X = " + l.getX() + " - platform.X = " + p.getX() + " - platform.X+W = " + (p.getX() + p.getW()));
 
-                if (vector2.y > l.getY() && !(l.getX() > p.getX() && l.getX() < p.getX() + p.getW())) {
-                    parent.gameOver();
-                }
+
             }
 
 
             return true;
-        }
+        }*/
 
         return false;
     }
