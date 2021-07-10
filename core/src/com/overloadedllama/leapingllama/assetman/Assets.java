@@ -35,6 +35,7 @@ public class Assets {
         SkinLoader.SkinParameter shotButton = new SkinLoader.SkinParameter("ui/shotButton.atlas");
         SkinLoader.SkinParameter pauseButton = new SkinLoader.SkinParameter("ui/pauseButton.atlas");
         SkinLoader.SkinParameter coin = new SkinLoader.SkinParameter("ui/coin.atlas");
+        SkinLoader.SkinParameter ammo = new SkinLoader.SkinParameter("ui/ammo.atlas");
 
         // loading skins
         manager.load("ui/bigButton.json", Skin.class, bigButton);
@@ -44,6 +45,7 @@ public class Assets {
         manager.load("ui/jumpButton.json", Skin.class, jumpButton);
         manager.load("ui/shotButton.json", Skin.class, shotButton);
         manager.load("ui/pauseButton.json", Skin.class, pauseButton);
+        manager.load("ui/ammo.json", Skin.class, ammo);
 
         // loading textures
         manager.load("enemies/alienCyan.png", Texture.class);
@@ -79,6 +81,7 @@ public class Assets {
             case "jump":  return manager.get("ui/jumpButton.json");
             case "shot": return manager.get("ui/shotButton.json");
             case "pause":  return manager.get("ui/pauseButton.json");
+            case "ammo": return  manager.get("ui/ammo.json");
         }
         return null;
     }

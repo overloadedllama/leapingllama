@@ -37,6 +37,21 @@ public class GameObject implements TestConstant {
         setPosition(x,y, 0);
     }
 
+    public GameObject(float x, float y, float h, World world, Batch batch) {
+        this.x = x;
+        this.y = y;
+
+        this.h = h;
+        this.world = world;
+        this.batch = batch;
+
+
+        destroyable = false;
+
+
+
+    }
+
     public void draw() {
 
         sprite.draw(batch);

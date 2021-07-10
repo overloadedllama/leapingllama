@@ -23,7 +23,7 @@ public class LevelParser implements TestConstant {
     ArrayList<Double> platformsIILen;
     ArrayList<Double> coins;
     ArrayList<Double> coinsNum;
-    ArrayList<Double> ammo;
+    ArrayList<Double> ammos;
     ArrayList<Double> ammoNum;
 
     String[] actorStrings = {
@@ -63,7 +63,7 @@ public class LevelParser implements TestConstant {
         platformsIILen = new ArrayList<>();
         coins = new ArrayList<>();
         coinsNum = new ArrayList<>();
-        ammo = new ArrayList<>();
+        ammos = new ArrayList<>();
         ammoNum  = new ArrayList<>();
 
         JsonValue root = new JsonReader().parse(Gdx.files.internal("game.json"));
@@ -95,7 +95,7 @@ public class LevelParser implements TestConstant {
                             platformsII.add(d);
                             break;
                         case AMMO:
-                            ammo.add(d);
+                            ammos.add(d);
                             break;
                         case COINS:
                             coins.add(d);
@@ -136,7 +136,7 @@ public class LevelParser implements TestConstant {
 
 
         if (    coins.size() != coinsNum.size() ||
-                ammo.size() != ammoNum.size() ||
+                ammos.size() != ammoNum.size() ||
                 grounds.size() != groundsLen.size() ||
                 platformsII.size() != platformsIILen.size() ||
                 platforms.size() !=  platformsLen.size()) {
@@ -179,7 +179,7 @@ public class LevelParser implements TestConstant {
             case COINS:
                 return coins;
             case AMMO:
-                return ammo;
+                return ammos;
             case PLATFORM1:
                 return platforms;
             case PLATFORM2:
