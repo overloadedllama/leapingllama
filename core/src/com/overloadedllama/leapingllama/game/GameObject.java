@@ -42,12 +42,14 @@ public class GameObject implements TestConstant {
         this.y = y;
 
         this.h = h;
+        this.w = h;
+
+
         this.world = world;
         this.batch = batch;
 
 
         destroyable = false;
-
 
 
     }

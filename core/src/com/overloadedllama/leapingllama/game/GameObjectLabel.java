@@ -22,8 +22,8 @@ public class GameObjectLabel extends GameObject{
 
 
         setPosition(x, y);
-        actor.setSize(h/128, h/128);
-        actor.setFontScale(0.01f);
+        actor.setSize(h, h);
+        actor.setFontScale(0.02f);
 
         stage.addActor(actor);
 
@@ -35,7 +35,7 @@ public class GameObjectLabel extends GameObject{
         this.y = y;
 
 
-        actor.setPosition(x, y);
+        actor.setPosition(x - w/2, y - h/2);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class GameObjectLabel extends GameObject{
         this.y = y;
 
 
-        actor.setPosition(x, y);
+        actor.setPosition(x - w/2, y -h/2);
     }
 
     @Override
@@ -52,6 +52,11 @@ public class GameObjectLabel extends GameObject{
         actor.draw(batch, 1);
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
 
-
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 }
