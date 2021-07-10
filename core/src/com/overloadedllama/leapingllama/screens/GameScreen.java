@@ -200,11 +200,11 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             enemy.draw();
         for (Platform platform : platforms)
             platform.draw();
-        for (Coin coin : coins)
+        /*for (Coin coin : coins)
             coin.draw();
         for (Ammo ammo : ammos)
             ammo.draw();
-
+*/
         game.batch.end();
 
 
@@ -288,8 +288,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, game.batch, assets)); break;
                 case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
                 case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
-                case AMMO: ammos.add(new Ammo(xCreation, 5.0f, 0.15f, queueObject.getNumItem(), world, game.batch, assets));
-                case COINS: coins.add(new Coin(xCreation, 5.0f, 0.15f, queueObject.getNumItem(), world, game.batch, assets));
+                case AMMO: ammos.add(new Ammo(xCreation, 5.0f, 0.15f, queueObject.getNumItem(), world, game.batch, assets, stageUi));
+                case COINS: coins.add(new Coin(xCreation, 5.0f, 0.15f, queueObject.getNumItem(), world, game.batch, assets, stageUi));
 
             }
         }

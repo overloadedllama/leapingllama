@@ -305,4 +305,8 @@ public class ButtonsStagePlay implements TestConstant {
         labelDistance.setText(distanceText);
 
     }
+
+    public void addActor(Label actor) {
+        stage.addActor(actor);
+    }
 }
