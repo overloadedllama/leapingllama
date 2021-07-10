@@ -32,6 +32,9 @@ public class MyContactListener implements ContactListener, TestConstant {
             System.out.println("COLLISION LLAMA-GROUND DETECTED!");
         }
 
+        isAmmoCollected(fa, fb);
+        isCoinCollected(fa, fb);
+
     }
 
     @Override
@@ -142,4 +145,47 @@ public class MyContactListener implements ContactListener, TestConstant {
         return false;
     }
 
+    private boolean isCoinCollected(Fixture a, Fixture b) {
+        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Coin)
+                || (a.getUserData() instanceof Coin && b.getUserData() instanceof Llama)) {
+
+
+            if (a.getUserData() instanceof Coin) {
+                ((Coin) a.getUserData()).setDestroyable(true);
+                parent.setMoney(parent.getMoney()+((Coin) a.getUserData()).getQuantity());
+
+            } else {
+                ((Coin) b.getUserData()).setDestroyable(true);
+                parent.setMoney(parent.getMoney()+((Coin) b.getUserData()).getQuantity());
+
+
+            }
+
+
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isAmmoCollected(Fixture a, Fixture b) {
+        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ammo)
+                || (a.getUserData() instanceof Ammo && b.getUserData() instanceof Llama)) {
+
+
+            if (a.getUserData() instanceof Ammo) {
+                ((Ammo) a.getUserData()).setDestroyable(true);
+                parent.setBulletsGun(parent.getBulletsGun()+((Ammo) a.getUserData()).getQuantity());
+
+            } else {
+                ((Ammo) b.getUserData()).setDestroyable(true);
+                parent.setBulletsGun(parent.getBulletsGun()+((Ammo) b.getUserData()).getQuantity());
+
+
+            }
+
+
+            return true;
+        }
+        return false;
+    }
 }

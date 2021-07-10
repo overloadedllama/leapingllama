@@ -442,6 +442,33 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 p.remove();
             }
         }
+
+        for (Iterator<Coin> c = coins.iterator(); c.hasNext(); ) {
+            final Coin coin = c.next();
+            if (coin.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(coin.getBody());
+                    }
+                });
+                c.remove();
+            }
+        }
+
+        for (Iterator<Ammo> a = ammos.iterator(); a.hasNext(); ) {
+            final Ammo ammo = a.next();
+            if (ammo.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(ammo.getBody());
+                    }
+                });
+                a.remove();
+            }
+        }
+
     }
 
     /**
