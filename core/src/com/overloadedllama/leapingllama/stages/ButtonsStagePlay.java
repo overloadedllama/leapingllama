@@ -58,6 +58,7 @@ public class ButtonsStagePlay implements TestConstant {
     Skin buttonShotSkin;
     Skin buttonCrouchSkin;
     Skin buttonSkin;
+    Skin justTextSkin;
 
     //Distance
     double distance = 0;
@@ -88,6 +89,7 @@ public class ButtonsStagePlay implements TestConstant {
         buttonShotSkin = assets.getSkin(SHOT);
         buttonPunchSkin = assets.getSkin(PUNCH);
         buttonSkin = assets.getSkin("bigButton");
+        justTextSkin = assets.getSkin("justText");
 
         // creation of ImageButtons,
         buttonJump = new ImageButton(buttonJumpSkin);
@@ -101,9 +103,9 @@ public class ButtonsStagePlay implements TestConstant {
         buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
 
         // Labels
-        labelDistance = new Label("", buttonSkin);
-        labelMoney = new Label("0", buttonSkin);
-        labelBullets = new Label("10", buttonSkin);
+        labelDistance = new Label("", justTextSkin);
+        labelMoney = new Label("0 coins", justTextSkin);
+        labelBullets = new Label("0 shots", justTextSkin);
         labelBullets.setAlignment(Align.center);
         labelMoney.setAlignment(Align.center);
         labelDistance.setAlignment(Align.center);
@@ -289,11 +291,11 @@ public class ButtonsStagePlay implements TestConstant {
     }
 
     public void setBullets(int n) {
-        labelBullets.setText("" + n);
+        labelBullets.setText(n + " shots");
     }
 
     public void setMoney(int n) {
-        labelMoney.setText("" + n);
+        labelMoney.setText(n + " coins");
     }
 
 

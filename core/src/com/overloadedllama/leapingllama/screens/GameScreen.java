@@ -96,7 +96,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     float velocity = 2;
 
     int money = 0;
-    int bulletsGun = 10;
+    int bulletsGun = 0;
 
 
     // METHODS
@@ -548,6 +548,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     public void setMoney(int money) {
         this.money = money;
+        stageUi.setMoney(money);
     }
 
     public int getBulletsGun() {
@@ -556,5 +557,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     public void setBulletsGun(int bulletsGun) {
         this.bulletsGun = bulletsGun;
+        stageUi.setBullets(bulletsGun);
     }
 }
