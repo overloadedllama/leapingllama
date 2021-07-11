@@ -152,6 +152,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         enemiesDead = new ArrayList<EnemyDied>();
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
+
+        //todo setting for switch from only gesture to only buttons. Now everything is active but personally I don't like it
         inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
             @Override
             public void onLeft() {
@@ -164,13 +166,23 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             }
 
             @Override
-            public void onUp() {
+            public void flingUp() {
                 jumps();
             }
 
             @Override
             public void onDown() {
 
+            }
+
+            @Override
+            public void startPanDown() {
+                crouches(true);
+            }
+
+            @Override
+            public void stopPan() {
+                crouches(false);
             }
         }));
 
@@ -270,18 +282,12 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
         if (actions.get(CROUCH)) {
             // crouches
-            if (llama.isStanding())
-                llama.crouch(true);
+            crouches(true);
 
-            llama.setStanding(false);
-            actions.put(CROUCH, true);
         } else if (!actions.get(CROUCH)) {
             // stands up
-            if (!llama.isStanding())
-                llama.crouch(false);
+            crouches(false);
 
-            llama.setStanding(true);
-            actions.put(CROUCH, false);
         }
 
         if (actions.get(PUNCH)) {
@@ -307,6 +313,22 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             Settings.stopMusic(game.getAssets().GAME_MUSIC1);
             dispose();
             game.setScreen(new MainMenuScreen(game));
+        }
+    }
+
+    private void crouches(boolean crouches) {
+        if(crouches){
+            if (llama.isStanding())
+                llama.crouch(true);
+
+            llama.setStanding(false);
+            actions.put(CROUCH, true);
+        }else{
+            if (!llama.isStanding())
+                llama.crouch(false);
+
+            llama.setStanding(true);
+            actions.put(CROUCH, false);
         }
     }
 

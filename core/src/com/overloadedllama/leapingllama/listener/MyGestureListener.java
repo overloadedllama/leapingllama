@@ -8,9 +8,13 @@ public class MyGestureListener extends GestureDetector {
 
         void onRight();
 
-        void onUp();
+        void flingUp();
 
         void onDown();
+
+        void startPanDown();
+
+        void stopPan();
     }
 
     public MyGestureListener(DirectionListener directionListener) {
@@ -36,12 +40,27 @@ public class MyGestureListener extends GestureDetector {
                 if(velocityY>0){
                     directionListener.onDown();
                 }else{
-                    directionListener.onUp();
+                    directionListener.flingUp();
                 }
             }
             return super.fling(velocityX, velocityY, button);
         }
 
+
+        @Override
+        public boolean pan(float x, float y, float deltaX, float deltaY) {
+            if(deltaY>0)
+                directionListener.startPanDown();
+
+            return super.pan(x, y, deltaX, deltaY);
+        }
+
+        @Override
+        public boolean panStop(float x, float y, int pointer, int button) {
+
+            directionListener.stopPan();
+            return super.panStop(x, y, pointer, button);
+        }
     }
 
 }
