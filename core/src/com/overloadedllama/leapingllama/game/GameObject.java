@@ -54,6 +54,25 @@ public class GameObject implements TestConstant {
 
     }
 
+    public GameObject(Texture texture, float x, float y, float h, Batch batch) {
+        this.x = x;
+        this.y = y;
+
+        this.h = h;
+        this.texture = texture;
+        this.batch = batch;
+
+        destroyable = false;
+
+        w = h/texture.getHeight()*texture.getWidth();
+        sprite = new Sprite(this.texture);
+        sprite.setSize(w, h);
+        sprite.setOriginCenter();
+        sprite.rotate90(true);
+        setPosition(x,y, 0);
+    }
+
+
     public void draw() {
 
         sprite.draw(batch);

@@ -64,7 +64,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     static ArrayList<Platform> platforms;
     static ArrayList<Ground> grounds;
     static ArrayList<Obstacle> obstacles;
-
+    static ArrayList<Enemy> enemiesDead;
     static  ArrayList<Coin> coins;
     static ArrayList<Ammo> ammos;
 
@@ -149,6 +149,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         ammos = new ArrayList<>();
         coins = new ArrayList<>();
         obstacles = new ArrayList<>();
+        enemiesDead = new ArrayList<>();
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
     }
@@ -202,6 +203,9 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             ammo.draw();
         for (Obstacle obstacle : obstacles)
             obstacle.draw();
+        for (Enemy enemy: enemiesDead){
+            enemy.draw(delta);
+        }
         game.batch.end();
 
         stageUi.drawer();
@@ -413,6 +417,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     }
                 });
                 e.remove();
+                enemiesDead.add(new Enemy(enemy.getTexture(), enemy.getX(), enemy.getY(), enemy.getH(), game.batch, assets, true));
             }
         }
 
