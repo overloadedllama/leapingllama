@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
-public class GameObjectLabel extends GameObject{
+public class GameObjectLabel extends GameObject {
 
     int quantity;
     Label actor;

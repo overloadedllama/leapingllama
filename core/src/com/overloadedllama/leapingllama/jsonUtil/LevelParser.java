@@ -11,6 +11,10 @@ import java.util.*;
 public class LevelParser implements TestConstant {
     int levelNumber;
 
+    int totalCoinsSpawned = 0;
+    int totalAmmosSpawned = 0;
+    int totalEnemiesSpawned = 0;
+
     double levelLength;
 
     PriorityQueue<QueueObject> queue;
@@ -88,20 +92,23 @@ public class LevelParser implements TestConstant {
                         case GROUND:
                             grounds.add(d);
                             break;
-                        case ENEMIES:
-                            enemies.add(d);
-                            break;
                         case PLATFORM1:
                             platforms.add(d);
                             break;
                         case PLATFORM2:
                             platformsII.add(d);
                             break;
+                        case ENEMIES:
+                            enemies.add(d);
+                            totalEnemiesSpawned++;
+                            break;
                         case AMMO:
                             ammos.add(d);
+                            totalAmmosSpawned++;
                             break;
                         case COINS:
                             coins.add(d);
+                            totalCoinsSpawned++;
                             break;
                         case OBSTACLES:
                             obstacles.add(d);
@@ -230,5 +237,17 @@ public class LevelParser implements TestConstant {
 
     public double getLevelLength() {
         return levelLength;
+    }
+
+    public int getTotalCoinsSpawned() {
+        return totalCoinsSpawned;
+    }
+
+    public int getTotalAmmosSpawned() {
+        return totalAmmosSpawned;
+    }
+
+    public int getTotalEnemiesSpawned() {
+        return totalEnemiesSpawned;
     }
 }

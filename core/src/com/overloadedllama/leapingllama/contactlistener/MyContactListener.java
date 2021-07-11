@@ -62,6 +62,8 @@ public class MyContactListener implements ContactListener, TestConstant {
                 } else if (b.getUserData() instanceof Enemy) {
                     ((Enemy) b.getUserData()).setDestroyable(true);
                 }
+
+                parent.updateEnemiesKilled();
                 return true;
             }
         return false;
@@ -157,8 +159,7 @@ public class MyContactListener implements ContactListener, TestConstant {
 
 
             }
-
-
+            parent.updateCoinsTaken();
             return true;
         }
         return false;
@@ -180,7 +181,7 @@ public class MyContactListener implements ContactListener, TestConstant {
 
             }
 
-
+            parent.updateAmmosTaken();
             return true;
         }
         return false;

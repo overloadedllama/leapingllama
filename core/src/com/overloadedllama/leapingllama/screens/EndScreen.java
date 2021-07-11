@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -79,6 +80,8 @@ public class EndScreen implements Screen {
 
         starNum = (int) (totalLevelScore / lastScore);
 
+       System.out.println("totalLevelScore: " + totalLevelScore + ", lastScore: " + lastScore + ", starNum: " + starNum);
+
         for (int i = 0; i < 3; ++i) {
             if (i <= starNum) {
                 starArray[i] = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
@@ -97,6 +100,13 @@ public class EndScreen implements Screen {
         endTable.add(scoreLabel).width(600f).height(180f).padTop(40f).colspan(3);
 
         endStage.addActor(endTable);
+
+
+        for (float i = 0; i < 3; ++i) {
+            if (i <= starNum) {
+                starArray[(int) i].addAction(Actions.sequence(Actions.alpha(0.0f + i / 10), Actions.fadeIn((float) (2.0 + 1 * i))));
+            }
+        }
 
     }
 
