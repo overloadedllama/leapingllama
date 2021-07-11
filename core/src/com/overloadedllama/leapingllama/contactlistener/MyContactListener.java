@@ -49,8 +49,6 @@ public class MyContactListener implements ContactListener, TestConstant {
 
     private boolean isBulletEnemyContact(Fixture a, Fixture b) {
 
-
-
             if ((a.getUserData() instanceof Bullet && b.getUserData() instanceof Enemy)
                     || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Bullet)) {
 

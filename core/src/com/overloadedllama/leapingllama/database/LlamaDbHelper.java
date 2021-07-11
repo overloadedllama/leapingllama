@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class LlamaDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
     public static final String DATABASE_NAME = "Llama.db";
 
 
@@ -22,13 +22,10 @@ public class LlamaDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(LlamaDbContracts.SQL_PLAYER_CREATE);
+        db.execSQL(LlamaDbContracts.SQL_CREATE_LEVEL);
         db.execSQL(LlamaDbContracts.SQL_SETTINGS_CREATE);
     }
 
-    /**
-     * NOT final version, deletes ALL the tables entries on upgrade...
-     * @param db the game db
-     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(LlamaDbContracts.SQL_PLAYER_DROP);

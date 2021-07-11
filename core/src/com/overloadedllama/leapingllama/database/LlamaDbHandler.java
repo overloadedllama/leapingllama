@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 
 
@@ -23,8 +22,7 @@ public class LlamaDbHandler {
 
     // BASIC ELEMENTS
     public final String MONEY = "money";
-    public final String LEVEL = "level";
-    public final String BEST_SCORE = "bestScore";
+    public final String MAX_LEVEL = "level";
 
     public LlamaDbHandler(Context context) {
         this.context = context;
@@ -32,24 +30,29 @@ public class LlamaDbHandler {
 
     }
 
-    // inserts a new user
-    public void insertNewUser(String user) {
+    /**
+     * inserts a new user, both in Player and Level tables
+     * Firs checks that the user not exists yet, and in case the function creates it
+     * @param user the user to create
+     * @return true if the user didn't exists yet, false otherwise
+     */
+    public boolean insertNewUser(String user) {
+        if (existsUser(user)) {
+            return false;
+        }
+
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues newUser = new ContentValues();
         newUser.put(LlamaDbContracts.Player.PRIMARY_KEY, user);
 
-        long ret = 0;
-        try {
-            ret = db.insert(LlamaDbContracts.Player.TABLE_NAME, null, newUser);
-        } catch (SQLiteConstraintException unique) {
-            System.out.println("ERROR: user 'test' already exists.");
-        } finally {
-            System.out.println("ret db.insert() = " + ret);
-        }
+        db.insert(LlamaDbContracts.Player.TABLE_NAME, null, newUser);
+        db.insert(LlamaDbContracts.Level.TABLE_NAME, null, newUser);
+        db.insert(LlamaDbContracts.Settings.TABLE_NAME, null, newUser);
+        return true;
     }
 
-    public boolean existsUser(String user) {
+    private boolean existsUser(String user) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] projection = { LlamaDbContracts.Player.PRIMARY_KEY };
@@ -70,44 +73,24 @@ public class LlamaDbHandler {
         return ret;
     }
 
-    // insert settings referred to an existing user
-    public void insertSettingsNewUser(String user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues newUser = new ContentValues();
-        newUser.put(LlamaDbContracts.Settings.PRIMARY_KEY, user);
-
-        long ret = 0;
-        try {
-            ret = db.insert(LlamaDbContracts.Settings.TABLE_NAME, null, newUser);
-        } catch (SQLiteConstraintException unique) {
-            System.out.println("ERROR: user 'test' already exists.");
-        } finally {
-            System.out.println("ret db.insert() = " + ret);
-        }
-    }
-
     public double getUserPlayerTableData(String user, String basic) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] projection;
         switch (basic) {
             case MONEY:
-                projection = new String[] { LlamaDbContracts.Player.MONEY_COLUMN };
+                projection = new String[] { LlamaDbContracts.Player.MONEY};
                 break;
-            case LEVEL:
-                projection = new String[] { LlamaDbContracts.Player.LEVEL_COLUMN };
+            case MAX_LEVEL:
+                projection = new String[] { LlamaDbContracts.Player.MAX_LEVEL};
                 break;
-            case BEST_SCORE:
-                projection = new String[] { LlamaDbContracts.Player.SCORE_COLUMN };
-                break;
-            default:
+             default:
                 projection = null;
                 break;
         }
 
         if (projection == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Basic column " + basic + " doesn't exists in Player Table.");
         }
 
         String selection = LlamaDbContracts.Player.PRIMARY_KEY + " = ?";
@@ -125,23 +108,44 @@ public class LlamaDbHandler {
         return userBasic;
     }
 
+    public double getLevelBestScore(String user, int level) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        if (level < 0 || level > 5)
+            throw new IllegalArgumentException("Level " + level + " doesn't exists.");
 
+        String LEVEL = "level" + level;
+        String[] projection = { LEVEL };
+        String selection = LlamaDbContracts.Level.PRIMARY_KEY + " = ?";
+        String[] selectionArgs = { user };
+
+        Cursor cursor = db.query(
+                LlamaDbContracts.Level.TABLE_NAME,
+                projection, selection, selectionArgs,
+                null, null, null
+        );
+
+        cursor.moveToFirst();
+        double score = cursor.getDouble(0);
+        cursor.close();
+        return score;
+    }
 
     // check and set (eventually) the new user's best score
-    public boolean checkSetNewUserBestScore(String user, double score) {
-        double BestScore = getUserPlayerTableData(user, BEST_SCORE);
+    public boolean checkSetNewUserBestScore(String user, int level, double score) {
+        double BestScore = getLevelBestScore(user, level);
 
         if (score > BestScore) {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             ContentValues newBest = new ContentValues();
-            newBest.put(LlamaDbContracts.Player.SCORE_COLUMN, score);
+            String LEVEL = "level" + level;
+            newBest.put(LEVEL, score);
 
-            String selection = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
+            String selection = LlamaDbContracts.Level.PRIMARY_KEY + " LIKE ?";
             String[] selectionArgs = { user };
 
             int count = db.update(
-                    LlamaDbContracts.Player.TABLE_NAME,
+                    LlamaDbContracts.Level.TABLE_NAME,
                     newBest, selection, selectionArgs);
 
             if (count != 1) {
@@ -175,7 +179,7 @@ public class LlamaDbHandler {
         } else {
 
             ContentValues value = new ContentValues();
-            value.put(LlamaDbContracts.Player.MONEY_COLUMN, userMoney);
+            value.put(LlamaDbContracts.Player.MONEY, userMoney);
 
             String selection = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
             String[] selectionArgs = { user };
@@ -194,13 +198,12 @@ public class LlamaDbHandler {
         }
     }
 
-
     // set the new user level, which is the previous increased by 1
-    public void setUserLevel(String user, int level) {
+    public void setUserLevel(String user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues nextLevel = new ContentValues();
-        nextLevel.put(LlamaDbContracts.Player.LEVEL_COLUMN, getUserPlayerTableData(user, LEVEL) + 1);
+        nextLevel.put(LlamaDbContracts.Player.MAX_LEVEL, getUserPlayerTableData(user, MAX_LEVEL) + 1);
 
         String selection = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
         String[] selectionArgs = { user };
@@ -211,60 +214,18 @@ public class LlamaDbHandler {
         );
     }
 
-
-
-    public boolean isMusicOn(String user) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] projection = { LlamaDbContracts.Settings.MUSIC_COLUMN };
-
-        String selection = LlamaDbContracts.Settings.PRIMARY_KEY + " =? ";
-        String[] selectionArgs = { user };
-
-        Cursor cursor = db.query(
-                LlamaDbContracts.Settings.TABLE_NAME,
-                projection, selection, selectionArgs,
-                null, null, null
-        );
-
-        cursor.moveToFirst();
-        boolean ret = cursor.getInt(0) == 1;
-        cursor.close();
-        return ret;
-    }
-
-    public void setMusic(String user, boolean isOn) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        int music;
-        if (isOn) music = 1;
-        else music = 0;
-
-        ContentValues value = new ContentValues();
-        value.put(LlamaDbContracts.Settings.MUSIC_COLUMN, music);
-
-        String selection = LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
-        String[] selectionArgs = { user };
-
-        db.update(
-                LlamaDbContracts.Settings.TABLE_NAME,
-                value, selection, selectionArgs
-        );
-    }
-
     // resets all the progresses (money earned, levels, guns unlocked...) of the user
     public void resetProgresses(String user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues resetPlayer = new ContentValues();
-        resetPlayer.put(LlamaDbContracts.Player.SCORE_COLUMN, 0);
-        resetPlayer.put(LlamaDbContracts.Player.LEVEL_COLUMN, 0);
-        resetPlayer.put(LlamaDbContracts.Player.MONEY_COLUMN, 0);
+        resetPlayer.put(LlamaDbContracts.Player.MAX_LEVEL, 0);
+        resetPlayer.put(LlamaDbContracts.Player.MONEY, 0);
 
         ContentValues resetSetting = new ContentValues();
-        resetSetting.put(LlamaDbContracts.Settings.TAN_COLUMN, 0);
-        resetSetting.put(LlamaDbContracts.Settings.T_SHIRT_COLUMN, 0);
-        resetSetting.put(LlamaDbContracts.Settings.GUN_COLUMN, 0);
+        resetSetting.put(LlamaDbContracts.Settings.TAN, 0);
+        resetSetting.put(LlamaDbContracts.Settings.T_SHIRT, 0);
+        resetSetting.put(LlamaDbContracts.Settings.GUN, 0);
 
         String selPlayer = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
         String[] selPlayerArgs = { user };

@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.stages;
 
-import android.annotation.SuppressLint;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,7 +29,6 @@ public class MainMenuStage extends Stage {
     // Tables
     private Table mainMenuTable;
     private Table userTable;
-    private Table bestScoreTable;
     private Table moneyTable;
     private Table levelTable;
 
@@ -49,9 +47,6 @@ public class MainMenuStage extends Stage {
     // TextField
     private TextField user;
 
-    //Label
-    private Label bestScore;
-
     // Skin
     private Skin textButtonSkin;
     private Skin textFieldSkin;
@@ -69,7 +64,6 @@ public class MainMenuStage extends Stage {
 
         mainMenuTable = new Table();
         userTable = new Table();
-        bestScoreTable = new Table();
         moneyTable = new Table();
         levelTable = new Table();
 
@@ -105,17 +99,8 @@ public class MainMenuStage extends Stage {
         user = new TextField("  USER: " + Settings.getCurrentUser(), textFieldSkin);
         user.setDisabled(true);
         user.setAlignment(Align.center);
-
-        //Label
-        @SuppressLint("DefaultLocale") String bestScoreText = String.format("%.1f", Settings.getUserBestScore());
-        bestScore = new Label("BEST SCORE: " + bestScoreText, textFieldSkin);
-        bestScore.setAlignment(Align.center);
-        bestScore.setColor(255, 251, 209, 255); //NOT WORKING
-
-        // adding items into mainMenu and info Tables and them to the mainMenuStage
-        bestScoreTable.top().left();
-        bestScoreTable.add(bestScore).width(240F).height(80F).padTop(15F).padLeft(15F);
-        userTable.top();
+    // adding items into mainMenu and info Tables and them to the mainMenuStage
+        userTable.top().left();
         userTable.add(user).width(240F).height(80F).padTop(15F);
         moneyTable.top().right();
         moneyTable.add(moneyButton).padTop(15F).padRight(15F);
@@ -131,7 +116,6 @@ public class MainMenuStage extends Stage {
         mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
 
         addActor(userTable);
-        addActor(bestScoreTable);
         addActor(moneyTable);
 
         addActor(mainMenuTable);
@@ -230,9 +214,6 @@ public class MainMenuStage extends Stage {
     public void resizer() {
         userTable.invalidateHierarchy();
         userTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
-
-        bestScoreTable.invalidateHierarchy();
-        bestScoreTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
         moneyTable.invalidateHierarchy();
         moneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);

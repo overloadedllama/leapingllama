@@ -86,14 +86,6 @@ public final class Settings implements TestConstant {
         return ret;
     }
 
-    private boolean callExistsUser(String user) {
-        return llamaDbHandler.existsUser(user);
-    }
-
-    public static boolean existsUser(String user) {
-        // supposing user is not null...
-        return llamaDbHandler.existsUser(user);
-    }
 
     public static void insertNewUser(String user) {
         llamaDbHandler.insertNewUser(user);
@@ -104,32 +96,26 @@ public final class Settings implements TestConstant {
 
     public static int getUserMoney() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MONEY); }
 
-    public static int getUserLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.LEVEL); }
+    public static int getUserLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MAX_LEVEL); }
 
-    public static void setUserLevel(int level) { llamaDbHandler.setUserLevel(currentUser, level); }
+    public static void setUserLevel(int level) { llamaDbHandler.setUserLevel(currentUser); }
 
-    /**
-     * if userBestScore has not been loaded yet it is called the relative method before return
-     * @return the current user best score
-     */
-    public static double getUserBestScore() {
-        if (userBestScore == -1) {
-            userBestScore = llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.BEST_SCORE);
-        }
-        return userBestScore;
-    }
 
     /**
      * call the llamaDbHandler method to check and eventually set the new current user best score
      * @param lastScore the last current user score (as distance reached)
      * @return true if lastScore if higher than the bestScore, else false
      */
-    public static boolean checkSetNewUserBestScore(double lastScore) {
-        if (llamaDbHandler.checkSetNewUserBestScore(currentUser, lastScore)) {
+    public static boolean checkSetNewUserBestScore(int level, double lastScore) {
+        if (llamaDbHandler.checkSetNewUserBestScore(currentUser, level, lastScore)) {
             userBestScore = lastScore;
             return true;
         }
         return false;
+    }
+
+    public static double getLevelBestScore(int level) {
+        return llamaDbHandler.getLevelBestScore(currentUser, level);
     }
 
 

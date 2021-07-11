@@ -1,6 +1,7 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -8,7 +9,6 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -89,11 +89,14 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     float accumulator = 0;
     float stateTime = 0;
 
+    double score;
     double distance;
     double levelLength;
 
     float llamaX = 3;
     float velocity = 2;
+
+    int levelNumber;
 
     int money = 0;
     int bulletsGun = 0;
@@ -103,6 +106,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     public GameScreen(final GameApp game, int levelNumber) {
         this.game = game;
+        this.levelNumber = levelNumber;
         this.assets = game.getAssets();
         camera = new OrthographicCamera();
         camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
@@ -148,8 +152,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         ammos = new ArrayList<>();
         coins = new ArrayList<>();
 
-       // ammos.add(new Ammo(5f, 5.0f, 0.5f, 2, world, game.batch, assets, stageUi));
-
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
     }
@@ -160,11 +162,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         switch(state) {
 
             case RUN:
-
-
                 stepWorld();
-
-
 
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
@@ -205,7 +203,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             coin.draw();
         for (Ammo ammo : ammos)
             ammo.draw();
-
         game.batch.end();
 
 
@@ -221,7 +218,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             }
         }
 
-        //System.out.println("llama ...y: " + llama.getBody().getLinearVelocity());
         if (actions.get(JUMP)){
             // sometimes getLinearVelocity().y near -3.442763E-10...
             if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001)
@@ -350,7 +346,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
         accumulator += Math.min(delta, 0.25f);
 
-
         if (accumulator >= STEP_TIME) {
             accumulator -= STEP_TIME;
 
@@ -360,7 +355,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             stageUi.setDistance(distance);
             stateTime += delta;
             xSky += 0.1;
-
         }
     }
 
@@ -499,12 +493,23 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         return llama;
     }
 
+
+    private boolean checkWin() {
+        if (distance >= levelLength) {
+            System.out.println("WIN!");
+
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(game, levelNumber, score, 0,true));
+            return true;
+        }
+        return false;
+    }
+
+
     public void gameOver() {
-        /*
-        game.setScreen(new GameOverScreen(game, distance));
+        game.setScreen(new EndScreen(game, levelNumber , 300, 100, true));
         Settings.stopMusic("gameMusic");
         dispose();
-        */
+
     }
 
     @Override

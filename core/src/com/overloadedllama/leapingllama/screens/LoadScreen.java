@@ -64,10 +64,7 @@ public class LoadScreen implements Screen {
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
-                if (!Settings.existsUser(Settings.TEST_USER)) {
-                    Settings.insertNewUser(Settings.TEST_USER);
-                }
-                Settings.getUserBestScore();
+                Settings.insertNewUser(Settings.TEST_USER);
             }
         }));
 

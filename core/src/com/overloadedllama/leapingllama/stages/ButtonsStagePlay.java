@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class ButtonsStagePlay implements TestConstant {
 
     float tableWidth, tableHeight;
-    final float buttonSize = 100f;
+    final float buttonSize = 150f;
 
     Stage stage;
     ExtendViewport viewport;
