@@ -205,53 +205,98 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             ammo.draw();
         game.batch.end();
 
-
         stageUi.drawer();
 
         actions = stageUi.getActions();
 
+        manageActions();
+
+        stageUi.setActions(actions);
+        debugRenderer.render(world, camera.combined);
+
+        camera.update();
+        game.batch.setProjectionMatrix(camera.combined);
+
+    }
+
+
+    private void manageActions() {
         if (actions.get(SHOT)) {
             if (bulletsGun > 0) {
-                shot();
+                bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
+                Settings.playSound(SHOT);
                 --bulletsGun;
                 stageUi.setBullets(bulletsGun);
             }
+            actions.put(SHOT, false);
         }
 
         if (actions.get(JUMP)){
             // sometimes getLinearVelocity().y near -3.442763E-10...
-            if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001)
-                jump();
+            if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001) {
+                llama.jump();
+                actions.put(JUMP, false);
+            }
         }
 
-        crouch();
+        if (actions.get(CROUCH)) {
+            // crouches
+            if (llama.isStanding())
+                llama.crouch(true);
+
+            llama.setStanding(false);
+            actions.put(CROUCH, true);
+        } else if (!actions.get(CROUCH)) {
+            // stands up
+            if (!llama.isStanding())
+                llama.crouch(false);
+
+            llama.setStanding(true);
+            actions.put(CROUCH, false);
+        }
+
+        if (actions.get(PUNCH)) {
+            if (llama.isStanding()) {
+                llama.punch(true);
+                timePunching=System.currentTimeMillis();
+                actions.put(PUNCH, false);
+            }
+        }
 
         if (actions.get(PAUSE)) {
             pause();
         }
 
-        if (actions.get(PUNCH)) {
-            if (llama.isStanding()) {
-                punch();
-            }
-        }
-
-        if(actions.get(PLAY)) {
+        if (actions.get(PLAY)) {
             resume();
         }
 
-        if(actions.get(EXIT)){
-            exit();
+        if (actions.get(EXIT)) {
+            //here there will be to develop the stuff for save the checkpoint;
+            state = State.STOPPED;
+            actions.put(EXIT, false);
+            Settings.stopMusic(game.getAssets().GAME_MUSIC1);
+            dispose();
+            game.setScreen(new MainMenuScreen(game));
         }
-
-        stageUi.setActions(actions);
-        debugRenderer.render(world, camera.combined);
+    }
 
 
+    private void stepWorld() {
+        float delta = Gdx.graphics.getDeltaTime();
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        accumulator += Math.min(delta, 0.25f);
 
+        if (accumulator >= STEP_TIME) {
+            accumulator -= STEP_TIME;
+
+            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+
+            distance += .05f;
+            stageUi.setDistance(distance);
+            stateTime += delta;
+            xSky += 0.1;
+        }
     }
 
 
@@ -292,71 +337,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         }
     }
 
-    private void crouch() {
-        if (actions.get(CROUCH)) {
-            // crouches
-            if (llama.isStanding())
-                llama.crouch(true);
-
-            llama.setStanding(false);
-            actions.put(CROUCH, true);
-        } else if (!actions.get(CROUCH)) {
-            // stands up
-            if (!llama.isStanding())
-                llama.crouch(false);
-
-            llama.setStanding(true);
-            actions.put(CROUCH, false);
-        }
-    }
-
-    private void jump(){
-        llama.jump();
-
-        actions.put(JUMP, false);
-    }
-
-    private void punch() {
-        llama.punch(true);
-        timePunching=System.currentTimeMillis();
-        actions.put(PUNCH, false);
-
-    }
-
-    private void shot() {
-        bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
-        Settings.playSound(SHOT);
-        actions.put(SHOT, false);
-    }
-
-    private void exit() {
-        //here there will be to develop the stuff for save the checkpoint;
-        state = State.STOPPED;
-
-        actions.put(EXIT, false);
-
-        Settings.stopMusic(game.getAssets().GAME_MUSIC1);
-        dispose();
-        game.setScreen(new MainMenuScreen(game));
-
-    }
-
-    private void stepWorld() {
-        float delta = Gdx.graphics.getDeltaTime();
-
-        accumulator += Math.min(delta, 0.25f);
-
-        if (accumulator >= STEP_TIME) {
-            accumulator -= STEP_TIME;
-
-            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
-
-            distance += .05f;
-            stageUi.setDistance(distance);
-            stateTime += delta;
-            xSky += 0.1;
-        }
-    }
 
     private void updatePosition() {
         llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());

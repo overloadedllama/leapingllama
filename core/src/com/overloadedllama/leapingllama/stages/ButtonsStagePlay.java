@@ -113,8 +113,6 @@ public class ButtonsStagePlay implements TestConstant {
         buttonPauseMenuTable.add(buttonPlay);
         buttonPauseMenuTable.add(buttonSaveExit);
 
-        setDistance(0);
-
         float pad = 10f;
 
         buttonPauseTable.top().left();
