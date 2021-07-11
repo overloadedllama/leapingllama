@@ -283,7 +283,6 @@ public class ButtonsStagePlay implements TestConstant {
     public HashMap<String, Boolean> getActions() {
         return actions;
     }
-
     public void setActions(HashMap<String, Boolean> actions) {
         this.actions = actions;
     }

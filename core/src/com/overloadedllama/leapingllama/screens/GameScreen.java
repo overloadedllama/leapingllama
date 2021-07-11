@@ -377,6 +377,9 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     }
 
     private void removeObjects() {
+        if (isOutOfBonds(llama))
+            gameOver();
+
         // maybe with an Enum or something else is possible to collapse all for(...) in one
         for (Iterator<Bullet> b = bullets.iterator(); b.hasNext(); ) {
             final Bullet bullet = b.next();
@@ -453,17 +456,14 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
      */
     public <T extends GameObject> boolean isOutOfBonds(T go) {
 
-        /*
         if (go instanceof Enemy || go instanceof Bullet) {
             return go.getBody().getPosition().x < -viewport.getWorldWidth() ||
                     go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
                     go.getBody().getPosition().y < 0;
         } else if (go instanceof Platform || go instanceof Ground) {
-            return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
-        }
-         */
-        if (go instanceof Llama) {
-
+         //   return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
+        } else if (go instanceof Llama) {
+            return go.getY() < 0;
         }
 
         return false;

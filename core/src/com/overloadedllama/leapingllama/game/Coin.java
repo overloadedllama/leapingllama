@@ -14,7 +14,7 @@ public class Coin extends GameObjectLabel{
 
 
     public Coin(float x, float y, float h, int quantity, World world, Batch batch, Assets assets, ButtonsStagePlay stage){
-        super(assets.getSkin("coin"), x, y, h, quantity, world, batch, stage);
+        super(assets.getSkin("coin"), x, y, h, quantity, world, batch, stage, "pixeled");
 
 
         PolygonShape enemyShape = new PolygonShape();

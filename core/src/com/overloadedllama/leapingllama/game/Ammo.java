@@ -14,7 +14,7 @@ public class Ammo extends GameObjectLabel{
 
 
     public Ammo(float x, float y, float h, int quantity, World world, Batch batch, Assets assets, ButtonsStagePlay stage){
-        super(assets.getSkin("ammo"), x, y, h, quantity, world, batch, stage);
+        super(assets.getSkin("ammo"), x, y, h, quantity, world, batch, stage, "pixeledWhite");
 
 
         PolygonShape enemyShape = new PolygonShape();
