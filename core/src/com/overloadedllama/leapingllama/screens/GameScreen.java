@@ -1,9 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -15,10 +12,11 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.contactlistener.MyContactListener;
+import com.overloadedllama.leapingllama.listener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
 import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
+import com.overloadedllama.leapingllama.listener.MyGestureListener;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
 import java.util.*;
@@ -136,7 +134,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         llama = new Llama(llamaX, 6, (float) 1.6, world, game.batch, assets);
         distance = llamaX;
 
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+
         stageUi = new ButtonsStagePlay(game.getAssets());
+        inputMultiplexer.addProcessor(stageUi.getStage());
         stageUi.setUpButtonAction();
 
         enemies = new ArrayList<>();
@@ -150,6 +151,31 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         obstacles = new ArrayList<>();
         enemiesDead = new ArrayList<EnemyDied>();
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
+
+        inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
+            @Override
+            public void onLeft() {
+
+            }
+
+            @Override
+            public void onRight() {
+
+            }
+
+            @Override
+            public void onUp() {
+                jumps();
+            }
+
+            @Override
+            public void onDown() {
+
+            }
+        }));
+
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
 
     }
 
@@ -238,11 +264,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         }
 
         if (actions.get(JUMP)){
-            // sometimes getLinearVelocity().y near -3.442763E-10...
-            if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001) {
-                llama.jump();
-                actions.put(JUMP, false);
-            }
+
+            jumps();
         }
 
         if (actions.get(CROUCH)) {
@@ -284,6 +307,14 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             Settings.stopMusic(game.getAssets().GAME_MUSIC1);
             dispose();
             game.setScreen(new MainMenuScreen(game));
+        }
+    }
+
+    private void jumps() {
+        // sometimes getLinearVelocity().y near -3.442763E-10...
+        if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001) {
+            llama.jump();
+            actions.put(JUMP, false);
         }
     }
 
@@ -343,7 +374,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     if (random.nextFloat()<0.4){
                         yCreation = 4.2F;
                     }
-                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, world, game.batch, assets));
+                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, game.batch, assets));
             }
         }
     }

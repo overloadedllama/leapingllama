@@ -2,6 +2,7 @@ package com.overloadedllama.leapingllama.stages;
 
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -148,7 +149,6 @@ public class ButtonsStagePlay implements TestConstant {
         stage.addActor(buttonsAction);
         stage.addActor(labelsTable);
 
-        Gdx.input.setInputProcessor(stage);
 
         //creation of the dictionary
         actions = new HashMap<>(7);
@@ -307,5 +307,9 @@ public class ButtonsStagePlay implements TestConstant {
 
     public void addActor(Label actor) {
         stage.addActor(actor);
+    }
+
+    public InputProcessor getStage() {
+        return stage;
     }
 }

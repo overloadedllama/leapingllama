@@ -29,7 +29,7 @@ public class Enemy extends GameObject{
 
         enemyShape.dispose();
 
-        body.setLinearVelocity(-3f, 0);
+       // body.setLinearVelocity(-3f, 0);
         body.setFixedRotation(true);
     }
 

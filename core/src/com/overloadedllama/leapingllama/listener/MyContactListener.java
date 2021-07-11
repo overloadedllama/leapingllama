@@ -1,4 +1,4 @@
-package com.overloadedllama.leapingllama.contactlistener;
+package com.overloadedllama.leapingllama.listener;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.Settings;
