@@ -64,7 +64,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     static ArrayList<Platform> platforms;
     static ArrayList<Ground> grounds;
     static ArrayList<Obstacle> obstacles;
-    static ArrayList<Enemy> enemiesDead;
+    static ArrayList<EnemyDied> enemiesDead;
     static  ArrayList<Coin> coins;
     static ArrayList<Ammo> ammos;
 
@@ -96,7 +96,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     int levelNumber;
 
     int money = 0;
-    int bulletsGun = 0;
+    int ammunition = 0;
 
 
     // METHODS
@@ -149,7 +149,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         ammos = new ArrayList<>();
         coins = new ArrayList<>();
         obstacles = new ArrayList<>();
-        enemiesDead = new ArrayList<>();
+        enemiesDead = new ArrayList<EnemyDied>();
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
     }
@@ -188,7 +188,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 false, false);
 
 
-        llama.draw(stateTime);
+
         for (Ground ground : grounds)
             ground.draw();
         for (Bullet bullet : bullets)
@@ -203,9 +203,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             ammo.draw();
         for (Obstacle obstacle : obstacles)
             obstacle.draw();
-        for (Enemy enemy: enemiesDead){
+        for (EnemyDied enemy: enemiesDead){
             enemy.draw(delta);
         }
+        llama.draw(stateTime);
         game.batch.end();
 
         stageUi.drawer();
@@ -225,11 +226,11 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     private void manageActions() {
         if (actions.get(SHOT)) {
-            if (bulletsGun > 0) {
+            if (ammunition > 0) {
                 bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
                 Settings.playSound(SHOT);
-                --bulletsGun;
-                stageUi.setBullets(bulletsGun);
+                --ammunition;
+                stageUi.setBullets(ammunition);
             }
             actions.put(SHOT, false);
         }
@@ -298,7 +299,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             distance += .05f;
             stageUi.setDistance(distance);
             stateTime += delta;
-            xSky += 0.1;
+            xSky += 1;
         }
     }
 
@@ -387,6 +388,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             obstacle.setPosition(obstacle.getBody().getPosition().x, obstacle.getBody().getPosition().y, obstacle.getBody().getAngle());
         }
 
+        for (EnemyDied enemy : enemiesDead) {
+            enemy.setPosition(enemy.getX()-0.05f, enemy.getY());
+        }
+
     }
 
     private void removeObjects() {
@@ -417,7 +422,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     }
                 });
                 e.remove();
-                enemiesDead.add(new Enemy(enemy.getTexture(), enemy.getX(), enemy.getY(), enemy.getH(), game.batch, assets, true));
+                enemiesDead.add(new EnemyDied(enemy.getTexture(), enemy.getX(), enemy.getY(), enemy.getH(), game.batch, assets));
             }
         }
 
@@ -550,12 +555,12 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         stageUi.setMoney(money);
     }
 
-    public int getBulletsGun() {
-        return bulletsGun;
+    public int getAmmunition() {
+        return ammunition;
     }
 
-    public void setBulletsGun(int bulletsGun) {
-        this.bulletsGun = bulletsGun;
-        stageUi.setBullets(bulletsGun);
+    public void setAmmunition(int ammunition) {
+        this.ammunition = ammunition;
+        stageUi.setBullets(ammunition);
     }
 }

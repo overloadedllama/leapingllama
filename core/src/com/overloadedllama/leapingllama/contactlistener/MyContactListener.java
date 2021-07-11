@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.contactlistener;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.game.*;
@@ -172,11 +171,11 @@ public class MyContactListener implements ContactListener, TestConstant {
 
             if (a.getUserData() instanceof Ammo) {
                 ((Ammo) a.getUserData()).setDestroyable(true);
-                parent.setBulletsGun(parent.getBulletsGun()+((Ammo) a.getUserData()).getQuantity());
+                parent.setAmmunition(parent.getAmmunition()+((Ammo) a.getUserData()).getQuantity());
 
             } else {
                 ((Ammo) b.getUserData()).setDestroyable(true);
-                parent.setBulletsGun(parent.getBulletsGun()+((Ammo) b.getUserData()).getQuantity());
+                parent.setAmmunition(parent.getAmmunition()+((Ammo) b.getUserData()).getQuantity());
 
 
             }

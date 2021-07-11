@@ -65,6 +65,7 @@ public class GameObject implements TestConstant {
         destroyable = false;
 
         w = h/texture.getHeight()*texture.getWidth();
+
         sprite = new Sprite(this.texture);
         sprite.setSize(w, h);
         sprite.setOriginCenter();
