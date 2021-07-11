@@ -21,10 +21,7 @@ import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
 import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
@@ -151,7 +148,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         grounds = new ArrayList<>();
         ammos = new ArrayList<>();
         coins = new ArrayList<>();
-
+        obstacles = new ArrayList<>();
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
     }
@@ -203,6 +200,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             coin.draw();
         for (Ammo ammo : ammos)
             ammo.draw();
+        for (Obstacle obstacle : obstacles)
+            obstacle.draw();
         game.batch.end();
 
         stageUi.drawer();
@@ -332,7 +331,13 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
                 case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, game.batch, assets, stageUi)); break;
                 case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, game.batch, assets, stageUi)); break;
-
+                case OBSTACLES:
+                    float yCreation = 1.7F;
+                    Random random = new Random();
+                    if (random.nextFloat()<0.4){
+                        yCreation = 3.7F;
+                    }
+                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, world, game.batch, assets));
             }
         }
     }
@@ -372,6 +377,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         for(Ammo ammo : ammos){
             ammo.setPosition(ammo.getBody().getPosition().x, ammo.getBody().getPosition().y, ammo.getBody().getAngle());
 
+        }
+
+        for(Obstacle obstacle : obstacles){
+            obstacle.setPosition(obstacle.getBody().getPosition().x, obstacle.getBody().getPosition().y, obstacle.getBody().getAngle());
         }
 
     }
