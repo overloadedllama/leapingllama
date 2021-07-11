@@ -28,9 +28,6 @@ import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
 import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
 
-//this is the screen of the gameplay, i start to set up the environment.
-
-
 public class GameScreen extends ApplicationAdapter implements Screen, TestConstant {
 
     public enum State
@@ -82,11 +79,9 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     long timeLastEnemies;
     long timePunching;
 
-
     float accumulator = 0;
     float stateTime = 0;
 
-    double score;
     double distance;
     double levelLength;
 
@@ -97,6 +92,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     int money = 0;
     int bulletsGun = 0;
+
+    int coinsTaken = 0;
+    int ammosTaken = 0;
+    int enemiesKilled = 0;
 
 
     // METHODS
@@ -161,6 +160,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             case RUN:
                 stepWorld();
 
+                if (checkWin()) {
+                    // need to do anything?
+                }
+
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
                         llama.punch(false);
@@ -217,7 +220,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         game.batch.setProjectionMatrix(camera.combined);
 
     }
-
 
     private void manageActions() {
         if (actions.get(SHOT)) {
@@ -280,7 +282,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         }
     }
 
-
     private void stepWorld() {
         float delta = Gdx.graphics.getDeltaTime();
 
@@ -325,10 +326,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 lCreation = (float) queueObject.getLength();
             }
             switch (queueObject.getClassObject()) {
-                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, game.batch, assets)); break;
                 case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, game.batch, assets)); break;
                 case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
                 case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
+                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, game.batch, assets)); break;
                 case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, game.batch, assets, stageUi)); break;
                 case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, game.batch, assets, stageUi)); break;
                 case OBSTACLES:
@@ -341,7 +342,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             }
         }
     }
-
 
     private void updatePosition() {
         llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
@@ -458,14 +458,14 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     }
 
     /**
-     * for Enemy and Bullets checks if they are also felt out of ground
+     * for Enemy, Bullets, Ammos and Coins checks if they are also felt out of ground
      * @param go the object checked
      * @param <T> accepts all objects which extend GameObject class
      * @return true if the Object is out of bounds, else false
      */
     public <T extends GameObject> boolean isOutOfBonds(T go) {
 
-        if (go instanceof Enemy || go instanceof Bullet) {
+        if (go instanceof Enemy || go instanceof Bullet || go instanceof Ammo || go instanceof Coin) {
             return go.getBody().getPosition().x < -viewport.getWorldWidth() ||
                     go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
                     go.getBody().getPosition().y < 0;
@@ -482,21 +482,18 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         return llama;
     }
 
-
     private boolean checkWin() {
         if (distance >= levelLength) {
-            System.out.println("WIN!");
-
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(game, levelNumber, score, 0,true));
+            Settings.stopMusic(GAME_MUSIC1);
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(game, levelNumber, calculatePlayerLevelScore(), calculateTotalLevelScore(),true));
             return true;
         }
         return false;
     }
 
-
     public void gameOver() {
         game.setScreen(new EndScreen(game, levelNumber , 300, 100, true));
-        Settings.stopMusic("gameMusic");
+        Settings.stopMusic(GAME_MUSIC1);
         dispose();
 
     }
@@ -552,5 +549,28 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     public void setBulletsGun(int bulletsGun) {
         this.bulletsGun = bulletsGun;
         stageUi.setBullets(bulletsGun);
+    }
+
+    public void updateEnemiesKilled() {
+        enemiesKilled++;
+    }
+
+    public void updateCoinsTaken() {
+        coinsTaken++;
+    }
+
+    public void updateAmmosTaken() {
+        ammosTaken++;
+    }
+
+    private double calculatePlayerLevelScore() {
+        return levelLength + coinsTaken * 30 + enemiesKilled * 20 + ammosTaken * 10;
+    }
+
+    private double calculateTotalLevelScore() {
+        return  levelLength +
+                levelParser.getTotalCoinsSpawned()* 30 +
+                levelParser.getTotalEnemiesSpawned() * 20 +
+                levelParser.getTotalAmmosSpawned() * 10;
     }
 }
