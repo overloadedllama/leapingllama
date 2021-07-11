@@ -335,7 +335,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     float yCreation = 1.7F;
                     Random random = new Random();
                     if (random.nextFloat()<0.4){
-                        yCreation = 3.7F;
+                        yCreation = 4.2F;
                     }
                     obstacles.add(new Obstacle(xCreation, yCreation, 1f, world, game.batch, assets));
             }

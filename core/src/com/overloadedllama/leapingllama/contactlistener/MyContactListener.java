@@ -34,7 +34,7 @@ public class MyContactListener implements ContactListener, TestConstant {
 
         isAmmoCollected(fa, fb);
         isCoinCollected(fa, fb);
-
+        isNotObstacleDodged(fa, fb);
     }
 
     @Override
@@ -178,6 +178,25 @@ public class MyContactListener implements ContactListener, TestConstant {
                 ((Ammo) b.getUserData()).setDestroyable(true);
                 parent.setBulletsGun(parent.getBulletsGun()+((Ammo) b.getUserData()).getQuantity());
 
+
+            }
+
+
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isNotObstacleDodged(Fixture a, Fixture b) {
+        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Obstacle)
+                || (a.getUserData() instanceof Obstacle && b.getUserData() instanceof Llama)) {
+
+
+            if (a.getUserData() instanceof Llama) {
+                parent.gameOver();
+
+            } else {
+                parent.gameOver();
 
             }
 
