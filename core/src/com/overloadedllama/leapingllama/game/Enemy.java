@@ -18,7 +18,7 @@ public class Enemy extends GameObject{
         int randomNumber = random.nextInt(2);
 
         if(randomNumber == 1){
-            texture = assets.getTexture("alienOrange");
+            texture = assets.getTexture("alienYellow");
             sprite.setTexture(texture);
         }
 
@@ -30,7 +30,7 @@ public class Enemy extends GameObject{
         enemyShape.dispose();
 
         body.setLinearVelocity(-3f, 5f);
-
+        body.setFixedRotation(true);
     }
 
 }

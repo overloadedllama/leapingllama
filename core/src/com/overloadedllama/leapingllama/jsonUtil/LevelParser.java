@@ -25,6 +25,7 @@ public class LevelParser implements TestConstant {
     ArrayList<Double> coinsNum;
     ArrayList<Double> ammos;
     ArrayList<Double> ammoNum;
+    ArrayList<Double> obstacles;
 
     String[] actorStrings = {
             "enemies",
@@ -32,7 +33,8 @@ public class LevelParser implements TestConstant {
             "ammo",
             "platformI",
             "platformII",
-            "grounds" };
+            "grounds",
+            "obstacles"};
 
 
     String[] actorSupportStrings = {
@@ -65,6 +67,7 @@ public class LevelParser implements TestConstant {
         coinsNum = new ArrayList<>();
         ammos = new ArrayList<>();
         ammoNum  = new ArrayList<>();
+        obstacles = new ArrayList<>();
 
         JsonValue root = new JsonReader().parse(Gdx.files.internal("game.json"));
 
@@ -99,6 +102,9 @@ public class LevelParser implements TestConstant {
                             break;
                         case COINS:
                             coins.add(d);
+                            break;
+                        case OBSTACLES:
+                            obstacles.add(d);
                             break;
                     }
                 }
@@ -184,6 +190,8 @@ public class LevelParser implements TestConstant {
                 return platforms;
             case PLATFORM2:
                 return platformsII;
+            case OBSTACLES:
+                return obstacles;
         }
         return null;
     }
@@ -209,7 +217,10 @@ public class LevelParser implements TestConstant {
     }
 
     private boolean isBasicArray(String actorString) {
-        return actorString.equals(ENEMIES);
+        if (actorString.equals(ENEMIES) || actorString.equals(OBSTACLES))
+            return true;
+        else
+            return false;
     }
 
     // should be checked if the queue isn't empty?

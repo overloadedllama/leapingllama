@@ -11,7 +11,7 @@ import java.util.Random;
 public class Obstacle extends GameObject{
 
     public Obstacle(float x, float y, float h, World world, Batch batch, Assets assets){
-        super(assets.getTexture("alienOrange"), x, y, h, world, batch);
+        super(assets.getTexture("alienOrangeFlying"), x, y, h, world, batch);
 
 
         PolygonShape enemyShape = new PolygonShape();
@@ -21,7 +21,7 @@ public class Obstacle extends GameObject{
 
         enemyShape.dispose();
 
-        body.setLinearVelocity(-3f, 5f);
+        body.setLinearVelocity(-3f, 0f);
 
     }
 

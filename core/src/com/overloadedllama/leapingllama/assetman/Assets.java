@@ -51,7 +51,7 @@ public class Assets {
 
         // loading textures
         manager.load("enemies/alienCyan.png", Texture.class);
-        manager.load("enemies/alienOrange.png", Texture.class);
+        manager.load("enemies/alienOrangeFlying.png", Texture.class);
         manager.load("llama/llamaStanding.png", Texture.class);
         manager.load("llama/llamaCrouching.png", Texture.class);
         manager.load("llama/llamaPunching.png", Texture.class);
@@ -62,6 +62,8 @@ public class Assets {
         manager.load("screen_backgrounds/game_over.png", Texture.class);
         manager.load("screen_backgrounds/quiteBlack.png", Texture.class);
         manager.load("llama/llamaWalking.png", Texture.class);
+        manager.load("enemies/alienYellow.png", Texture.class);
+
 
         // loading sounds
         manager.load("sounds/punch.wav", Sound.class);
@@ -91,8 +93,9 @@ public class Assets {
 
     public Texture getTexture(String texture) {
         switch (texture) {
-            case "alienOrange": return manager.get("enemies/alienOrange.png");
+            case "alienOrangeFlying": return manager.get("enemies/alienOrangeFlying.png");
             case "alienCyan": return manager.get("enemies/alienCyan.png");
+            case "alienYellow": return manager.get("enemies/alienYellow.png");
             case "llamaStanding": return manager.get("llama/llamaStanding.png");
             case "llamaCrouching": return manager.get("llama/llamaCrouching.png");
             case "llamaPunching": return manager.get("llama/llamaPunching.png");
@@ -103,6 +106,7 @@ public class Assets {
             case "game_over": return manager.get("screen_backgrounds/game_over.png");
             case "quiteBlack": return manager.get("screen_backgrounds/quiteBlack.png");
             case "llamaWalking": return manager.get("llama/llamaWalking.png");
+
 
         }
         return null;

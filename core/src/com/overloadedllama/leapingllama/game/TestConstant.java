@@ -13,6 +13,7 @@ public interface TestConstant {
     String PLATFORM1 = "platformI";
     String PLATFORM2 = "platformII";
     String GROUND = "grounds";
+    String OBSTACLES = "obstacles";
 
     // LevelParser support Strings
     String COINS_NUM = "coinsNum";
