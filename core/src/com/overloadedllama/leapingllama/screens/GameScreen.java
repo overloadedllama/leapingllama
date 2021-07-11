@@ -311,7 +311,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     }
 
     private void jumps() {
-        // sometimes getLinearVelocity().y near -3.442763E-10...
+        //todo sometimes getLinearVelocity().y near -3.442763E-10...
         if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001) {
             llama.jump();
             actions.put(JUMP, false);
