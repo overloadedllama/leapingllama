@@ -276,7 +276,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         }
 
         if (actions.get(JUMP)){
-
             jumps();
         }
 
@@ -475,7 +474,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     }
                 });
                 e.remove();
-                enemiesDead.add(new EnemyDied(enemy.getTexture(), enemy.getX(), enemy.getY(), enemy.getH(), game.batch, assets));
+                enemiesDead.add(new EnemyDied(String.valueOf(enemy.getTexture()), enemy.getX(), enemy.getY(), enemy.getH(), game.batch, assets));
             }
         }
 
