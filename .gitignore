@@ -110,7 +110,7 @@ fabric.properties
 
 .idea/
 .gradle/
-local.properties
+android/local.properties
 
 android/build/
 desktop/build/

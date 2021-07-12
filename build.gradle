@@ -93,6 +93,7 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-x86_64"
         api "com.badlogicgames.gdx-controllers:gdx-controllers-android:$gdxControllersVersion"
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+        implementation fileTree(dir: 'libs', include: '*.jar')
 
     }
 }
@@ -110,6 +111,8 @@ project(":core") {
         api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
 
         implementation 'com.google.android:android:4.1.1.4'
+        implementation fileTree(dir: 'libs', include: '*.jar')
+
 
     }
 }
