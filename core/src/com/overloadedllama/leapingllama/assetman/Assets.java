@@ -29,6 +29,7 @@ public class Assets {
     public void loadAllAssets() {
         // adds all the skins to the loading queue
         SkinLoader.SkinParameter bigButton = new SkinLoader.SkinParameter("ui/bigButton.atlas");
+        SkinLoader.SkinParameter backButton = new SkinLoader.SkinParameter("ui/backButton.atlas");
         SkinLoader.SkinParameter crouchButton = new SkinLoader.SkinParameter("ui/crouchButton.atlas");
         SkinLoader.SkinParameter fistButton = new SkinLoader.SkinParameter("ui/fistButton.atlas");
         SkinLoader.SkinParameter jumpButton = new SkinLoader.SkinParameter("ui/jumpButton.atlas");
@@ -40,6 +41,7 @@ public class Assets {
 
         // loading skins
         manager.load("ui/bigButton.json", Skin.class, bigButton);
+        manager.load("ui/backButton.json", Skin.class, backButton);
         manager.load("ui/coin.json", Skin.class, coin);
         manager.load("ui/crouchButton.json", Skin.class, crouchButton);
         manager.load("ui/fistButton.json", Skin.class, fistButton);
@@ -80,6 +82,7 @@ public class Assets {
     public Skin getSkin(String skin) {
         switch (skin) {
             case "bigButton":  return manager.get("ui/bigButton.json");
+            case "backButton": return manager.get("ui/backButton.json");
             case "coin":  return manager.get("ui/coin.json");
             case "crouch":  return manager.get("ui/crouchButton.json");
             case "punch":  return manager.get("ui/fistButton.json");
