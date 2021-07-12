@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -13,23 +12,16 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.game.TestConstant;
 import com.overloadedllama.leapingllama.listener.MyGestureListener;
 
 import java.util.HashMap;
 
 
-public class ButtonsStagePlay implements TestConstant {
+public class ButtonsStagePlay extends MyAbstractStage {
 
-    float tableWidth, tableHeight;
     final float buttonSize = 150f;
 
     boolean gestures;
-
-    private Stage stage;
-    ExtendViewport viewport;
-    Assets assets;
 
     Image fadeoutBackground;
 
@@ -72,14 +64,11 @@ public class ButtonsStagePlay implements TestConstant {
     HashMap<String, Boolean> actions;
 
 
-    public ButtonsStagePlay(Assets assets) {
-        this.assets = assets;
-
-        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT);
-        stage = new Stage(viewport);
+    public ButtonsStagePlay(final GameApp gameApp) {
+        super(gameApp, new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(stage);
+        inputMultiplexer.addProcessor(this);
         if (Settings.getGameMode().equals("GESTURES")) {
             //todo setting for switch from only gesture to only buttons. Now everything is active but personally I don't like it
             inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
@@ -116,8 +105,6 @@ public class ButtonsStagePlay implements TestConstant {
         }
         Gdx.input.setInputProcessor(inputMultiplexer);
 
-        tableWidth = GameApp.WIDTH;
-        tableHeight = GameApp.HEIGHT;
 
         // creation of Tables
         buttonsMovement = new Table();
@@ -193,11 +180,11 @@ public class ButtonsStagePlay implements TestConstant {
         labelsTable.add(labelDistance).width(labelW).height(labelH).padRight(pad);
 
         if (!gestures) {
-            stage.addActor(buttonsMovement);
+            addActor(buttonsMovement);
         }
-        stage.addActor(buttonPauseTable);
-        stage.addActor(buttonsAction);
-        stage.addActor(labelsTable);
+        addActor(buttonPauseTable);
+        addActor(buttonsAction);
+        addActor(labelsTable);
 
         //creation of the dictionary
         actions = new HashMap<>(7);
@@ -209,11 +196,6 @@ public class ButtonsStagePlay implements TestConstant {
         actions.put(PLAY, false);
         actions.put(EXIT, false);
 
-    }
-
-    public void drawer() {
-        stage.act();
-        stage.draw();
     }
 
     public void resizer() {
@@ -233,7 +215,7 @@ public class ButtonsStagePlay implements TestConstant {
     }
 
 
-    public void setUpButtonAction() {
+    public void setUpButtons() {
         for (String s : actions.keySet()){
             if (!s.equals(CROUCH))
                 actions.put(s, false);
@@ -247,14 +229,14 @@ public class ButtonsStagePlay implements TestConstant {
                 actions.put(PAUSE, true);
 
                 fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
-                fadeoutBackground.setBounds(0,0, viewport.getScreenWidth(), tableHeight);
-                stage.addActor(fadeoutBackground);
+                fadeoutBackground.setBounds(0,0, getViewport().getScreenWidth(), tableHeight);
+                addActor(fadeoutBackground);
 
                 buttonPlay.setPosition(tableWidth/2 - buttonPlay.getWidth()/2, tableHeight/2 - buttonPlay.getHeight()+20);
-                stage.addActor(buttonPlay);
+                addActor(buttonPlay);
 
                 buttonSaveExit.setPosition(tableWidth/2 - buttonPlay.getWidth()/2, tableHeight/2 - buttonPlay.getHeight()*2);
-                stage.addActor(buttonSaveExit);
+                addActor(buttonSaveExit);
 
             }
         });
@@ -357,11 +339,10 @@ public class ButtonsStagePlay implements TestConstant {
     }
 
     public void addActor(Label actor) {
-        stage.addActor(actor);
-
+        super.addActor(actor);
     }
 
     public InputProcessor getStage() {
-        return stage;
+        return this;
     }
 }

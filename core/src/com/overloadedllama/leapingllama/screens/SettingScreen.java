@@ -2,24 +2,16 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.assetman.Assets;
 
-public class SettingScreen implements Screen {
-    private final OrthographicCamera camera;
-    private final ExtendViewport viewport;
-    private final Assets assets;
-    GameApp game;
+public class SettingScreen extends MyAbstractScreen {
 
     private Stage settingsStage;
     private Table settingTable;
@@ -37,21 +29,12 @@ public class SettingScreen implements Screen {
     // Skins
     private Skin textButtonSkin;
 
-    public SettingScreen(GameApp game) {
-        this.game = game;
-        this.assets = game.getAssets();
-        camera = new OrthographicCamera();
-
-        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
-        viewport.apply();
-        camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
-
-        camera.update();
+    public SettingScreen(GameApp gameApp) {
+        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
     public void show() {
-
         settingsStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         settingTable = new Table();
         backButtonTable = new Table();
@@ -88,7 +71,7 @@ public class SettingScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
             }
         });
 
@@ -145,18 +128,17 @@ public class SettingScreen implements Screen {
         settingsStage.act();
         settingsStage.draw();
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        super.render(delta);
 
-        game.batch.begin();
-        game.font.setColor(0 , 255, 0, 1);
-        game.batch.end();
+        gameApp.batch.begin();
+        gameApp.font.setColor(0 , 255, 0, 1);
+        gameApp.batch.end();
 
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        super.resize(width, height);
         settingTable.invalidateHierarchy();
         settingTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
