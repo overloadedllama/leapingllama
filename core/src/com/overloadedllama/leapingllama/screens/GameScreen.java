@@ -442,7 +442,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         }
 
         for (EnemyDied enemy : enemiesDead) {
-            enemy.setPosition(enemy.getX()-0.05f, enemy.getY());
+            enemy.setPosition(enemy.getX()-velocity*STEP_TIME, enemy.getY());
         }
 
     }
