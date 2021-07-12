@@ -2,10 +2,11 @@ package com.overloadedllama.leapingllama.listener;
 
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.LlamaConstants;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 
-public class MyContactListener implements ContactListener, TestConstant {
+public class MyContactListener implements ContactListener, LlamaConstants {
 
     final GameScreen parent;
 

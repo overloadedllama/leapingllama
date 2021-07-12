@@ -6,9 +6,9 @@ import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.game.TestConstant;
+import com.overloadedllama.leapingllama.LlamaConstants;
 
-public abstract class MyAbstractScreen implements Screen, TestConstant {
+public abstract class MyAbstractScreen implements Screen, LlamaConstants {
     final GameApp gameApp;
     final Assets assets;
 

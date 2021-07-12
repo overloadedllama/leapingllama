@@ -3,17 +3,17 @@ package com.overloadedllama.leapingllama.jsonUtil;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
-import com.overloadedllama.leapingllama.game.TestConstant;
+import com.overloadedllama.leapingllama.LlamaConstants;
 
 import java.util.*;
 
 
-public class LevelParser implements TestConstant {
+public class LevelParser implements LlamaConstants {
     int levelNumber;
 
-    int totalCoinsSpawned = 0;
-    int totalAmmosSpawned = 0;
-    int totalEnemiesSpawned = 0;
+    int totalCoinsSpawned;
+    int totalAmmosSpawned;
+    int totalEnemiesSpawned;
 
     double levelLength;
 
@@ -100,15 +100,12 @@ public class LevelParser implements TestConstant {
                             break;
                         case ENEMIES:
                             enemies.add(d);
-                            totalEnemiesSpawned++;
                             break;
                         case AMMO:
                             ammos.add(d);
-                            totalAmmosSpawned++;
                             break;
                         case COINS:
                             coins.add(d);
-                            totalCoinsSpawned++;
                             break;
                         case OBSTACLES:
                             obstacles.add(d);
@@ -181,6 +178,10 @@ public class LevelParser implements TestConstant {
             }
         }
 
+        totalAmmosSpawned = ammos.size();
+        totalCoinsSpawned = coins.size();
+        totalEnemiesSpawned = enemies.size();
+
     }
 
     private ArrayList<Double> getActorArray(String actorString) {
@@ -224,10 +225,7 @@ public class LevelParser implements TestConstant {
     }
 
     private boolean isBasicArray(String actorString) {
-        if (actorString.equals(ENEMIES) || actorString.equals(OBSTACLES))
-            return true;
-        else
-            return false;
+        return actorString.equals(ENEMIES) || actorString.equals(OBSTACLES);
     }
 
     // should be checked if the queue isn't empty?
@@ -235,19 +233,9 @@ public class LevelParser implements TestConstant {
         return queue;
     }
 
-    public double getLevelLength() {
-        return levelLength;
-    }
+    public double getLevelLength() { return levelLength; }
 
-    public int getTotalCoinsSpawned() {
-        return totalCoinsSpawned;
-    }
-
-    public int getTotalAmmosSpawned() {
-        return totalAmmosSpawned;
-    }
-
-    public int getTotalEnemiesSpawned() {
-        return totalEnemiesSpawned;
+    public double getTotalLevelScore() {
+        return levelLength + (totalCoinsSpawned * 30) + (totalAmmosSpawned * 20) + (totalAmmosSpawned * 10);
     }
 }

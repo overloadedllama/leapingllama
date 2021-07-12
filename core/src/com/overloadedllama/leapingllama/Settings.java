@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
-import com.overloadedllama.leapingllama.game.TestConstant;
 
 /**
  * We can convert Settings into an Interface, more readable?
@@ -15,7 +14,7 @@ import com.overloadedllama.leapingllama.game.TestConstant;
  * the smartphone.
  *
  */
-public final class Settings implements TestConstant {
+public final class Settings implements LlamaConstants {
     @SuppressLint("StaticFieldLeak")
     private static LlamaDbHandler llamaDbHandler;
     private static Assets assets;
@@ -31,13 +30,10 @@ public final class Settings implements TestConstant {
     // if MUSIC/SOUND/GORE == true, then it is set ON, else OFF
     private static boolean SOUND = true;
     private static float SOUND_VOLUME = 1;
-
     private static boolean MUSIC = true;
     private static float MUSIC_VOLUME = 1;
-
     private static boolean GORE = true;
 
-    // if true is set for dx-players, else for sx-players
     private enum GAME_MODE
     {
         LX_DX,
@@ -46,7 +42,6 @@ public final class Settings implements TestConstant {
     }
 
     private static GAME_MODE gameMode = GAME_MODE.LX_DX;
-    private static boolean LX_DX = true;
 
     // Sounds
     private static Sound punch;
@@ -55,6 +50,10 @@ public final class Settings implements TestConstant {
     // Music
     private static Music gameMusic;
     private static Music mainMenuMusic;
+
+    // GamePlay
+    private static boolean initialAmmos = false;
+    private static boolean secondLife = false;
 
 
 
@@ -192,6 +191,25 @@ public final class Settings implements TestConstant {
             case MAIN_MENU_MUSIC: mainMenuMusic.stop();
         }
     }
+
+
+
+    // GAMEPLAY
+   public static boolean hasInitialAmmos() {
+        return initialAmmos;
+   }
+
+   public static void setInitialAmmos() {
+        initialAmmos = !initialAmmos;
+   }
+
+   public static boolean hasSecondLife() {
+        return secondLife;
+   }
+
+   public static void setSecondLife() {
+       secondLife = !secondLife;
+   }
 
 }
 

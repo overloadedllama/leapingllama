@@ -1,6 +1,6 @@
-package com.overloadedllama.leapingllama.game;
+package com.overloadedllama.leapingllama;
 
-public interface TestConstant {
+public interface LlamaConstants {
 
     String LLAMA = "llama";
 

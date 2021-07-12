@@ -77,9 +77,10 @@ public class GameScreen extends MyAbstractScreen {
     int money = 0;
     int ammunition = 0;
 
-    int coinsTaken = 0;
-    int ammosTaken = 0;
+    int coinsCollected = 0;
+    int ammosCollected = 0;
     int enemiesKilled = 0;
+    double totalLevelScore;
 
 
     // METHODS
@@ -102,7 +103,7 @@ public class GameScreen extends MyAbstractScreen {
         levelParser = new LevelParser(levelNumber);
         levelLength = levelParser.getLevelLength();
         queue = levelParser.getQueue();
-
+        totalLevelScore = levelParser.getTotalLevelScore();
     }
 
     @Override
@@ -129,6 +130,11 @@ public class GameScreen extends MyAbstractScreen {
         obstacles = new ArrayList<>();
         enemiesDead = new ArrayList<>();
         Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
+
+        if (Settings.hasInitialAmmos()) {
+            ammunition = 5;
+            Settings.setInitialAmmos();
+        }
 
     }
 
@@ -195,7 +201,6 @@ public class GameScreen extends MyAbstractScreen {
 
         stageUi.setActions(actions);
         debugRenderer.render(world, camera.combined);
-
 
         super.render(delta);
     }
@@ -304,7 +309,6 @@ public class GameScreen extends MyAbstractScreen {
             return;
 
         if (queueObject.getX() - queueObject.getLength()/2 < distance+METER_WIDTH) {
-            //System.out.println("llama.X: " + llama.getX() + " - Distance: " + distance + " - " + queueObject);
             queueObject = queue.poll();
             if (queueObject == null)
                 return;
@@ -483,17 +487,33 @@ public class GameScreen extends MyAbstractScreen {
     private boolean checkWin() {
         if (distance >= levelLength) {
             Settings.stopMusic(GAME_MUSIC1);
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), calculateTotalLevelScore(),true));
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), totalLevelScore,true));
             return true;
         }
         return false;
     }
 
+    /**
+     * if the player has bought the second life when he dies (enemy/obstacle collision, falling out of ground...)
+     * all the enemies are destroyed and the llama restarts at y = 6 (does it work fine?)
+     */
     public void gameOver() {
-        gameApp.setScreen(new EndScreen(gameApp, levelNumber , calculatePlayerLevelScore(), calculateTotalLevelScore(), true));
-        Settings.stopMusic(GAME_MUSIC1);
-        dispose();
+        if (!Settings.hasSecondLife()) {
+            gameApp.setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), totalLevelScore, true));
+            Settings.stopMusic(GAME_MUSIC1);
+            dispose();
+        } else {
+            for (Enemy enemy : enemies) {
+                enemy.setDestroyable(true);
+            }
+            for (Obstacle obstacle : obstacles) {
+                obstacle.setDestroyable(true);
+            }
 
+            llama.setY(6);
+
+            Settings.setSecondLife();
+        }
     }
 
     @Override
@@ -553,24 +573,18 @@ public class GameScreen extends MyAbstractScreen {
     }
 
     public void updateCoinsTaken() {
-        coinsTaken++;
+        coinsCollected++;
     }
 
     public void updateAmmosTaken() {
-        ammosTaken++;
+        ammosCollected++;
     }
 
     private double calculatePlayerLevelScore() {
-        return  levelLength +
-                coinsTaken * 30 +
+        return  distance +
+                coinsCollected * 30 +
                 enemiesKilled * 20 +
-                ammosTaken * 10;
+                ammosCollected * 10;
     }
 
-    private double calculateTotalLevelScore() {
-        return  levelLength +
-                levelParser.getTotalCoinsSpawned() * 30 +
-                levelParser.getTotalEnemiesSpawned() * 20 +
-                levelParser.getTotalAmmosSpawned() * 10;
-    }
 }

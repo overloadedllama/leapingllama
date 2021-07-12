@@ -5,9 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
+import com.overloadedllama.leapingllama.LlamaConstants;
 import com.overloadedllama.leapingllama.assetman.Assets;
 
-public class GameObject implements TestConstant {
+public class GameObject implements LlamaConstants {
 
     float x, y, w, h;
     Texture texture;

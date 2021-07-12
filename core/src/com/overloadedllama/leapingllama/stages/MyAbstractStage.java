@@ -5,9 +5,9 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.game.TestConstant;
+import com.overloadedllama.leapingllama.LlamaConstants;
 
-public abstract class MyAbstractStage extends Stage implements TestConstant {
+public abstract class MyAbstractStage extends Stage implements LlamaConstants {
     GameApp gameApp;
     Assets assets;
 

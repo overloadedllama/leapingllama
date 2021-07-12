@@ -2,11 +2,11 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
@@ -22,7 +22,7 @@ public class ShopScreen extends MyAbstractScreen {
     private ImageButton backButton;
 
     // TextField
-    private TextField userMoneyText;
+    private Label userMoneyText;
 
     // Skin
     private Skin backButtonSkin;
@@ -39,20 +39,19 @@ public class ShopScreen extends MyAbstractScreen {
         shopStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         shopTable = new Table();
 
-        // creation of backButton
-        backButtonSkin = new Skin(Gdx.files.internal("ui/backButton.json"),
-                new TextureAtlas(Gdx.files.internal("ui/backButton.atlas")));
-        backButton = new ImageButton(backButtonSkin);
+        backButtonSkin = assets.getSkin("backButton");
+        userMoneySkin = assets.getSkin("coin");
 
-        // creation of userMoney
-        userMoneySkin = new Skin(Gdx.files.internal("ui/bigButton.json"),
-                new TextureAtlas(Gdx.files.internal("ui/bigButton.atlas")));
-        userMoneyText = new TextField("money: " + userMoney, userMoneySkin);
+        backButton = new ImageButton(backButtonSkin);
+        userMoneyText = new Label("money: " + userMoney, userMoneySkin);
+        userMoneyText.setAlignment(Align.center);
+
+        float pad = 15f;
+        float itemHeight = 140f;
 
         shopTable.top().left();
-        shopTable.add(backButton).width(260F).height(120F);
-        shopTable.top().right();
-        shopTable.add(userMoneyText).width(260F).height(120F);
+        shopTable.add(backButton).width(260F).height(itemHeight);
+        shopTable.add(userMoneyText).width(140f).height(itemHeight).padLeft(GameApp.WIDTH - 400f - pad);
 
         shopStage.addActor(shopTable);
 
@@ -73,15 +72,13 @@ public class ShopScreen extends MyAbstractScreen {
         shopStage.act();
         shopStage.draw();
 
-        camera.update();
-        gameApp.batch.setProjectionMatrix(camera.combined);
-
+        super.render(delta);
 
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        super.resize(width, height);
 
         shopTable.invalidateHierarchy();
         shopTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
@@ -105,8 +102,6 @@ public class ShopScreen extends MyAbstractScreen {
     @Override
     public void dispose() {
         shopStage.dispose();
-
-        backButtonSkin.dispose();
 
     }
 }
