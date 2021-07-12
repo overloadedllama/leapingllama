@@ -14,19 +14,27 @@ import com.overloadedllama.leapingllama.GameApp;
 public class ShopScreen extends MyAbstractScreen {
 
     private Stage shopStage;
-    private Table shopTable;
+    private Table upperTable;
+    private Table itemListTable;
 
     float userMoney;
 
     // ImageButton
     private ImageButton backButton;
 
-    // TextField
-    private Label userMoneyText;
+    // TextButtons
+    private TextButton previousItem;
+    private TextButton nextItem;
 
-    // Skin
+    // Labels
+    private Label userMoneyText;
+    private Label item;
+
+    // Skins
     private Skin backButtonSkin;
-    private Skin userMoneySkin;
+    private Skin coinLabelSkin;
+    private Skin ammunitionSkin;
+    private Skin prevNextSkin;
 
     public ShopScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
@@ -37,23 +45,37 @@ public class ShopScreen extends MyAbstractScreen {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
         shopStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
-        shopTable = new Table();
+        upperTable = new Table();
+        itemListTable = new Table();
 
         backButtonSkin = assets.getSkin("backButton");
-        userMoneySkin = assets.getSkin("coin");
+        coinLabelSkin = assets.getSkin("coin");
+        prevNextSkin = assets.getSkin("bigButton");
+        ammunitionSkin = assets.getSkin("ammo");
 
         backButton = new ImageButton(backButtonSkin);
-        userMoneyText = new Label("money: " + userMoney, userMoneySkin);
+        userMoneyText = new Label("money: " + userMoney, coinLabelSkin);
         userMoneyText.setAlignment(Align.center);
+        previousItem = new TextButton("previous", prevNextSkin);
+        previousItem.setDisabled(true);
+        nextItem = new TextButton("next", prevNextSkin);
+        nextItem.setDisabled(true);
+        item = new Label("", ammunitionSkin);
 
         float pad = 15f;
         float itemHeight = 140f;
 
-        shopTable.top().left();
-        shopTable.add(backButton).width(260F).height(itemHeight);
-        shopTable.add(userMoneyText).width(140f).height(itemHeight).padLeft(GameApp.WIDTH - 400f - pad);
+        upperTable.top().left();
+        upperTable.add(backButton).width(260F).height(itemHeight);
+        upperTable.add(userMoneyText).width(140f).height(itemHeight).padLeft(GameApp.WIDTH - 400f - pad);
 
-        shopStage.addActor(shopTable);
+        itemListTable.center();
+        itemListTable.add(previousItem).width(200f).height(100f).padRight(15f);
+        itemListTable.add(item).width(400f).height(200f);
+        itemListTable.add(nextItem).width(200f).height(100f).padLeft(15f);
+
+        shopStage.addActor(itemListTable);
+        shopStage.addActor(upperTable);
 
         Gdx.input.setInputProcessor(shopStage);
 
@@ -80,8 +102,11 @@ public class ShopScreen extends MyAbstractScreen {
     public void resize(int width, int height) {
         super.resize(width, height);
 
-        shopTable.invalidateHierarchy();
-        shopTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+        upperTable.invalidateHierarchy();
+        upperTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+
+        itemListTable.invalidateHierarchy();
+        itemListTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
