@@ -32,21 +32,22 @@ public class LevelParser implements LlamaConstants {
     ArrayList<Double> obstacles;
 
     String[] actorStrings = {
-            "enemies",
-            "coins",
-            "ammo",
-            "platformI",
-            "platformII",
-            "grounds",
-            "obstacles"};
-
+            ENEMIES,
+            COINS,
+            AMMO,
+            PLATFORM1,
+            PLATFORM2,
+            GROUND,
+            OBSTACLES
+    };
 
     String[] actorSupportStrings = {
-            "coinsNum",
-            "ammoNum",
-            "platformILength",
-            "platformIILength",
-            "groundsLength"  };
+            COINS_NUM,
+            AMMO_NUM,
+            PLATFORM1_LEN,
+            PLATFORM2_LEN,
+            GROUND_LEN
+    };
 
 
     /**
