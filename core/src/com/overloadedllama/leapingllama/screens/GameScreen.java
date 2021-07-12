@@ -50,7 +50,7 @@ public class GameScreen extends MyAbstractScreen {
     static ArrayList<Ammo> ammos;
 
     Box2DDebugRenderer debugRenderer;
-
+    static final double CHUNK_LENGTH = 50;
     static final float STEP_TIME = 1.0f / 60.0f;
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
@@ -83,6 +83,7 @@ public class GameScreen extends MyAbstractScreen {
     double totalLevelScore;
 
 
+
     // METHODS
 
     public GameScreen(final GameApp gameApp, int levelNumber) {
@@ -100,10 +101,19 @@ public class GameScreen extends MyAbstractScreen {
 
         actions = new HashMap<>();
 
-        levelParser = new LevelParser(levelNumber);
-        levelLength = levelParser.getLevelLength();
-        queue = levelParser.getQueue();
-        totalLevelScore = levelParser.getTotalLevelScore();
+
+        if (levelNumber != -1) {
+            levelParser = new LevelParser(levelNumber);
+            levelLength = levelParser.getLevelLength();
+            queue = levelParser.getQueue();
+            totalLevelScore = levelParser.getTotalLevelScore();
+        } else {
+            levelLength = CHUNK_LENGTH;
+            levelParser = new LevelParser();
+            queue = levelParser.getQueue();
+
+
+        }
     }
 
     @Override
@@ -158,7 +168,7 @@ public class GameScreen extends MyAbstractScreen {
 
                 updatePosition();
                 removeObjects();
-                loadLevel(distance);
+                loadLevel(distance%levelLength);
                 llama.preserveX(llamaX);
                 break;
         }
@@ -303,6 +313,10 @@ public class GameScreen extends MyAbstractScreen {
      * @param distance the distance reached by llama
      */
     private void loadLevel(double distance) {
+
+        if (distance == 0) {
+
+        }
 
         QueueObject queueObject = queue.peek();
         if (queueObject == null)

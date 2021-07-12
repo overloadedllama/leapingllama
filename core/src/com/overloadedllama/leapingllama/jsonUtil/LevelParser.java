@@ -153,6 +153,66 @@ public class LevelParser implements LlamaConstants {
             throw new IllegalArgumentException();
         }
 
+        queueParser();
+
+        totalAmmosSpawned = ammos.size();
+        totalCoinsSpawned = coins.size();
+        totalEnemiesSpawned = enemies.size();
+
+    }
+
+
+    public LevelParser(){
+        enemies = new ArrayList<>();
+        grounds = new ArrayList<>();
+        groundsLen  = new ArrayList<>();
+        platforms = new ArrayList<>();
+        platformsLen  = new ArrayList<>();
+        platformsII = new ArrayList<>();
+        platformsIILen = new ArrayList<>();
+        coins = new ArrayList<>();
+        coinsNum = new ArrayList<>();
+        ammos = new ArrayList<>();
+        ammoNum  = new ArrayList<>();
+        obstacles = new ArrayList<>();
+
+        InfRunParser();
+    }
+
+    private void InfRunParser() {
+
+        queue = new PriorityQueue<>();
+        LevelCreator levelCreator = new LevelCreator(1, "");
+
+        enemies = levelCreator.getListEnemies();
+        grounds = levelCreator.getListGrounds();
+        groundsLen  = levelCreator.getListGroundsLength();
+        platforms = levelCreator.getListPlatformsI();
+        platformsLen  = levelCreator.getListPlatformsILength();
+        platformsII = levelCreator.getListPlatformsII();
+        platformsIILen = levelCreator.getListPlatformsIILength();
+        coins = levelCreator.getListMoney();
+        obstacles = levelCreator.getListObstacles();
+        ammos = levelCreator.getListAmmo();
+
+        coinsNum = new ArrayList<>();
+        ammoNum  = new ArrayList<>();
+
+        for (Integer i : levelCreator.getListAmmoNum())
+            ammoNum.add((double) i);
+
+        for (Integer i : levelCreator.getListMoneyNum())
+            coinsNum.add((double) i);
+
+        queueParser();
+
+        totalAmmosSpawned = ammos.size();
+        totalCoinsSpawned = coins.size();
+        totalEnemiesSpawned = enemies.size();
+
+    }
+
+    private void queueParser(){
         for (String actorString : actorStrings) {
             ArrayList<Double> array = getActorArray(actorString);
 
@@ -178,11 +238,12 @@ public class LevelParser implements LlamaConstants {
             }
         }
 
-        totalAmmosSpawned = ammos.size();
-        totalCoinsSpawned = coins.size();
-        totalEnemiesSpawned = enemies.size();
-
     }
+
+
+
+
+
 
     private ArrayList<Double> getActorArray(String actorString) {
         switch (actorString) {

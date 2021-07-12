@@ -191,6 +191,8 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                Settings.stopMusic(assets.MAIN_MENU_MUSIC);
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, -1));
             }
         });
     }

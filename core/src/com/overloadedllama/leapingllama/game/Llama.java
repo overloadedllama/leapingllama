@@ -144,7 +144,7 @@ public class Llama extends GameObject {
         sprite.setPosition(x, y);
     }
 
-public boolean isStanding() { return isStanding; }
+    public boolean isStanding() { return isStanding; }
     public void setStanding(boolean value) { isStanding = value; }
 
     public boolean isPunching() { return isPunching; }
@@ -157,22 +157,22 @@ public boolean isStanding() { return isStanding; }
     public void draw(float stateTime){
 
 
-       if (isPunching || isCrouching ){
+        if (isPunching || isCrouching ){
 
-           draw();
-       } else {
+            draw();
+        } else {
 
 
-           TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
-           sprite = new Sprite(currentFrame);
+            TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
+            sprite = new Sprite(currentFrame);
 
-           //sprite = new Sprite(new Texture(Gdx.files.internal("llama/llamaStanding.png")));
+            //sprite = new Sprite(new Texture(Gdx.files.internal("llama/llamaStanding.png")));
 
-           sprite.setSize(w, h);
-           sprite.setPosition(x - w / 2, y - h / 2);
+            sprite.setSize(w, h);
+            sprite.setPosition(x - w / 2, y - h / 2);
 
-           sprite.draw(batch);
-       }
+            sprite.draw(batch);
+        }
     }
 
 }
