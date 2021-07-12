@@ -596,6 +596,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     public void setMoney(int money) {
         this.money = money;
         stageUi.setMoney(money);
+        Settings.playSound(CASH);
     }
 
     public int getAmmunition() {
@@ -605,6 +606,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     public void setAmmunition(int ammunition) {
         this.ammunition = ammunition;
         stageUi.setBullets(ammunition);
+        Settings.playSound(LOAD);
     }
 
     public void updateEnemiesKilled() {

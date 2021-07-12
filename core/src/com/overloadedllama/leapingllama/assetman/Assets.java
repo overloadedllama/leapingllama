@@ -69,7 +69,8 @@ public class Assets {
         manager.load("sounds/punch.wav", Sound.class);
         manager.load("sounds/laser.wav", Sound.class);
         //manager.load("sounds/fall1.mp3", Sound.class);
-
+        manager.load("sounds/rifleLoad.mp3", Sound.class);
+        manager.load("sounds/cashRegister.mp3", Sound.class);
         // loading musics
         manager.load("musics/gameMusic1.mp3", Music.class);
         manager.load("musics/mainMenuMusic.mp3", Music.class);
@@ -116,6 +117,8 @@ public class Assets {
         switch (sound) {
             case "punch": return manager.get("sounds/punch.wav");
             case "shot": return manager.get("sounds/laser.wav");
+            case "cash" : return manager.get("sounds/cashRegister.mp3");
+            case "load": return manager.get("sounds/rifleLoad.mp3");
         }
         return null;
     }

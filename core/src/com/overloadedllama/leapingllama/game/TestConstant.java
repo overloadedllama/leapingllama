@@ -34,6 +34,8 @@ public interface TestConstant {
     String PLAY = "play";
     String PAUSE = "pause";
     String EXIT = "exit";
+    String CASH = "cash";
+    String LOAD = "load";
 
     // Filter categories
     short CATEGORY_LLAMA = 0x001;
