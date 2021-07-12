@@ -46,7 +46,8 @@ public final class Settings implements LlamaConstants {
     // Sounds
     private static Sound punch;
     private static Sound shot;
-
+    private static Sound cash;
+    private static Sound load;
     // Music
     private static Music gameMusic;
     private static Music mainMenuMusic;
@@ -159,6 +160,8 @@ public final class Settings implements LlamaConstants {
     public static void setSoundsMusics() {
         punch = assets.getSound(PUNCH);
         shot = assets.getSound(SHOT);
+        cash = assets.getSound(CASH);
+        load = assets.getSound(LOAD);
 
         gameMusic = assets.getMusic(GAME_MUSIC1);
         mainMenuMusic = assets.getMusic(MAIN_MENU_MUSIC);
@@ -171,6 +174,8 @@ public final class Settings implements LlamaConstants {
         switch (sound) {
             case PUNCH: punch.play(SOUND_VOLUME); break;
             case SHOT: shot.play(SOUND_VOLUME); break;
+            case CASH: cash.play(SOUND_VOLUME); break;
+            case LOAD: load.play(SOUND_VOLUME); break;
         }
     }
 

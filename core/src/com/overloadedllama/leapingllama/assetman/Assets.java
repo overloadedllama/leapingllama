@@ -29,7 +29,6 @@ public class Assets {
     public void loadAllAssets() {
         // adds all the skins to the loading queue
         SkinLoader.SkinParameter bigButton = new SkinLoader.SkinParameter("ui/bigButton.atlas");
-        SkinLoader.SkinParameter backButton = new SkinLoader.SkinParameter("ui/backButton.atlas");
         SkinLoader.SkinParameter crouchButton = new SkinLoader.SkinParameter("ui/crouchButton.atlas");
         SkinLoader.SkinParameter fistButton = new SkinLoader.SkinParameter("ui/fistButton.atlas");
         SkinLoader.SkinParameter jumpButton = new SkinLoader.SkinParameter("ui/jumpButton.atlas");
@@ -41,7 +40,6 @@ public class Assets {
 
         // loading skins
         manager.load("ui/bigButton.json", Skin.class, bigButton);
-        manager.load("ui/backButton.json", Skin.class, backButton);
         manager.load("ui/coin.json", Skin.class, coin);
         manager.load("ui/crouchButton.json", Skin.class, crouchButton);
         manager.load("ui/fistButton.json", Skin.class, fistButton);
@@ -66,10 +64,13 @@ public class Assets {
         manager.load("llama/llamaWalking.png", Texture.class);
         manager.load("enemies/alienYellow.png", Texture.class);
 
+
         // loading sounds
         manager.load("sounds/punch.wav", Sound.class);
         manager.load("sounds/laser.wav", Sound.class);
-
+        //manager.load("sounds/fall1.mp3", Sound.class);
+        manager.load("sounds/rifleLoad.mp3", Sound.class);
+        manager.load("sounds/cashRegister.mp3", Sound.class);
         // loading musics
         manager.load("musics/gameMusic1.mp3", Music.class);
         manager.load("musics/mainMenuMusic.mp3", Music.class);
@@ -79,7 +80,6 @@ public class Assets {
     public Skin getSkin(String skin) {
         switch (skin) {
             case "bigButton":  return manager.get("ui/bigButton.json");
-            case "backButton": return manager.get("ui/backButton.json");
             case "coin":  return manager.get("ui/coin.json");
             case "crouch":  return manager.get("ui/crouchButton.json");
             case "punch":  return manager.get("ui/fistButton.json");
@@ -117,6 +117,8 @@ public class Assets {
         switch (sound) {
             case "punch": return manager.get("sounds/punch.wav");
             case "shot": return manager.get("sounds/laser.wav");
+            case "cash" : return manager.get("sounds/cashRegister.mp3");
+            case "load": return manager.get("sounds/rifleLoad.mp3");
         }
         return null;
     }
