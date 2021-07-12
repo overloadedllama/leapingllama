@@ -2,6 +2,7 @@ package com.overloadedllama.leapingllama.stages;
 
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,6 +15,7 @@ import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.game.TestConstant;
+import com.overloadedllama.leapingllama.listener.MyGestureListener;
 
 import java.util.HashMap;
 
@@ -23,7 +25,9 @@ public class ButtonsStagePlay implements TestConstant {
     float tableWidth, tableHeight;
     final float buttonSize = 150f;
 
-    Stage stage;
+    boolean gestures;
+
+    private Stage stage;
     ExtendViewport viewport;
     Assets assets;
 
@@ -73,6 +77,45 @@ public class ButtonsStagePlay implements TestConstant {
 
         viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT);
         stage = new Stage(viewport);
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stage);
+        if (Settings.getGameMode().equals("GESTURES")) {
+            //todo setting for switch from only gesture to only buttons. Now everything is active but personally I don't like it
+            inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
+                @Override
+                public void onLeft() {
+
+                }
+
+                @Override
+                public void onRight() {
+
+                }
+
+                @Override
+                public void flingUp() {
+                    actions.put(JUMP, true);
+                }
+
+                @Override
+                public void onDown() {
+
+                }
+
+                @Override
+                public void startPanDown() {
+                    actions.put(CROUCH, true);
+                }
+
+                @Override
+                public void stopPan() {
+                    actions.put(CROUCH, false);
+                }
+            }));
+        }
+        Gdx.input.setInputProcessor(inputMultiplexer);
+
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
 
@@ -119,12 +162,17 @@ public class ButtonsStagePlay implements TestConstant {
         buttonPauseTable.top().left();
         buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad);
 
-        if (Settings.isLxDx()) {
+        if (Settings.getGameMode().equals("LX_DX")) {
             buttonsMovement.bottom().left();
             buttonsAction.bottom().right();
-        } else {
+            gestures = false;
+        } else if (Settings.getGameMode().equals("DX_LX")){
             buttonsMovement.bottom().right();
             buttonsAction.bottom().left();
+            gestures = false;
+        } else {
+            buttonsAction.bottom().right();
+            gestures = true;
         }
 
         buttonsMovement.add(buttonJump).width(buttonSize).height(buttonSize).padLeft(pad).padBottom(pad);
@@ -144,11 +192,12 @@ public class ButtonsStagePlay implements TestConstant {
         labelsTable.add(labelMoney).width(labelW).height(labelH).padRight(pad);
         labelsTable.add(labelDistance).width(labelW).height(labelH).padRight(pad);
 
+        if (!gestures) {
+            stage.addActor(buttonsMovement);
+        }
         stage.addActor(buttonPauseTable);
-        stage.addActor(buttonsMovement);
         stage.addActor(buttonsAction);
         stage.addActor(labelsTable);
-
 
         //creation of the dictionary
         actions = new HashMap<>(7);
@@ -174,8 +223,10 @@ public class ButtonsStagePlay implements TestConstant {
         buttonsAction.invalidateHierarchy();
         buttonsAction.setSize(tableWidth, tableHeight);
 
-        buttonsMovement.invalidateHierarchy();
-        buttonsMovement.setSize(tableWidth, tableHeight);
+        if (!gestures) {
+            buttonsMovement.invalidateHierarchy();
+            buttonsMovement.setSize(tableWidth, tableHeight);
+        }
 
         labelsTable.invalidateHierarchy();
         labelsTable.setSize(tableWidth, tableHeight);
@@ -307,6 +358,7 @@ public class ButtonsStagePlay implements TestConstant {
 
     public void addActor(Label actor) {
         stage.addActor(actor);
+
     }
 
     public InputProcessor getStage() {

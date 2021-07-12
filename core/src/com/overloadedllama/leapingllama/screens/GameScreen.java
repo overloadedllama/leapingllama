@@ -124,20 +124,17 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     }
 
-
     @Override
     public void show() {
         Box2D.init();
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
-        llama = new Llama(llamaX, 6, (float) 1.6, world, game.batch, assets);
+        llama = new Llama(llamaX, 1, (float) 1.6, world, game.batch, assets);
         distance = llamaX;
 
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-
         stageUi = new ButtonsStagePlay(game.getAssets());
-        inputMultiplexer.addProcessor(stageUi.getStage());
+
         stageUi.setUpButtonAction();
 
         enemies = new ArrayList<>();
@@ -149,9 +146,12 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         ammos = new ArrayList<>();
         coins = new ArrayList<>();
         obstacles = new ArrayList<>();
-        enemiesDead = new ArrayList<EnemyDied>();
+        enemiesDead = new ArrayList<>();
         Settings.playMusic(game.getAssets().GAME_MUSIC1);
 
+        /*
+        InputMultiplexer inputMultiplexer = new InputMultiplexer();
+        inputMultiplexer.addProcessor(stageUi.getStage());
 
         //todo setting for switch from only gesture to only buttons. Now everything is active but personally I don't like it
         inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
@@ -185,10 +185,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 crouches(false);
             }
         }));
-
         Gdx.input.setInputProcessor(inputMultiplexer);
-
-
+*/
     }
 
     @Override
@@ -213,9 +211,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 removeObjects();
                 loadLevel(distance);
                 llama.preserveX(llamaX);
-
                 break;
-
         }
 
         game.batch.begin();
@@ -227,8 +223,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 (int) xSky, 0, sky.getWidth(), sky.getHeight(),
                 // flipX, flipY
                 false, false);
-
-
 
         for (Ground ground : grounds)
             ground.draw();
@@ -532,7 +526,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
                     go.getBody().getPosition().y < 0;
         } else if (go instanceof Platform || go instanceof Ground) {
-         //   return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
+            return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
         } else if (go instanceof Llama) {
             return go.getY() < 0;
         }
@@ -626,7 +620,10 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     }
 
     private double calculatePlayerLevelScore() {
-        return levelLength + coinsTaken * 30 + enemiesKilled * 20 + ammosTaken * 10;
+        return  levelLength +
+                coinsTaken * 30 +
+                enemiesKilled * 20 +
+                ammosTaken * 10;
     }
 
     private double calculateTotalLevelScore() {

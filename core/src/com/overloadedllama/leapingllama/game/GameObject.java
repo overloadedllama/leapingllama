@@ -75,7 +75,6 @@ public class GameObject implements TestConstant {
 
 
     public void draw() {
-
         sprite.draw(batch);
     }
 

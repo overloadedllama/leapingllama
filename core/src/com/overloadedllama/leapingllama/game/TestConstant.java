@@ -6,7 +6,7 @@ public interface TestConstant {
 
     String LEVEL_LENGTH = "levelLength";
 
-    // LevelParser actor Strings
+    // main actor Strings
     String ENEMIES = "enemies";
     String COINS = "coins";
     String AMMO = "ammo";
@@ -15,7 +15,7 @@ public interface TestConstant {
     String GROUND = "grounds";
     String OBSTACLES = "obstacles";
 
-    // LevelParser support Strings
+    // support element Strings
     String COINS_NUM = "coinsNum";
     String AMMO_NUM = "ammoNum";
     String PLATFORM1_LEN = "platformILength";

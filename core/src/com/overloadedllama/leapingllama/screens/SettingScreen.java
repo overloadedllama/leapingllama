@@ -60,9 +60,9 @@ public class SettingScreen implements Screen {
         textButtonSkin = assets.getSkin("bigButton");
 
         // creation of TextButtons
-        musicButton = new TextButton("MUSIC: " + Settings.getState("MUSIC"), textButtonSkin);
+        musicButton = new TextButton("MUSIC: " + Settings.getSetting("MUSIC"), textButtonSkin);
         musicButton.setDisabled(false);
-        soundButton = new TextButton("SOUND: " + Settings.getState("SOUND"), textButtonSkin);
+        soundButton = new TextButton("SOUND: " + Settings.getSetting("SOUND"), textButtonSkin);
         musicButton.setDisabled(false);
         lxDxButton = new TextButton("GAME BUTTONS: LX-DX", textButtonSkin);
         lxDxButton.setDisabled(false);
@@ -123,12 +123,15 @@ public class SettingScreen implements Screen {
         lxDxButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Settings.isLxDx()) {
-                    Settings.setLxDx(false);
+                if (Settings.getSetting("GAME_MODE").equals("LX_DX")) {
+                    Settings.setGameMode();
                     lxDxButton.setText("GAME BUTTONS: DX-LX");
+                } else if (Settings.getSetting("GAME_MODE").equals("DX_LX")){
+                    Settings.setGameMode();
+                    lxDxButton.setText("GAME BUTTONS: GESTURES");
                 } else {
-                    Settings.setLxDx(true);
-                    lxDxButton.setText("GAME BUTTONS: LX-DX");
+                    Settings.setGameMode();
+                    lxDxButton.setText("GAME BUTTONS: LX_DX");
                 }
             }
         });
