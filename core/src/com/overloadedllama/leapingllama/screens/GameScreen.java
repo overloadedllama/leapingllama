@@ -315,7 +315,8 @@ public class GameScreen extends MyAbstractScreen {
     private void loadLevel(double distance) {
 
         if (distance == 0) {
-
+            levelParser = new LevelParser();
+            queue.addAll(levelParser.getQueue());
         }
 
         QueueObject queueObject = queue.peek();
