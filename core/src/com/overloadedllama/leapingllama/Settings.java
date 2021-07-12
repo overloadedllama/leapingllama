@@ -38,6 +38,14 @@ public final class Settings implements TestConstant {
     private static boolean GORE = true;
 
     // if true is set for dx-players, else for sx-players
+    private enum GAME_MODE
+    {
+        LX_DX,
+        DX_LX,
+        GESTURES
+    }
+
+    private static GAME_MODE gameMode = GAME_MODE.LX_DX;
     private static boolean LX_DX = true;
 
     // Sounds
@@ -66,21 +74,45 @@ public final class Settings implements TestConstant {
     public static boolean isSOUND() { return SOUND; }
     public static void setSOUND(boolean SOUND) { Settings.SOUND = SOUND; }
 
-    public static boolean isLxDx() { return LX_DX; }
-    public static void setLxDx(boolean lxDx) { LX_DX = lxDx; }
+    public static String getGameMode() {
+        if (gameMode == GAME_MODE.LX_DX) {
+            return "LX_DX";
+        } else if (gameMode == GAME_MODE.DX_LX) {
+            return "DX_LX";
+        } else {
+            return "GESTURES";
+        }
+    }
+
+    public static void setGameMode() {
+        if (gameMode == GAME_MODE.LX_DX) {
+            gameMode = GAME_MODE.DX_LX;
+        } else if (gameMode == GAME_MODE.DX_LX) {
+            gameMode = GAME_MODE.GESTURES;
+        } else {
+        gameMode = GAME_MODE.LX_DX;
+        }
+    }
 
     public static boolean isGORE() { return GORE; }
     public static void setGORE(boolean GORE) { Settings.GORE = GORE; }
 
     // this method converts boolean values returned by above methods into String values
-    public static String getState(String setting) {
+    public static String getSetting(String setting) {
 
         String ret = ON;    // default value
         switch (setting) {
             case "MUSIC": if (isMUSIC()) ret = ON; else ret = OFF; break;
             case "SOUND": if (isSOUND()) ret = ON; else ret = OFF; break;
             case "GORE": if (isGORE()) ret = ON; else ret = OFF; break;
-            case "LX_DX": if (isLxDx()) ret = ON; else ret = OFF; break;
+            case "GAME_MODE":
+                if (gameMode == GAME_MODE.LX_DX)
+                    ret = "LX_DX";
+                else if (gameMode == GAME_MODE.DX_LX)
+                    ret = "DX_LX";
+                else
+                    ret = "GESTURES";
+                break;
         }
 
         return ret;

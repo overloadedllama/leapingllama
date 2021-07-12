@@ -23,7 +23,7 @@ public class MyContactListener implements ContactListener, TestConstant {
         if (fa == null || fb == null) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
-        if (isBulletEnemyContact(fa, fb)) {
+        if (isBulletEnemyObstacleContact(fa, fb)) {
             //System.out.println("COLLISION BULLET-ENEMY DETECTED!");
         } else if (isLlamaEnemyContact(fa, fb)) {
             //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
@@ -46,26 +46,25 @@ public class MyContactListener implements ContactListener, TestConstant {
     public void postSolve(Contact contact, ContactImpulse impulse) {    }
 
 
-    private boolean isBulletEnemyContact(Fixture a, Fixture b) {
-
-            if ((a.getUserData() instanceof Bullet && b.getUserData() instanceof Enemy)
-                    || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Bullet)) {
-
-                if (a.getUserData() instanceof Bullet) {
+    private boolean isBulletEnemyObstacleContact(Fixture a, Fixture b) {
+            if (a.getUserData() instanceof Bullet) {
+                if ((b.getUserData() instanceof Enemy || b.getUserData() instanceof Obstacle)) {
                     ((Bullet) a.getUserData()).setDestroyable(true);
-                } else if (b.getUserData() instanceof Bullet) {
-                    ((Bullet) b.getUserData()).setDestroyable(true);
+                    ((GameObject) b.getUserData()).setDestroyable(true);
                 }
-
-                if (a.getUserData() instanceof Enemy) {
-                    ((Enemy) a.getUserData()).setDestroyable(true);
-                } else if (b.getUserData() instanceof Enemy) {
-                    ((Enemy) b.getUserData()).setDestroyable(true);
-                }
-
                 parent.updateEnemiesKilled();
                 return true;
             }
+
+            if (b.getUserData() instanceof Bullet) {
+                if ((a.getUserData() instanceof Enemy) || (a.getUserData() instanceof Obstacle)) {
+                    ((Bullet) a.getUserData()).setDestroyable(true);
+                    ((GameObject) a.getUserData()).setDestroyable(true);
+                }
+                parent.updateEnemiesKilled();
+                return true;
+            }
+
         return false;
     }
 
@@ -83,11 +82,10 @@ public class MyContactListener implements ContactListener, TestConstant {
 
                 if (a.getUserData() instanceof Enemy) {
                     ((Enemy) a.getUserData()).setDestroyable(true);
-                    Settings.playSound("punch");
                 } else {
                     ((Enemy) b.getUserData()).setDestroyable(true);
-                    Settings.playSound("punch");
                 }
+                Settings.playSound("punch");
             } else {
                 parent.gameOver();
             }
@@ -108,38 +106,6 @@ public class MyContactListener implements ContactListener, TestConstant {
         if (llamaGroundCollision) {
             System.out.println("COLLISION LLAMA-GROUND DETECTED!");
         }
-
-        /*
-        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ground)
-                || (a.getUserData() instanceof Ground && b.getUserData() instanceof Llama)) {
-            return true;
-        }
-
-        // if is a contact llama-platform where the llama hits it with head, llama dies
-        if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Platform)
-                || (a.getUserData() instanceof Platform && b.getUserData() instanceof Llama)) {
-
-            Platform p;
-            Llama l;
-            if (a.getUserData() instanceof  Llama) {
-                l = ((Llama) a.getUserData());
-                p = ((Platform) b.getUserData());
-            } else {
-                l = ((Llama) b.getUserData());
-                p = ((Platform) a.getUserData());
-            }
-
-
-            WorldManifold worldManifold = contact.getWorldManifold();
-            for (Vector2 vector2 : worldManifold.getPoints()) {
-                //System.out.println("CONTACT LLAMA-PLATFORM: llama.X = " + l.getX() + " - platform.X = " + p.getX() + " - platform.X+W = " + (p.getX() + p.getW()));
-
-
-            }
-
-
-            return true;
-        }*/
 
         return false;
     }
