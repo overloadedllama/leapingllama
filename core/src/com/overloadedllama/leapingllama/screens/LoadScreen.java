@@ -1,28 +1,18 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.assetman.Assets;
 
-public class LoadScreen implements Screen {
+public class LoadScreen extends MyAbstractScreen {
 
-    final GameApp game;
-    OrthographicCamera camera;
-    ExtendViewport viewport;
-
-    private Assets assets;
     private boolean startLoading = false;
 
     private Texture logo;
@@ -35,15 +25,8 @@ public class LoadScreen implements Screen {
     private Skin progressBarSkin;
 
 
-    public LoadScreen(final GameApp game) {
-        this.game = game;
-        this.assets = game.getAssets();
-
-        camera = new OrthographicCamera();
-        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
-        viewport.apply();
-        camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
-        camera.update();
+    public LoadScreen(final GameApp gameApp) {
+        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
@@ -84,7 +67,7 @@ public class LoadScreen implements Screen {
         // only if there isn't any asset on loading queue yet the button works
         if (assets.update() && startLoading) {
             Settings.setSoundsMusics();
-            game.setScreen(new MainMenuScreen(game));
+            gameApp.setScreen(new MainMenuScreen(gameApp));
         } else {
             //System.out.println("PROGRESS BAR VALUE: " + assets.getProgress() * 100);
             progressBar.setValue(assets.getProgress() * 100);
@@ -93,21 +76,19 @@ public class LoadScreen implements Screen {
         loadScreenStage.act();
         loadScreenStage.draw();
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        super.render(delta);
 
-        game.batch.begin();
-        game.font.setColor(0 , 255, 0, 1);
-        game.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/4, GameApp.HEIGHT/2 - (float) logo.getHeight()/4, (float) logo.getWidth()/2, (float) logo.getHeight()/2);
+        gameApp.batch.begin();
+        gameApp.font.setColor(0 , 255, 0, 1);
+        gameApp.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/4, GameApp.HEIGHT/2 - (float) logo.getHeight()/4, (float) logo.getWidth()/2, (float) logo.getHeight()/2);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
-        game.batch.end();
+        gameApp.batch.end();
 
    }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-
+        super.resize(width, height);
         loadScreenTable.invalidateHierarchy();
         loadScreenTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
     }

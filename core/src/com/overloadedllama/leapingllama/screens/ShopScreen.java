@@ -2,65 +2,40 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.TextureArray;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 
-public class ShopScreen implements Screen {
-
-    private final GameApp game;
-
-    OrthographicCamera camera;
-    ExtendViewport viewport;
-
-    private int userMoney;
+public class ShopScreen extends MyAbstractScreen {
 
     private Stage shopStage;
     private Table shopTable;
 
+    float userMoney;
+
     // ImageButton
     private ImageButton backButton;
 
-    // TextButton
-    private TextButton buyItemButton;
-
     // TextField
-    private TextField itemDescription;
     private TextField userMoneyText;
-
-    // Image
-    private TextureArray textureArray;
-    private Texture currentTexture;
 
     // Skin
     private Skin backButtonSkin;
     private Skin userMoneySkin;
 
-    public ShopScreen(GameApp game) {
-        this.game = game;
-
-        ScreenUtils.clear(0.1f, 0, 0.2f, 1);
-        camera = new OrthographicCamera();
-        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
-        viewport.apply();
-        camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
-        camera.update();
-
+    public ShopScreen(GameApp gameApp) {
+        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
     public void show() {
+        ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+
         shopStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         shopTable = new Table();
 
@@ -86,7 +61,7 @@ public class ShopScreen implements Screen {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(game));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
             }
         });
     }
@@ -99,7 +74,7 @@ public class ShopScreen implements Screen {
         shopStage.draw();
 
         camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        gameApp.batch.setProjectionMatrix(camera.combined);
 
 
     }

@@ -1,56 +1,35 @@
 package com.overloadedllama.leapingllama.screens;
 
-import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 
 import com.overloadedllama.leapingllama.Settings;
 import com.overloadedllama.leapingllama.stages.MainMenuStage;
 
-public class MainMenuScreen implements Screen {
-    private final GameApp game;
-
-    OrthographicCamera camera;
-    ExtendViewport viewport;
-
+public class MainMenuScreen extends MyAbstractScreen {
     private MainMenuStage mainMenuStage;
 
-    public MainMenuScreen(final GameApp game) {
-        this.game = game;
-        ScreenUtils.clear(0.1f, 0, 0.2f, 1);
-
-        camera = new OrthographicCamera();
-        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
-        viewport.apply();
-        camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
-        camera.update();
-
-        Settings.playMusic(game.getAssets().MAIN_MENU_MUSIC);
+    public MainMenuScreen(final GameApp gameApp) {
+        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
     public void show() {
-        mainMenuStage = new MainMenuStage(game);
-
+        mainMenuStage = new MainMenuStage(gameApp);
+        Settings.playMusic(gameApp.getAssets().MAIN_MENU_MUSIC);
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
-
         mainMenuStage.renderer();
-
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        super.render(delta);
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        super.resize(width, height);
         mainMenuStage.resizer();
-
     }
 
     @Override

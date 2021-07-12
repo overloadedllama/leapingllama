@@ -2,31 +2,24 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.listener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
 import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
-import com.overloadedllama.leapingllama.listener.MyGestureListener;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
 import java.util.*;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
-import static com.overloadedllama.leapingllama.GameApp.HEIGHT;
-import static com.overloadedllama.leapingllama.GameApp.WIDTH;
 
 
-public class GameScreen extends ApplicationAdapter implements Screen, TestConstant {
+public class GameScreen extends MyAbstractScreen {
 
     public enum State
     {
@@ -38,13 +31,6 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     PriorityQueue<QueueObject> queue;
     LevelParser levelParser;
     private State state = State.RUN;
-
-
-    OrthographicCamera camera;
-    Viewport viewport;
-    GameApp game;
-
-    Assets assets;
 
     ButtonsStagePlay stageUi;
     World world;
@@ -71,8 +57,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     public static float  UNITS_PER_METER = 128;
 
-    public final float METER_WIDTH = WIDTH / UNITS_PER_METER;
-    public final float METER_HEIGHT = HEIGHT / UNITS_PER_METER;
+    public final float METER_WIDTH = GameApp.WIDTH / UNITS_PER_METER;
+    public final float METER_HEIGHT = GameApp.HEIGHT / UNITS_PER_METER;
 
     long timeLastEnemies;
     long timePunching;
@@ -98,14 +84,9 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     // METHODS
 
-    public GameScreen(final GameApp game, int levelNumber) {
-        this.game = game;
+    public GameScreen(final GameApp gameApp, int levelNumber) {
+        super(gameApp, GameApp.WIDTH / UNITS_PER_METER, GameApp.HEIGHT / UNITS_PER_METER);
         this.levelNumber = levelNumber;
-        this.assets = game.getAssets();
-        camera = new OrthographicCamera();
-        camera.position.set(METER_WIDTH / 2, METER_HEIGHT / 2, 5);
-        viewport = new ExtendViewport(METER_WIDTH, METER_HEIGHT, camera);
-        viewport.apply();
 
         enemies = new ArrayList<>();
         timeLastEnemies = 0;
@@ -113,7 +94,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
-        sky = game.getAssets().getTexture("sky");
+        sky = gameApp.getAssets().getTexture("sky");
         sky.setWrap(Repeat,Repeat);
 
         actions = new HashMap<>();
@@ -130,12 +111,12 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
-        llama = new Llama(llamaX, 1, (float) 1.6, world, game.batch, assets);
+        llama = new Llama(llamaX, 1, (float) 1.6, world, gameApp.batch, assets);
         distance = llamaX;
 
-        stageUi = new ButtonsStagePlay(game.getAssets());
+        stageUi = new ButtonsStagePlay(gameApp);
 
-        stageUi.setUpButtonAction();
+        stageUi.setUpButtons();
 
         enemies = new ArrayList<>();
         timeLastEnemies = System.currentTimeMillis();
@@ -147,46 +128,8 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         coins = new ArrayList<>();
         obstacles = new ArrayList<>();
         enemiesDead = new ArrayList<>();
-        Settings.playMusic(game.getAssets().GAME_MUSIC1);
+        Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
 
-        /*
-        InputMultiplexer inputMultiplexer = new InputMultiplexer();
-        inputMultiplexer.addProcessor(stageUi.getStage());
-
-        //todo setting for switch from only gesture to only buttons. Now everything is active but personally I don't like it
-        inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
-            @Override
-            public void onLeft() {
-
-            }
-
-            @Override
-            public void onRight() {
-
-            }
-
-            @Override
-            public void flingUp() {
-                jumps();
-            }
-
-            @Override
-            public void onDown() {
-
-            }
-
-            @Override
-            public void startPanDown() {
-                crouches(true);
-            }
-
-            @Override
-            public void stopPan() {
-                crouches(false);
-            }
-        }));
-        Gdx.input.setInputProcessor(inputMultiplexer);
-*/
     }
 
     @Override
@@ -214,11 +157,11 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 break;
         }
 
-        game.batch.begin();
+        gameApp.batch.begin();
 
-        game.batch.draw(sky,
+        gameApp.batch.draw(sky,
                 // position and size of texture
-                -1, 0, viewport.getScreenWidth()/UNITS_PER_METER +2, METER_HEIGHT,
+                -1, 0, viewport.getScreenWidth()/UNITS_PER_METER + 2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
                 (int) xSky, 0, sky.getWidth(), sky.getHeight(),
                 // flipX, flipY
@@ -242,9 +185,9 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             enemy.draw(delta);
         }
         llama.draw(stateTime);
-        game.batch.end();
+        gameApp.batch.end();
 
-        stageUi.drawer();
+        stageUi.renderer();
 
         actions = stageUi.getActions();
 
@@ -253,15 +196,14 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
         stageUi.setActions(actions);
         debugRenderer.render(world, camera.combined);
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
 
+        super.render(delta);
     }
 
     private void manageActions() {
         if (actions.get(SHOT)) {
             if (ammunition > 0) {
-                bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, game.batch, game.getAssets()));
+                bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, gameApp.batch, gameApp.getAssets()));
                 Settings.playSound(SHOT);
                 --ammunition;
                 stageUi.setBullets(ammunition);
@@ -303,9 +245,9 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
             //here there will be to develop the stuff for save the checkpoint;
             state = State.STOPPED;
             actions.put(EXIT, false);
-            Settings.stopMusic(game.getAssets().GAME_MUSIC1);
+            Settings.stopMusic(gameApp.getAssets().GAME_MUSIC1);
             dispose();
-            game.setScreen(new MainMenuScreen(game));
+            gameApp.setScreen(new MainMenuScreen(gameApp));
         }
     }
 
@@ -377,19 +319,19 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                 lCreation = (float) queueObject.getLength();
             }
             switch (queueObject.getClassObject()) {
-                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, game.batch, assets)); break;
-                case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
-                case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, game.batch, assets)); break;
-                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, game.batch, assets)); break;
-                case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, game.batch, assets, stageUi)); break;
-                case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, game.batch, assets, stageUi)); break;
+                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets)); break;
+                case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
+                case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
                 case OBSTACLES:
                     float yCreation = 1.7F;
                     Random random = new Random();
                     if (random.nextFloat()<0.4){
                         yCreation = 4.2F;
                     }
-                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, game.batch, assets));
+                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, gameApp.batch, assets));
             }
         }
     }
@@ -468,7 +410,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     }
                 });
                 e.remove();
-                enemiesDead.add(new EnemyDied(String.valueOf(enemy.getTexture()), enemy.getX(), enemy.getY(), enemy.getH(), game.batch, assets));
+                enemiesDead.add(new EnemyDied(String.valueOf(enemy.getTexture()), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
             }
         }
 
@@ -526,7 +468,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
                     go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
                     go.getBody().getPosition().y < 0;
         } else if (go instanceof Platform || go instanceof Ground) {
-            return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
+            //return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
         } else if (go instanceof Llama) {
             return go.getY() < 0;
         }
@@ -541,14 +483,14 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
     private boolean checkWin() {
         if (distance >= levelLength) {
             Settings.stopMusic(GAME_MUSIC1);
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(game, levelNumber, calculatePlayerLevelScore(), calculateTotalLevelScore(),true));
+            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), calculateTotalLevelScore(),true));
             return true;
         }
         return false;
     }
 
     public void gameOver() {
-        game.setScreen(new EndScreen(game, levelNumber , 300, 100, true));
+        gameApp.setScreen(new EndScreen(gameApp, levelNumber , calculatePlayerLevelScore(), calculateTotalLevelScore(), true));
         Settings.stopMusic(GAME_MUSIC1);
         dispose();
 
@@ -556,8 +498,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
-
+        super.resize(width, height);
         stageUi.resizer();
     }
 
@@ -628,7 +569,7 @@ public class GameScreen extends ApplicationAdapter implements Screen, TestConsta
 
     private double calculateTotalLevelScore() {
         return  levelLength +
-                levelParser.getTotalCoinsSpawned()* 30 +
+                levelParser.getTotalCoinsSpawned() * 30 +
                 levelParser.getTotalEnemiesSpawned() * 20 +
                 levelParser.getTotalAmmosSpawned() * 10;
     }

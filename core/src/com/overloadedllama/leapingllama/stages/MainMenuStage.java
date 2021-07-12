@@ -3,24 +3,17 @@ package com.overloadedllama.leapingllama.stages;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
-import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 import com.overloadedllama.leapingllama.screens.SettingScreen;
 import com.overloadedllama.leapingllama.screens.ShopScreen;
 
-public class MainMenuStage extends Stage {
-    GameApp game;
-    Assets assets;
-
+public class MainMenuStage extends MyAbstractStage {
     int maxUserLevel;
-    float tableHeight, tableWidth;
     float defaultButtonWidth = 240F;
     float defaultButtonHeight = 100F;
 
@@ -52,15 +45,11 @@ public class MainMenuStage extends Stage {
     private Skin textFieldSkin;
     private Skin moneyButtonSkin;
 
+
     public MainMenuStage(final GameApp game) {
-        super(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
-        this.game = game;
-        this.assets = game.getAssets();
+        super(game);
 
         maxUserLevel = Settings.getUserLevel();
-
-        tableWidth = GameApp.WIDTH;
-        tableHeight = GameApp.HEIGHT;
 
         mainMenuTable = new Table();
         userTable = new Table();
@@ -99,7 +88,7 @@ public class MainMenuStage extends Stage {
         user = new TextField("  USER: " + Settings.getCurrentUser(), textFieldSkin);
         user.setDisabled(true);
         user.setAlignment(Align.center);
-    // adding items into mainMenu and info Tables and them to the mainMenuStage
+        // adding items into mainMenu and info Tables and them to the mainMenuStage
         userTable.top().left();
         userTable.add(user).width(240F).height(80F).padTop(15F);
         moneyTable.top().right();
@@ -148,14 +137,14 @@ public class MainMenuStage extends Stage {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingScreen(game));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingScreen(gameApp));
             }
         });
 
         shopButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ShopScreen(game));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ShopScreen(gameApp));
             }
         });
 
@@ -172,7 +161,7 @@ public class MainMenuStage extends Stage {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game, 0));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, 0));
             }
         });
 
@@ -182,7 +171,7 @@ public class MainMenuStage extends Stage {
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
                     Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game, 1));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, 1));
                 }
             });
         }
@@ -193,7 +182,7 @@ public class MainMenuStage extends Stage {
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
                     Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(game, 2));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, 2));
                 }
             });
         }
@@ -204,11 +193,6 @@ public class MainMenuStage extends Stage {
                 super.clicked(event, x, y);
             }
         });
-    }
-
-    public void renderer() {
-        act();
-        draw();
     }
 
     public void resizer() {

@@ -2,9 +2,7 @@ package com.overloadedllama.leapingllama.screens;
 
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -14,21 +12,16 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
 
-public class EndScreen implements Screen {
+public class EndScreen extends MyAbstractScreen {
     int level;
     int starNum;
     double lastScore;
     double totalLevelScore;
     boolean win;
-
-    final GameApp game;
-    OrthographicCamera camera;
-    ExtendViewport viewport;
 
     private Stage endStage;
     private Table endTable;
@@ -38,18 +31,12 @@ public class EndScreen implements Screen {
     private Label scoreLabel;
     private Skin scoreLabelSkin;
 
-    public EndScreen(final GameApp game, int level, double lastScore, double totalLevelScore, boolean win) {
-        this.game = game;
+    public EndScreen(final GameApp gameApp, int level, double lastScore, double totalLevelScore, boolean win) {
+        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
         this.level = level;
         this.lastScore = lastScore;
         this.totalLevelScore = totalLevelScore;
         this.win = win;
-
-        camera = new OrthographicCamera();
-        viewport = new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT, camera);
-        viewport.apply();
-        camera.position.set(GameApp.WIDTH / 2, GameApp.HEIGHT  / 2, 0);
-        camera.update();
 
         starArray = new Image[3];
     }
@@ -63,7 +50,7 @@ public class EndScreen implements Screen {
             //backgroundTexture = game.getAssets().getTexture("background_win");
             ScreenUtils.clear(new Color(Color.NAVY));
         } else {
-            backgroundTexture = game.getAssets().getTexture("game_over");
+            backgroundTexture = assets.getTexture("game_over");
         }
 
         if (Settings.checkSetNewUserBestScore(level, lastScore)) {
@@ -72,7 +59,7 @@ public class EndScreen implements Screen {
             System.out.println("SCORE: " + lastScore);
         }
 
-        scoreLabelSkin = game.getAssets().getSkin("bigButton");
+        scoreLabelSkin = assets.getSkin("bigButton");
         @SuppressLint("DefaultLocale") String bestScoreText = String.format("%.1f", Settings.getLevelBestScore(level));
         scoreLabel = new Label("Best Score Level " + level + ": " + bestScoreText, scoreLabelSkin);
         scoreLabel.setFontScale(1.5f);
@@ -117,25 +104,24 @@ public class EndScreen implements Screen {
         endStage.act();
         endStage.draw();
 
-        camera.update();
-        game.batch.setProjectionMatrix(camera.combined);
+        super.render(delta);
 
-        game.batch.begin();
+        gameApp.batch.begin();
         if (backgroundTexture != null) {
-            game.batch.draw(backgroundTexture, GameApp.WIDTH / 2 - (float) backgroundTexture.getWidth() / 4, GameApp.HEIGHT / 2 - (float) backgroundTexture.getHeight() / 4,
+            gameApp.batch.draw(backgroundTexture, GameApp.WIDTH / 2 - (float) backgroundTexture.getWidth() / 4, GameApp.HEIGHT / 2 - (float) backgroundTexture.getHeight() / 4,
                     (float) backgroundTexture.getWidth() / 2, (float) backgroundTexture.getHeight() / 2);
         }
-        game.batch.end();
+        gameApp.batch.end();
 
         if (Gdx.input.isTouched()) {
-            game.setScreen(new MainMenuScreen(game));
+            gameApp.setScreen(new MainMenuScreen(gameApp));
             dispose();
         }
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height);
+        super.resize(width, height);
 
         endTable.invalidateHierarchy();
         endTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);

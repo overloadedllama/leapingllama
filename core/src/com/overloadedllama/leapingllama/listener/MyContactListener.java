@@ -58,7 +58,7 @@ public class MyContactListener implements ContactListener, TestConstant {
 
             if (b.getUserData() instanceof Bullet) {
                 if ((a.getUserData() instanceof Enemy) || (a.getUserData() instanceof Obstacle)) {
-                    ((Bullet) a.getUserData()).setDestroyable(true);
+                    ((Bullet) b.getUserData()).setDestroyable(true);
                     ((GameObject) a.getUserData()).setDestroyable(true);
                 }
                 parent.updateEnemiesKilled();
