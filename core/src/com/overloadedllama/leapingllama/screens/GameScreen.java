@@ -5,9 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
@@ -16,9 +13,7 @@ import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
 import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
-import org.graalvm.compiler.phases.common.NodeCounterPhase;
 
-import java.awt.*;
 import java.util.*;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
@@ -127,27 +122,18 @@ public class GameScreen extends MyAbstractScreen {
     public void show() {
         Box2D.init();
 
-
-
-
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
         distance = llamaX;
-
-
         llama = new Llama(llamaX, 1f, llamaH, world, gameApp.batch, assets);
+        tube = new Tube(llamaX, 1f, llamaH);
 
         stageUi = new ButtonsStagePlay(gameApp);
-
         stageUi.setUpButtons();
 
         enemies = new ArrayList<>();
         timeLastEnemies = System.currentTimeMillis();
-
-
-
-        tube = new Tube(llamaX, 1f, llamaH);
 
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
@@ -156,13 +142,14 @@ public class GameScreen extends MyAbstractScreen {
         coins = new ArrayList<>();
         obstacles = new ArrayList<>();
         enemiesDead = new ArrayList<>();
-        Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
 
-        if (Settings.hasInitialAmmos()) {
+        if (Settings.hasBonusAmmo()) {
             ammunition = 5;
-            Settings.setInitialAmmos();
+            Settings.setBonusAmmo();
+            stageUi.setBullets(5);
         }
 
+        Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
     }
 
 
@@ -173,14 +160,10 @@ public class GameScreen extends MyAbstractScreen {
 
             case RUN:
 
-
-                    stepWorld();
-
-
-
+                stepWorld();
+                
                 if (levelNumber!=-1) {
                     checkWin();
-
                     // need to do anything?
                 }
 
@@ -194,12 +177,8 @@ public class GameScreen extends MyAbstractScreen {
                 removeObjects();
                 loadLevel(distance%levelLength);
                 llama.preserveX(llamaX);
-
-
-
+                
                 break;
-
-
         }
 
         gameApp.batch.begin();
@@ -233,13 +212,10 @@ public class GameScreen extends MyAbstractScreen {
             llama.draw(stateTime);
         }
 
-
         if(!tube.isAnimationFinished()){
             tube.update();
             tube.draw(gameApp.batch);
         }
-
-
 
         gameApp.batch.end();
 
@@ -543,13 +519,10 @@ public class GameScreen extends MyAbstractScreen {
         return llama;
     }
 
-    private boolean checkWin() {
+    private void checkWin() {
         if (distance >= levelLength) {
-            Settings.stopMusic(GAME_MUSIC1);
-            ((Game) Gdx.app.getApplicationListener()).setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), totalLevelScore,true));
-            return true;
+            callEndScreen(true);
         }
-        return false;
     }
 
     /**
@@ -557,10 +530,8 @@ public class GameScreen extends MyAbstractScreen {
      * all the enemies are destroyed and the llama restarts at y = 6 (does it work fine?)
      */
     public void gameOver() {
-        if (!Settings.hasSecondLife()) {
-            gameApp.setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), totalLevelScore, true));
-            Settings.stopMusic(GAME_MUSIC1);
-            dispose();
+        if (!Settings.hasBonusLife()) {
+           callEndScreen(false);
         } else {
             for (Enemy enemy : enemies) {
                 enemy.setDestroyable(true);
@@ -571,8 +542,15 @@ public class GameScreen extends MyAbstractScreen {
 
             llama.setY(6);
 
-            Settings.setSecondLife();
+            Settings.setBonusLife();
         }
+    }
+
+    private void callEndScreen(boolean win) {
+        Settings.stopMusic(GAME_MUSIC1);
+        Settings.checkSetUserMoney(money);
+        gameApp.setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), totalLevelScore, win));
+        dispose();
     }
 
     @Override

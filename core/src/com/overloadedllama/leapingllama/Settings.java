@@ -53,8 +53,8 @@ public final class Settings implements LlamaConstants {
     private static Music mainMenuMusic;
 
     // GamePlay
-    private static boolean initialAmmos = false;
-    private static boolean secondLife = false;
+    private static boolean bonusAmmos = false;
+    private static boolean bonusLife = false;
 
 
 
@@ -128,9 +128,11 @@ public final class Settings implements LlamaConstants {
 
     public static int getUserMoney() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MONEY); }
 
+    public static boolean checkSetUserMoney(int value) { return llamaDbHandler.checkSetUserMoney(currentUser, value); }
+
     public static int getUserLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MAX_LEVEL); }
 
-    public static void setUserLevel(int level) { llamaDbHandler.setUserLevel(currentUser); }
+    public static void updateUserLevel() { llamaDbHandler.setUserLevel(currentUser); }
 
 
     /**
@@ -200,20 +202,20 @@ public final class Settings implements LlamaConstants {
 
 
     // GAMEPLAY
-   public static boolean hasInitialAmmos() {
-        return initialAmmos;
+   public static boolean hasBonusAmmo() {
+        return bonusAmmos;
    }
 
-   public static void setInitialAmmos() {
-        initialAmmos = !initialAmmos;
+   public static void setBonusAmmo() {
+        bonusAmmos = !bonusAmmos;
    }
 
-   public static boolean hasSecondLife() {
-        return secondLife;
+   public static boolean hasBonusLife() {
+        return bonusLife;
    }
 
-   public static void setSecondLife() {
-       secondLife = !secondLife;
+   public static void setBonusLife() {
+       bonusLife = !bonusLife;
    }
 
 }

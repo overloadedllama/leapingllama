@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.ShopItem;
 
 public class ShopScreen extends MyAbstractScreen {
 
@@ -21,19 +23,22 @@ public class ShopScreen extends MyAbstractScreen {
     private Table itemListTable;
 
     int index;
+    int itemValue;
     final int numItems = 2;
     float userMoney;
+
+    private ShopItem[] shopItems;
 
     // ImageButton
     private ImageButton backButton;
 
     // Images
-    private Texture[] textures;
     private Image image;
 
     // TextButtons
     private TextButton previousItem;
     private TextButton nextItem;
+    private TextButton buyButton;
 
     // Labels
     private Label userMoneyText;
@@ -41,7 +46,7 @@ public class ShopScreen extends MyAbstractScreen {
     // Skins
     private Skin backButtonSkin;
     private Skin coinLabelSkin;
-    private Skin prevNextSkin;
+    private Skin bigButtonSkin;
 
     public ShopScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
@@ -58,22 +63,26 @@ public class ShopScreen extends MyAbstractScreen {
         itemListTable = new Table();
 
         index = 0;
-        textures = new Texture[2];
-        textures[0] = new Texture(Gdx.files.internal("world/bonusAmmo.png"));
-        textures[1] = new Texture(Gdx.files.internal("world/heart.png"));
-        image = new Image(textures[0]);
+        shopItems = new ShopItem[2];
+        shopItems[0] = new ShopItem(BONUS_AMMO, new Texture(Gdx.files.internal("world/bonusAmmo.png")), 5);
+        shopItems[1] = new ShopItem(BONUS_LIFE, new Texture(Gdx.files.internal("world/heart.png")), 10);
+        image = new Image(shopItems[0].getTexture());
 
         backButtonSkin = assets.getSkin("backButton");
         coinLabelSkin = assets.getSkin("coin");
-        prevNextSkin = assets.getSkin("bigButton");
+        bigButtonSkin = assets.getSkin("bigButton");
 
         backButton = new ImageButton(backButtonSkin);
+        userMoney = Settings.getUserMoney();
         userMoneyText = new Label("money: " + userMoney, coinLabelSkin);
         userMoneyText.setAlignment(Align.center);
-        previousItem = new TextButton("previous", prevNextSkin);
+        previousItem = new TextButton("previous", bigButtonSkin);
         previousItem.setDisabled(true);
-        nextItem = new TextButton("next", prevNextSkin);
+        nextItem = new TextButton("next", bigButtonSkin);
         nextItem.setDisabled(true);
+        itemValue = shopItems[0].getValue();
+        buyButton = new TextButton("" + shopItems[0].getValue(), bigButtonSkin);
+        buyButton.setDisabled(true);
 
         float pad = 15f;
         float itemHeight = 140f;
@@ -86,6 +95,8 @@ public class ShopScreen extends MyAbstractScreen {
         itemListTable.add(previousItem).width(200f).height(100f).padRight(15f);
         itemListTable.add(image).width(400f).height(400f);
         itemListTable.add(nextItem).width(200f).height(100f).padLeft(15f);
+        itemListTable.row();
+        itemListTable.add(buyButton).colspan(3).width(200f).height(120f).padTop(15f);
 
         shopStage.addActor(itemListTable);
         shopStage.addActor(upperTable);
@@ -108,7 +119,9 @@ public class ShopScreen extends MyAbstractScreen {
                 } else {
                     index--;
                 }
-                image.setDrawable(new TextureRegionDrawable(new TextureRegion(textures[index])));
+                image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
+                itemValue = shopItems[index].getValue();
+                buyButton.setText("" + itemValue);
             }
         });
 
@@ -120,7 +133,26 @@ public class ShopScreen extends MyAbstractScreen {
                     index = 0;
                 else
                     index++;
-                image.setDrawable(new TextureRegionDrawable(new TextureRegion(textures[index])));
+                image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
+                itemValue = shopItems[index].getValue();
+                buyButton.setText("" + itemValue);
+            }
+        });
+
+        buyButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                if (Settings.checkSetUserMoney(-itemValue)) {       // set itemValue negative
+                    if (shopItems[index].getId().equals(BONUS_AMMO)) {
+                        Settings.setBonusAmmo();
+                    } else if (shopItems[index].getId().equals(BONUS_LIFE)) {
+                        Settings.setBonusLife();
+                    }
+
+                    userMoneyText.setText("" + (userMoney - itemValue));
+                }
             }
         });
     }
