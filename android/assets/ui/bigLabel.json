@@ -1,0 +1,33 @@
+{
+"com.badlogic.gdx.graphics.g2d.BitmapFont": {
+	"pixeledWhite": {
+		"file": "pixeledWhite.fnt"
+	}
+},
+"com.badlogic.gdx.graphics.Color": {
+	"RGBA_0_0_0_255": {
+		"r": 0,
+		"g": 0,
+		"b": 0,
+		"a": 1
+	},
+	"RGBA_255_255_255_255": {
+		"r": 1,
+		"g": 1,
+		"b": 1,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "pixeledWhite",
+		"fontColor": "RGBA_0_0_0_255",
+		"background": "bigTextPane"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
+	}
+}
+}
