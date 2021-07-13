@@ -196,7 +196,7 @@ public class GameScreen extends MyAbstractScreen {
         for (Bullet bullet : bullets)
             bullet.draw();
         for (Enemy enemy : enemies)
-            enemy.draw();
+            enemy.draw(stateTime);
         for (Platform platform : platforms)
             platform.draw();
         for (Coin coin : coins)
@@ -204,7 +204,7 @@ public class GameScreen extends MyAbstractScreen {
         for (Ammo ammo : ammos)
             ammo.draw();
         for (Obstacle obstacle : obstacles)
-            obstacle.draw();
+            obstacle.draw(stateTime);
         for (EnemyDied enemy: enemiesDead){
             enemy.draw(delta);
         }
@@ -449,7 +449,7 @@ public class GameScreen extends MyAbstractScreen {
                     }
                 });
                 e.remove();
-                enemiesDead.add(new EnemyDied(String.valueOf(enemy.getTexture()), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
+                enemiesDead.add(new EnemyDied(enemy.getTextureString(), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
             }
         }
 
