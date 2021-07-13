@@ -57,7 +57,6 @@ public class MainMenuStage extends MyAbstractStage {
     public MainMenuStage(final GameApp game) {
         super(game);
 
-
         maxUserLevel = Settings.getUserLevel();
 
         mainMenuTable = new Table();
@@ -118,6 +117,29 @@ public class MainMenuStage extends MyAbstractStage {
 
         addActor(mainMenuTable);
 
+
+        fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), tableHeight);
+        addActor(fadeoutBackground);
+
+        float padTop = 15f;
+        scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+        scrollTable.row();
+
+        for (int i = 0; i < numLevels; ++i) {
+            scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+            scrollTable.row();
+        }
+
+        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
+
+        scroller = new ScrollPane(scrollTable);
+        levelTable.setFillParent(true);
+        levelTable.add(scroller).fill().expand();
+        addActor(levelTable);
+
+        fadeoutBackground.setVisible(false);
+        levelTable.setVisible(false);
+
         setUpButtons();
 
     }
@@ -129,25 +151,7 @@ public class MainMenuStage extends MyAbstractStage {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), tableHeight);
-                addActor(fadeoutBackground);
-
-                float padTop = 15f;
-                scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
-                scrollTable.row();
-
-                for (int i = 0; i < numLevels; ++i) {
-                    scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
-                    scrollTable.row();
-                }
-
-                scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
-
-                scroller = new ScrollPane(scrollTable);
-                levelTable.setFillParent(true);
-                levelTable.add(scroller).fill().expand();
-
-                addActor(levelTable);
+                levelTable.setVisible(true);
             }
         });
 
@@ -177,8 +181,8 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                levelTable.setVisible(false);
                 fadeoutBackground.remove();
-                levelTable.remove();
             }
         });
 
@@ -218,6 +222,9 @@ public class MainMenuStage extends MyAbstractStage {
 
         levelTable.invalidateHierarchy();
         levelTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+
+        scrollTable.invalidateHierarchy();
+        scrollTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
     }
 
