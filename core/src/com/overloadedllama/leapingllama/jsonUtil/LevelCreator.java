@@ -3,6 +3,7 @@ package com.overloadedllama.leapingllama.jsonUtil;
 import java.util.ArrayList;
 import java.util.Random;
 
+
 public class LevelCreator {
 
     private ArrayList<Boolean> enemies;

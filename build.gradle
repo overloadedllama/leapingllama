@@ -108,7 +108,6 @@ project(":desktop") {
             api "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
 
             implementation 'com.google.android:android:4.1.1.4'
-            implementation fileTree(dir: 'libs', include: '*.jar')
 
         }
     }
