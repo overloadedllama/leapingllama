@@ -37,6 +37,10 @@ public interface LlamaConstants {
     String CASH = "cash";
     String LOAD = "load";
 
+    // Shop Item ids
+    String BONUS_LIFE = "bonusLife";
+    String BONUS_AMMO = "bonusAmmo";
+
     // Filter categories
     short CATEGORY_LLAMA = 0x001;
     short CATEGORY_ENEMY = 0x002;

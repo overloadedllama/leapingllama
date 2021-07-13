@@ -158,9 +158,10 @@ public class LlamaDbHandler {
     }
 
     /**
+     * Update the user money
      *
      * @param user owner of the money
-     * @param money amount of money used to update db
+     * @param money amount of money used to update db, positive or negative
      * @return true if 'money' is positive or, if is negative, the current userMoney
      *          is greater than it
      */

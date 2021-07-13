@@ -20,6 +20,7 @@ import com.overloadedllama.leapingllama.Settings;
 public class EndScreen extends MyAbstractScreen {
     int level;
     int starNum;
+    long startTime;
     double lastScore;
     double totalLevelScore;
     boolean win;
@@ -27,7 +28,6 @@ public class EndScreen extends MyAbstractScreen {
     private Stage endStage;
     private Table endTable;
 
-    private Texture backgroundTexture;
     private final Image[] starArray;
     private Label scoreLabel;
     private Skin scoreLabelSkin;
@@ -44,16 +44,10 @@ public class EndScreen extends MyAbstractScreen {
 
     @Override
     public void show() {
+        startTime = System.currentTimeMillis();
+
         endStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         endTable = new Table();
-
-        if (win) {
-            //backgroundTexture = game.getAssets().getTexture("background_win");
-            ScreenUtils.clear(new Color(Color.NAVY));
-        } else {
-            backgroundTexture = assets.getTexture("game_over");
-        }
-
 
         scoreLabelSkin = assets.getSkin("bigButton");
         if (!win) {
@@ -73,15 +67,23 @@ public class EndScreen extends MyAbstractScreen {
         scoreLabel.setFontScale(1.5f);
         scoreLabel.setAlignment(Align.center);
 
-        if (lastScore < totalLevelScore)
-            starNum = (int) (totalLevelScore / lastScore);
-        else
-            starNum = 3;
+        if (lastScore < totalLevelScore / 3) {
+            starNum = 0;
+        } else {
+            if (lastScore < totalLevelScore / 3 * 2) {
+                starNum = 1;
+            } else {
+                if (lastScore < totalLevelScore - 50)
+                    starNum = 2;
+                else
+                    starNum = 3;
+            }
+        }
 
         System.out.println("totalLevelScore: " + totalLevelScore + ", lastScore: " + lastScore + ", starNum: " + starNum);
 
         for (int i = 0; i < 3; ++i) {
-            if (i <= starNum) {
+            if (i < starNum) {
                 starArray[i] = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
             } else {
                 starArray[i] = new Image(new Texture(Gdx.files.internal("world/starLost.png")));
@@ -116,14 +118,7 @@ public class EndScreen extends MyAbstractScreen {
 
         super.render(delta);
 
-        gameApp.batch.begin();
-        if (backgroundTexture != null) {
-            gameApp.batch.draw(backgroundTexture, GameApp.WIDTH / 2 - (float) backgroundTexture.getWidth() / 4, GameApp.HEIGHT / 2 - (float) backgroundTexture.getHeight() / 4,
-                    (float) backgroundTexture.getWidth() / 2, (float) backgroundTexture.getHeight() / 2);
-        }
-        gameApp.batch.end();
-
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched() && (System.currentTimeMillis() - startTime) > 400) {
             gameApp.setScreen(new MainMenuScreen(gameApp));
             dispose();
         }
@@ -154,8 +149,6 @@ public class EndScreen extends MyAbstractScreen {
 
     @Override
     public void dispose() {
-        if (backgroundTexture != null)
-            backgroundTexture.dispose();
         // todo dispose star array
     }
 

@@ -136,6 +136,7 @@ public class ButtonsStagePlay extends MyAbstractStage {
         // Labels
         labelDistance = new Label("", justTextSkin);
         labelMoney = new Label("0 coins", justTextSkin);
+
         labelBullets = new Label("0 shots", justTextSkin);
         labelBullets.setAlignment(Align.center);
         labelMoney.setAlignment(Align.center);
