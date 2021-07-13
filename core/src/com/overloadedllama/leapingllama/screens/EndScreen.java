@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
 
+
 public class EndScreen extends MyAbstractScreen {
     int level;
     int starNum;
@@ -53,21 +54,31 @@ public class EndScreen extends MyAbstractScreen {
             backgroundTexture = assets.getTexture("game_over");
         }
 
-        if (Settings.checkSetNewUserBestScore(level, lastScore)) {
-            System.out.println("NEW BEST SCORE: " + lastScore);
-        } else {
-            System.out.println("SCORE: " + lastScore);
-        }
 
         scoreLabelSkin = assets.getSkin("bigButton");
-        @SuppressLint("DefaultLocale") String bestScoreText = String.format("%.1f", Settings.getLevelBestScore(level));
-        scoreLabel = new Label("Best Score Level " + level + ": " + bestScoreText, scoreLabelSkin);
+        if (!win) {
+            @SuppressLint("DefaultLocale") String bestScoreText = String.format("%.1f", Settings.getLevelBestScore(level));
+            scoreLabel = new Label("Best Score Level " + level + ": " + bestScoreText, scoreLabelSkin);
+
+            if (Settings.checkSetNewUserBestScore(level, lastScore)) {
+                System.out.println("NEW BEST SCORE: " + lastScore);
+            } else {
+                System.out.println("SCORE: " + lastScore);
+            }
+        } else {
+            Settings.checkSetNewUserBestScore(level, totalLevelScore);
+            scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
+        }
+
         scoreLabel.setFontScale(1.5f);
         scoreLabel.setAlignment(Align.center);
 
-        starNum = (int) (totalLevelScore / lastScore);
+        if (lastScore < totalLevelScore)
+            starNum = (int) (totalLevelScore / lastScore);
+        else
+            starNum = 3;
 
-       System.out.println("totalLevelScore: " + totalLevelScore + ", lastScore: " + lastScore + ", starNum: " + starNum);
+        System.out.println("totalLevelScore: " + totalLevelScore + ", lastScore: " + lastScore + ", starNum: " + starNum);
 
         for (int i = 0; i < 3; ++i) {
             if (i <= starNum) {
@@ -87,7 +98,6 @@ public class EndScreen extends MyAbstractScreen {
         endTable.add(scoreLabel).width(600f).height(180f).padTop(40f).colspan(3);
 
         endStage.addActor(endTable);
-
 
         for (float i = 0; i < 3; ++i) {
             if (i <= starNum) {

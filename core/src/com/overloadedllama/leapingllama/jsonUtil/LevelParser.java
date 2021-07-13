@@ -9,8 +9,6 @@ import com.overloadedllama.leapingllama.LlamaConstants;
 import java.util.*;
 
 
-
-
 public class LevelParser implements LlamaConstants {
     int levelNumber;
 
