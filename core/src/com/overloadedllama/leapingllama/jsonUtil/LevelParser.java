@@ -186,7 +186,7 @@ public class LevelParser implements LlamaConstants {
     private void InfRunParser() {
 
         queue = new PriorityQueue<>();
-        LevelCreator levelCreator = new LevelCreator(1, "");
+        LevelCreator levelCreator = new LevelCreator(1);
 
         enemies = levelCreator.getListEnemies();
         grounds = levelCreator.getListGrounds();
