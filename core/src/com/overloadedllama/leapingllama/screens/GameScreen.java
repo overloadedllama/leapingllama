@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.utils.Null;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
@@ -13,7 +16,9 @@ import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
 import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
+import org.graalvm.compiler.phases.common.NodeCounterPhase;
 
+import java.awt.*;
 import java.util.*;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
@@ -70,6 +75,7 @@ public class GameScreen extends MyAbstractScreen {
     double levelLength;
 
     float llamaX = 3;
+    float llamaH = 1.6f;
     float velocity = 2;
 
     int levelNumber;
@@ -82,6 +88,7 @@ public class GameScreen extends MyAbstractScreen {
     int enemiesKilled = 0;
     double totalLevelScore;
 
+    Tube tube;
 
 
     // METHODS
@@ -119,11 +126,17 @@ public class GameScreen extends MyAbstractScreen {
     @Override
     public void show() {
         Box2D.init();
+
+
+
+
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
-        llama = new Llama(llamaX, 1, (float) 1.6, world, gameApp.batch, assets);
         distance = llamaX;
+
+
+        llama = new Llama(llamaX, 1f, llamaH, world, gameApp.batch, assets);
 
         stageUi = new ButtonsStagePlay(gameApp);
 
@@ -131,6 +144,10 @@ public class GameScreen extends MyAbstractScreen {
 
         enemies = new ArrayList<>();
         timeLastEnemies = System.currentTimeMillis();
+
+
+
+        tube = new Tube(llamaX, 1f, llamaH);
 
         bullets = new ArrayList<>();
         platforms = new ArrayList<>();
@@ -148,15 +165,22 @@ public class GameScreen extends MyAbstractScreen {
 
     }
 
+
     @Override
     public void render(float delta)     {
         ScreenUtils.clear(new Color(Color.BLACK));
         switch(state) {
 
             case RUN:
-                stepWorld();
 
-                if (checkWin()) {
+
+                    stepWorld();
+
+
+
+                if (levelNumber!=-1) {
+                    checkWin();
+
                     // need to do anything?
                 }
 
@@ -170,7 +194,12 @@ public class GameScreen extends MyAbstractScreen {
                 removeObjects();
                 loadLevel(distance%levelLength);
                 llama.preserveX(llamaX);
+
+
+
                 break;
+
+
         }
 
         gameApp.batch.begin();
@@ -200,7 +229,18 @@ public class GameScreen extends MyAbstractScreen {
         for (EnemyDied enemy: enemiesDead){
             enemy.draw(delta);
         }
-        llama.draw(stateTime);
+        if(tube.isAnimationFinished()){
+            llama.draw(stateTime);
+        }
+
+
+        if(!tube.isAnimationFinished()){
+            tube.update();
+            tube.draw(gameApp.batch);
+        }
+
+
+
         gameApp.batch.end();
 
         stageUi.renderer();
@@ -298,11 +338,15 @@ public class GameScreen extends MyAbstractScreen {
         if (accumulator >= STEP_TIME) {
             accumulator -= STEP_TIME;
 
-            world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
-            distance += .05f;
-            stageUi.setDistance(distance);
-            stateTime += delta;
+            if(tube.isAnimationFinished()) {
+                world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
+
+                distance += .05f;
+                stageUi.setDistance(distance);
+                stateTime += delta;
+            }
+
             xSky += 1;
         }
     }
