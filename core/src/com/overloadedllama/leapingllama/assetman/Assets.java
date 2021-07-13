@@ -66,6 +66,11 @@ public class Assets {
         manager.load("llama/llamaWalking.png", Texture.class);
         manager.load("enemies/alienYellow.png", Texture.class);
 
+        manager.load("enemies/alienYellowWalking.png", Texture.class);
+        manager.load("enemies/alienCyanWalking.png", Texture.class);
+        manager.load("enemies/alienOrangeFlyingMoving.png", Texture.class);
+
+
         // loading sounds
         // todo check if .wav files work better than .mp3
         manager.load("sounds/punch.wav", Sound.class);
@@ -110,7 +115,9 @@ public class Assets {
             case "game_over": return manager.get("screen_backgrounds/game_over.png");
             case "quiteBlack": return manager.get("screen_backgrounds/quiteBlack.png");
             case "llamaWalking": return manager.get("llama/llamaWalking.png");
-
+            case "alienCyanWalking": return manager.get("enemies/alienCyanWalking.png");
+            case "alienYellowWalking": return manager.get("enemies/alienYellowWalking.png");
+            case "alienOrangeFlyingMoving": return manager.get("enemies/alienOrangeFlyingMoving.png");
 
         }
         return null;
