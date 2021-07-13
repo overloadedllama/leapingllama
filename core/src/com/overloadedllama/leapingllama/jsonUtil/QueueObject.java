@@ -13,7 +13,6 @@ public class QueueObject implements Comparable {
         this.numItem = numItem;
     }
 
-
     public String getClassObject() {
         return classObject;
     }

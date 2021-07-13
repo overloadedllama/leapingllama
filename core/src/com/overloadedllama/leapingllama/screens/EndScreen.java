@@ -64,6 +64,9 @@ public class EndScreen extends MyAbstractScreen {
             scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
         }
 
+        // use this to check next levels work fine
+        Settings.updateUserLevel();
+
         scoreLabel.setFontScale(1.5f);
         scoreLabel.setAlignment(Align.center);
 
@@ -79,8 +82,6 @@ public class EndScreen extends MyAbstractScreen {
                     starNum = 3;
             }
         }
-
-        System.out.println("totalLevelScore: " + totalLevelScore + ", lastScore: " + lastScore + ", starNum: " + starNum);
 
         for (int i = 0; i < 3; ++i) {
             if (i < starNum) {
