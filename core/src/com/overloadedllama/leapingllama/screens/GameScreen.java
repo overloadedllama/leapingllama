@@ -35,8 +35,8 @@ public class GameScreen extends MyAbstractScreen {
     ButtonsStagePlay stageUi;
     World world;
 
-    Texture sky;
-    float xSky = 0;
+   /* Texture sky;
+    float xSky = 0;*/
     HashMap<String, Boolean> actions;
 
     Llama llama;
@@ -85,6 +85,7 @@ public class GameScreen extends MyAbstractScreen {
 
     Tube tube;
 
+    Sky sky;
 
     // METHODS
 
@@ -98,8 +99,9 @@ public class GameScreen extends MyAbstractScreen {
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
-        sky = gameApp.getAssets().getTexture("sky");
-        sky.setWrap(Repeat,Repeat);
+        /*sky = gameApp.getAssets().getTexture("sky");
+        sky.setWrap(Repeat,Repeat);*/
+        sky = new Sky(gameApp.getAssets().getTexture("sky"));
 
         actions = new HashMap<>();
 
@@ -183,13 +185,14 @@ public class GameScreen extends MyAbstractScreen {
 
         gameApp.batch.begin();
 
-        gameApp.batch.draw(sky,
+        /*gameApp.batch.draw(sky,
                 // position and size of texture
                 -1, 0, viewport.getScreenWidth()/UNITS_PER_METER + 2, METER_HEIGHT,
                 // srcX, srcY, srcWidth, srcHeight
                 (int) xSky, 0, sky.getWidth(), sky.getHeight(),
                 // flipX, flipY
-                false, false);
+                false, false);*/
+        sky.draw(gameApp.batch, viewport.getScreenWidth()/UNITS_PER_METER + 2, METER_HEIGHT);
 
         for (Ground ground : grounds)
             ground.draw();
@@ -323,7 +326,8 @@ public class GameScreen extends MyAbstractScreen {
                 stateTime += delta;
             }
 
-            xSky += 1;
+            //xSky += 1;
+            sky.update();
         }
     }
 
