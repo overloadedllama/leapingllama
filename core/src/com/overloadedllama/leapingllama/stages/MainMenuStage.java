@@ -13,6 +13,7 @@ import com.overloadedllama.leapingllama.screens.SettingScreen;
 import com.overloadedllama.leapingllama.screens.ShopScreen;
 
 public class MainMenuStage extends MyAbstractStage {
+    int numLevels = 5;
     int maxUserLevel;
     float defaultButtonWidth = 240F;
     float defaultButtonHeight = 100F;
@@ -25,15 +26,21 @@ public class MainMenuStage extends MyAbstractStage {
     private Table moneyTable;
     private Table levelTable;
 
+    private ScrollPane scroller;
+    private Table scrollTable;
+
+    // ImageButton
+    private ImageButton backButton;
+
     // TextButton
     private TextButton settingsButton;
     private TextButton playButton;
     private TextButton shopButton;
     private TextButton creditsButton;
     private TextButton moneyButton;
-    private TextButton level1;
-    private TextButton level2;
-    private TextButton level0;
+
+    private TextButton[] levelButtons;
+
     private TextButton endlessMode;
     private TextButton quitButton;
 
@@ -44,10 +51,12 @@ public class MainMenuStage extends MyAbstractStage {
     private Skin textButtonSkin;
     private Skin textFieldSkin;
     private Skin moneyButtonSkin;
+    private Skin backButtonSkin;
 
 
     public MainMenuStage(final GameApp game) {
         super(game);
+
 
         maxUserLevel = Settings.getUserLevel();
 
@@ -56,14 +65,18 @@ public class MainMenuStage extends MyAbstractStage {
         moneyTable = new Table();
         levelTable = new Table();
 
+        scrollTable = new Table();
+
         fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
 
         // creation of Skins
         textButtonSkin = assets.getSkin("bigButton");
         textFieldSkin = assets.getSkin("bigButton");
         moneyButtonSkin = assets.getSkin("coin");
+        backButtonSkin = assets.getSkin("backButton");
 
         // creation of TextButtons
+        backButton = new ImageButton(backButtonSkin);
         playButton = new TextButton("PLAY", textButtonSkin);
         shopButton = new TextButton("SHOP", textButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonSkin);
@@ -71,17 +84,13 @@ public class MainMenuStage extends MyAbstractStage {
         quitButton = new TextButton("QUIT", textButtonSkin);
         String userMoney = "" + Settings.getUserMoney();
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
-        level0 = new TextButton("LEVEL 0", textButtonSkin);
-        level1 = new TextButton("LEVEL 1", textButtonSkin);
-        level2 = new TextButton("LEVEL 2", textButtonSkin);
-        endlessMode = new TextButton("ENDLESS", textButtonSkin);
 
-        if (maxUserLevel <= 1) {
-            level2.setDisabled(true);
-            if (maxUserLevel < 1) {
-                level1.setDisabled(true);
-            }
+        levelButtons = new TextButton[5];
+        for (int i = 0; i < numLevels; ++i) {
+            levelButtons[i] = new TextButton("LEVEL " + i, textButtonSkin);
+            levelButtons[i].setDisabled(!(i <= maxUserLevel));
         }
+        endlessMode = new TextButton("ENDLESS", textButtonSkin);
 
         // creation of TextField
         textFieldSkin.getFont("pixeled").getData().setScale(1F);
@@ -116,19 +125,27 @@ public class MainMenuStage extends MyAbstractStage {
     private void setUpButtons() {
         Gdx.input.setInputProcessor(this);
 
+        // todo fix bug of second click on this button
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), tableHeight);
                 addActor(fadeoutBackground);
 
-                levelTable.add(level0).width(defaultButtonWidth).height(defaultButtonHeight);
-                levelTable.row();
-                levelTable.add(level1).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
-                levelTable.row();
-                levelTable.add(level2).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
-                levelTable.row();
-                levelTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
+                float padTop = 15f;
+                scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+                scrollTable.row();
+
+                for (int i = 0; i < numLevels; ++i) {
+                    scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+                    scrollTable.row();
+                }
+
+                scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
+
+                scroller = new ScrollPane(scrollTable);
+                levelTable.setFillParent(true);
+                levelTable.add(scroller).fill().expand();
 
                 addActor(levelTable);
             }
@@ -156,35 +173,27 @@ public class MainMenuStage extends MyAbstractStage {
             }
         });
 
-        level0.addListener(new ClickListener() {
+        backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, 0));
+                fadeoutBackground.remove();
+                levelTable.remove();
             }
         });
 
-        if (!level1.isDisabled()) {
-            level1.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    super.clicked(event, x, y);
-                    Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, 1));
-                }
-            });
-        }
-
-        if (!level2.isDisabled()) {
-            level2.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    super.clicked(event, x, y);
-                    Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, 2));
-                }
-            });
+        for (int i = 0; i < numLevels; ++i) {
+            final int finalI = i;
+            if (!levelButtons[i].isDisabled()) {
+                levelButtons[i].addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        super.clicked(event, x, y);
+                        Settings.stopMusic(MAIN_MENU_MUSIC);
+                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, finalI));
+                    }
+                });
+            }
         }
 
         endlessMode.addListener(new ClickListener() {

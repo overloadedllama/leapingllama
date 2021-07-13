@@ -44,6 +44,10 @@ public class LoadScreen extends MyAbstractScreen {
                 startLoading = true;
             }
         }));
+
+        // used just for debug now
+        Settings.resetAllProgresses();
+
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {

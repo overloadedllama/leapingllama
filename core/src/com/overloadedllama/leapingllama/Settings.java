@@ -152,6 +152,12 @@ public final class Settings implements LlamaConstants {
         return llamaDbHandler.getLevelBestScore(currentUser, level);
     }
 
+    public static void resetAllProgresses() {
+        llamaDbHandler.resetProgresses(currentUser);
+    }
+
+
+
 
     // SOUNDS AND MUSICS
 
