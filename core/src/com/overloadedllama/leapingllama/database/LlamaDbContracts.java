@@ -12,6 +12,7 @@ import android.provider.BaseColumns;
  *  It is not the best solution, a table with (user, numLevel) as PK would works best
  *  Table Level
  *      user VARCHAR(20) PK REFERENCES Player,
+ *      endless REAL NOT NULL DEFAULT 0,
  *      level0 REAL NOT NULL DEFAULT 0,
  *      level1 REAL NOT NULL DEFAULT 0,
  *      level2 REAL NOT NULL DEFAULT 0,
@@ -57,6 +58,7 @@ public class LlamaDbContracts {
         public static final String LEVEL_3 = "level3";
         public static final String LEVEL_4 = "level4";
         public static final String LEVEL_5 = "level5";
+        public static final String ENDLESS = "endless";
     }
 
     public static class Settings implements BaseColumns {
@@ -77,7 +79,6 @@ public class LlamaDbContracts {
     public static final String SQL_PLAYER_CREATE =
             "CREATE TABLE " + Player.TABLE_NAME + " (" +
                     Player.PRIMARY_KEY + " VARCHAR(20) PRIMARY KEY, " +
-          //          Player.SCORE_COLUMN + " REAL NOT NULL DEFAULT 0, " +
                     Player.MONEY + " INT NOT NULL DEFAULT 0, " +
                     Player.MAX_LEVEL + " INT NOT NULL DEFAULT 0)";
 
@@ -97,7 +98,8 @@ public class LlamaDbContracts {
                     Level.LEVEL_2 + " REAL NOT NULL DEFAULT 0, " +
                     Level.LEVEL_3 + " REAL NOT NULL DEFAULT 0, " +
                     Level.LEVEL_4 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.LEVEL_5 + " REAL NOT NULL DEFAULT 0)";
+                    Level.LEVEL_5 + " REAL NOT NULL DEFAULT 0, " +
+                    Level.ENDLESS + " REAL NOT NULL DEFAULT 0)";
 
     public static final String SQL_DELETE_LEVEL =
             "DROP TABLE IF EXISTS " + Level.TABLE_NAME;

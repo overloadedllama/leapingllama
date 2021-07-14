@@ -14,45 +14,49 @@ import com.overloadedllama.leapingllama.screens.SettingScreen;
 import com.overloadedllama.leapingllama.screens.ShopScreen;
 
 public class MainMenuStage extends MyAbstractStage {
-    int numLevels = 5;
+    final int numLevels = 6;
     int maxUserLevel;
     float defaultButtonWidth = 240F;
     float defaultButtonHeight = 100F;
 
-    private Image fadeoutBackground;
+    // Image
+    private final Image fadeoutBackground;
 
     // Tables
-    private Table mainMenuTable;
-    private Table userTable;
-    private Table moneyTable;
-    private Table levelTable;
+    private final Table mainMenuTable;
+    private final Table userMoneyTable;
+    private final Table levelTable;
+    private final Table chooseUserTable;
+    private final Table scrollTable;
 
-    private ScrollPane scroller;
-    private Table scrollTable;
+    // ScrollPane
+    private final ScrollPane scroller;
 
     // ImageButton
-    private ImageButton backButton;
+    private final ImageButton backButton;
+    private final ImageButton backButton1;
 
     // TextButton
-    private TextButton settingsButton;
-    private TextButton playButton;
-    private TextButton shopButton;
-    private TextButton creditsButton;
-    private TextButton moneyButton;
-
-    private TextButton[] levelButtons;
-
-    private TextButton endlessMode;
-    private TextButton quitButton;
+    private final TextButton settingsButton;
+    private final TextButton playButton;
+    private final TextButton shopButton;
+    private final TextButton creditsButton;
+    private final TextButton moneyButton;
+    private final TextButton endlessMode;
+    private final TextButton quitButton;
+    private final TextButton userButton;
+    private final TextButton[] levelButtons;
 
     // TextField
-    private TextField user;
+    private final TextField userTextField;
+
+    // Label
+    private final Label userLabel;
 
     // Skin
-    private Skin textButtonSkin;
-    private Skin textFieldSkin;
-    private Skin moneyButtonSkin;
-    private Skin backButtonSkin;
+    private final Skin textButtonFieldLabelSkin;
+    private final Skin moneyButtonSkin;
+    private final Skin backButtonSkin;
 
 
     public MainMenuStage(final GameApp game) {
@@ -61,68 +65,63 @@ public class MainMenuStage extends MyAbstractStage {
         maxUserLevel = Settings.getUserLevel();
 
         mainMenuTable = new Table();
-        userTable = new Table();
-        moneyTable = new Table();
+        userMoneyTable = new Table();
         levelTable = new Table();
+        chooseUserTable = new Table();
 
         scrollTable = new Table();
 
         fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
 
         // creation of Skins
-        textButtonSkin = assets.getSkin("bigButton");
-        textFieldSkin = assets.getSkin("bigButton");
+        textButtonFieldLabelSkin = assets.getSkin("bigButton");
         moneyButtonSkin = assets.getSkin("coin");
         backButtonSkin = assets.getSkin("backButton");
 
         // creation of TextButtons
         backButton = new ImageButton(backButtonSkin);
-        playButton = new TextButton("PLAY", textButtonSkin);
-        shopButton = new TextButton("SHOP", textButtonSkin);
-        settingsButton = new TextButton("SETTINGS", textButtonSkin);
-        creditsButton = new TextButton("CREDIT", textButtonSkin);
-        quitButton = new TextButton("QUIT", textButtonSkin);
+        playButton = new TextButton("PLAY", textButtonFieldLabelSkin);
+        shopButton = new TextButton("SHOP", textButtonFieldLabelSkin);
+        settingsButton = new TextButton("SETTINGS", textButtonFieldLabelSkin);
+        creditsButton = new TextButton("CREDIT", textButtonFieldLabelSkin);
+        quitButton = new TextButton("QUIT", textButtonFieldLabelSkin);
         String userMoney = "" + Settings.getUserMoney();
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
 
-        levelButtons = new TextButton[5];
+        levelButtons = new TextButton[numLevels];
         for (int i = 0; i < numLevels; ++i) {
-            levelButtons[i] = new TextButton("LEVEL " + i, textButtonSkin);
+            levelButtons[i] = new TextButton("LEVEL " + i, textButtonFieldLabelSkin);
             levelButtons[i].setDisabled(!(i <= maxUserLevel));
         }
-        endlessMode = new TextButton("ENDLESS", textButtonSkin);
+        endlessMode = new TextButton("ENDLESS", textButtonFieldLabelSkin);
+        userButton = new TextButton("  USER: " + Settings.getCurrentUser(), textButtonFieldLabelSkin);
 
-        // creation of TextField
-        textFieldSkin.getFont("pixeled").getData().setScale(1F);
-        user = new TextField("  USER: " + Settings.getCurrentUser(), textFieldSkin);
-        user.setDisabled(true);
-        user.setAlignment(Align.center);
-        // adding items into mainMenu and info Tables and them to the mainMenuStage
-        userTable.top().left();
-        userTable.add(user).width(240F).height(80F).padTop(15F);
-        moneyTable.top().right();
-        moneyTable.add(moneyButton).padTop(15F).padRight(15F);
+        float padTop = 15f;
 
-        mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
-        mainMenuTable.row();
-        mainMenuTable.add(shopButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
-        mainMenuTable.row();
-        mainMenuTable.add(settingsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
-        mainMenuTable.row();
-        mainMenuTable.add(creditsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
-        mainMenuTable.row();
-        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(10F);
+        // USER-MONEY TABLE
+        userMoneyTable.top().left();
+        userMoneyTable.add(userButton).width(240F).height(80F).padTop(padTop);
+        userMoneyTable.add(moneyButton).padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 15f).padTop(padTop);
+        addActor(userMoneyTable);
 
-        addActor(userTable);
-        addActor(moneyTable);
-
+        // MAIN MENU TABLE
+        mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.row();
+        mainMenuTable.add(shopButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.row();
+        mainMenuTable.add(settingsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.row();
+        mainMenuTable.add(creditsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.row();
+        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
         addActor(mainMenuTable);
 
 
+        // FADEOUT BACKGROUND
         fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), tableHeight);
         addActor(fadeoutBackground);
 
-        float padTop = 15f;
+        // SCROLL TABLE AND SCROLLER
         scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
         scrollTable.row();
 
@@ -131,7 +130,7 @@ public class MainMenuStage extends MyAbstractStage {
             scrollTable.row();
         }
 
-        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(15f);
+        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
 
         scroller = new ScrollPane(scrollTable);
         levelTable.setFillParent(true);
@@ -141,6 +140,21 @@ public class MainMenuStage extends MyAbstractStage {
         fadeoutBackground.setVisible(false);
         levelTable.setVisible(false);
 
+        // CHOOSE USER TABLE
+        backButton1 = backButton;
+        userLabel = new Label("CURRENT USER: ", textButtonFieldLabelSkin);
+        userLabel.setAlignment(Align.center);
+        userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
+        userTextField.setAlignment(Align.center);
+        chooseUserTable.top();
+        chooseUserTable.add(backButton1).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop).colspan(2);
+        chooseUserTable.row();
+        chooseUserTable.add(userLabel).size(defaultButtonWidth, defaultButtonHeight).padRight(10f);
+        chooseUserTable.add(userTextField).size(defaultButtonWidth, defaultButtonHeight);
+        chooseUserTable.setVisible(false);
+        addActor(chooseUserTable);
+
+        // adds the button's listeners
         setUpButtons();
 
     }
@@ -148,10 +162,36 @@ public class MainMenuStage extends MyAbstractStage {
     private void setUpButtons() {
         Gdx.input.setInputProcessor(this);
 
-        // todo fix bug of second click on this button
+        userButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                mainMenuTable.setVisible(false);
+                userMoneyTable.setVisible(false);
+                fadeoutBackground.setVisible(true);
+                chooseUserTable.setVisible(true);
+            }
+        });
+
+        backButton1.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                fadeoutBackground.setVisible(false);
+                chooseUserTable.setVisible(false);
+                Settings.insertNewUser(userTextField.getText());
+                Settings.setCurrentUser(userTextField.getText());
+                System.out.println("CURRENT USER: " + Settings.getCurrentUser());
+                mainMenuTable.setVisible(true);
+                userMoneyTable.setVisible(true);
+            }
+        });
+
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                mainMenuTable.setVisible(false);
+                fadeoutBackground.setVisible(true);
                 levelTable.setVisible(true);
             }
         });
@@ -189,6 +229,7 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                mainMenuTable.setVisible(true);
                 levelTable.setVisible(false);
                 fadeoutBackground.remove();
             }
@@ -218,12 +259,19 @@ public class MainMenuStage extends MyAbstractStage {
         });
     }
 
-    public void resizer() {
-        userTable.invalidateHierarchy();
-        userTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+    public void renderer() {
+        super.renderer();
+        userButton.setText(Settings.getCurrentUser());
+        moneyButton.setText("" + Settings.getUserMoney());
+    }
 
-        moneyTable.invalidateHierarchy();
-        moneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+    public void resizer() {
+
+        chooseUserTable.invalidateHierarchy();
+        chooseUserTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+
+        userMoneyTable.invalidateHierarchy();
+        userMoneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
         mainMenuTable.invalidateHierarchy();
         mainMenuTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);

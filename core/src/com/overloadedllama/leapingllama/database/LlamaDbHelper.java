@@ -30,6 +30,7 @@ public class LlamaDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(LlamaDbContracts.SQL_PLAYER_DROP);
         db.execSQL(LlamaDbContracts.SQL_SETTINGS_DROP);
+        db.execSQL(LlamaDbContracts.SQL_DELETE_LEVEL);
         onCreate(db);
     }
 

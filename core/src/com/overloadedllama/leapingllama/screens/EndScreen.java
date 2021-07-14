@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.screens;
 
-import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -50,63 +49,74 @@ public class EndScreen extends MyAbstractScreen {
         endTable = new Table();
 
         scoreLabelSkin = assets.getSkin("bigButton");
-        if (!win) {
-            @SuppressLint("DefaultLocale") String bestScoreText = String.format("%.1f", Settings.getLevelBestScore(level));
-            scoreLabel = new Label("Best Score Level " + level + ": " + bestScoreText, scoreLabelSkin);
 
-            if (Settings.checkSetNewUserBestScore(level, lastScore)) {
-                System.out.println("NEW BEST SCORE: " + lastScore);
+        if (level > -1) {
+            if (!win) {
+                scoreLabel = new Label("SCORE: " + lastScore + " - BEST SCORE LEVEL " + level + ": " + Settings.getLevelBestScore(level), scoreLabelSkin);
+
+                if (Settings.checkSetNewUserBestScore(level, lastScore)) {
+                    System.out.println("NEW BEST SCORE: " + lastScore);
+                } else {
+                    System.out.println("SCORE: " + lastScore);
+                }
             } else {
-                System.out.println("SCORE: " + lastScore);
+                Settings.checkSetNewUserBestScore(level, totalLevelScore);
+                scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
             }
         } else {
-            Settings.checkSetNewUserBestScore(level, totalLevelScore);
-            scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
+            // check for new record in endless game mode
+            if (Settings.checkSetNewUserBestScore(-1, lastScore)) {
+                scoreLabel = new Label("NEW ENDLESS BEST SCORE! " + lastScore, scoreLabelSkin);
+            } else {
+                scoreLabel = new Label("SCORE: " + ((int) lastScore) + " - BEST SCORE: "+ Settings.getLevelBestScore(-1), scoreLabelSkin);
+            }
         }
-
         // use this to check next levels work fine
-        Settings.updateUserLevel();
+        // Settings.updateUserLevel();
 
-        scoreLabel.setFontScale(1.5f);
+        scoreLabel.setFontScale(1.2f);
         scoreLabel.setAlignment(Align.center);
 
-        if (lastScore < totalLevelScore / 3) {
-            starNum = 0;
-        } else {
-            if (lastScore < totalLevelScore / 3 * 2) {
-                starNum = 1;
+        if (level > -1) {
+            // if is a level shows also stars
+            if (lastScore < totalLevelScore / 3) {
+                starNum = 0;
             } else {
-                if (lastScore < totalLevelScore - 50)
-                    starNum = 2;
-                else
-                    starNum = 3;
+                if (lastScore < totalLevelScore / 3 * 2) {
+                    starNum = 1;
+                } else {
+                    if (lastScore < totalLevelScore - 50)
+                        starNum = 2;
+                    else
+                        starNum = 3;
+                }
+            }
+
+            for (int i = 0; i < 3; ++i) {
+                if (i < starNum) {
+                    starArray[i] = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
+                } else {
+                    starArray[i] = new Image(new Texture(Gdx.files.internal("world/starLost.png")));
+                }
+            }
+
+            float starWidth = 200f,  starHeight = 200f;
+            endTable.add(starArray[0]).width(starWidth).height(starHeight).padRight(100f);
+            endTable.add(starArray[1]).width(starWidth).height(starHeight).padBottom(150f);
+            endTable.add(starArray[2]).width(starWidth).height(starHeight).padLeft(100f);
+
+            for (float i = 0; i < 3; ++i) {
+                if (i <= starNum) {
+                    starArray[(int) i].addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn((float) (2.0 + 1 * i))));
+                }
             }
         }
 
-        for (int i = 0; i < 3; ++i) {
-            if (i < starNum) {
-                starArray[i] = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
-            } else {
-                starArray[i] = new Image(new Texture(Gdx.files.internal("world/starLost.png")));
-            }
-        }
-
-        float starWidth = 200f;
-        float starHeight = 200f;
-
-        endTable.add(starArray[0]).width(starWidth).height(starHeight).padRight(100f);
-        endTable.add(starArray[1]).width(starWidth).height(starHeight).padBottom(150f);
-        endTable.add(starArray[2]).width(starWidth).height(starHeight).padLeft(100f);
         endTable.row();
-        endTable.add(scoreLabel).width(600f).height(180f).padTop(40f).colspan(3);
+        endTable.add(scoreLabel).width(1000f).height(180f).padTop(40f).colspan(3);
 
         endStage.addActor(endTable);
 
-        for (float i = 0; i < 3; ++i) {
-            if (i <= starNum) {
-                starArray[(int) i].addAction(Actions.sequence(Actions.alpha(0.0f + i / 10), Actions.fadeIn((float) (2.0 + 1 * i))));
-            }
-        }
 
     }
 

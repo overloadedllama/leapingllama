@@ -34,11 +34,10 @@ public class LlamaDbHandler {
      * inserts a new user, both in Player and Level tables
      * Firs checks that the user not exists yet, and in case the function creates it
      * @param user the user to create
-     * @return true if the user didn't exists yet, false otherwise
      */
-    public boolean insertNewUser(String user) {
+    public void insertNewUser(String user) {
         if (existsUser(user)) {
-            return false;
+            return;
         }
 
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -49,7 +48,6 @@ public class LlamaDbHandler {
         db.insert(LlamaDbContracts.Player.TABLE_NAME, null, newUser);
         db.insert(LlamaDbContracts.Level.TABLE_NAME, null, newUser);
         db.insert(LlamaDbContracts.Settings.TABLE_NAME, null, newUser);
-        return true;
     }
 
     private boolean existsUser(String user) {
@@ -110,13 +108,22 @@ public class LlamaDbHandler {
 
     public double getLevelBestScore(String user, int level) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        if (level < 0 || level > 5)
+        if (level < -1 || level > 5)
             throw new IllegalArgumentException("Level " + level + " doesn't exists.");
 
-        String LEVEL = "level" + level;
-        String[] projection = { LEVEL };
-        String selection = LlamaDbContracts.Level.PRIMARY_KEY + " = ?";
+        String LEVEL;
+        String selection;
+        String[] projection;
         String[] selectionArgs = { user };
+
+        if (level >= 0) {
+            LEVEL = "level" + level;
+        } else {
+            LEVEL = LlamaDbContracts.Level.ENDLESS;
+        }
+
+        projection = new String[]{LEVEL};
+        selection = LlamaDbContracts.Level.PRIMARY_KEY + " = ?";
 
         Cursor cursor = db.query(
                 LlamaDbContracts.Level.TABLE_NAME,
@@ -223,6 +230,13 @@ public class LlamaDbHandler {
         resetPlayer.put(LlamaDbContracts.Player.MAX_LEVEL, 0);
         resetPlayer.put(LlamaDbContracts.Player.MONEY, 0);
 
+        int numLevels = 6;
+        ContentValues resetLevels = new ContentValues();
+        for (int i = 0; i < numLevels; ++i) {
+            String LEVEL = "level" + i;
+            resetLevels.put(LEVEL, 0);
+        }
+
         ContentValues resetSetting = new ContentValues();
         resetSetting.put(LlamaDbContracts.Settings.TAN, 0);
         resetSetting.put(LlamaDbContracts.Settings.T_SHIRT, 0);
@@ -231,12 +245,20 @@ public class LlamaDbHandler {
         String selPlayer = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
         String[] selPlayerArgs = { user };
 
-        String selSettings= LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
+        String selSettings = LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
         String[] selSettingsArgs = { user };
+
+        String selLevel = LlamaDbContracts.Level.PRIMARY_KEY + " LIKE ?";
+        String[] selLevelArgs = { user };
 
         db.update(
                 LlamaDbContracts.Player.TABLE_NAME,
                 resetPlayer, selPlayer, selPlayerArgs
+        );
+
+        db.update(
+                LlamaDbContracts.Level.TABLE_NAME,
+                resetLevels, selLevel, selLevelArgs
         );
 
         db.update(
