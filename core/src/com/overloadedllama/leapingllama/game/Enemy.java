@@ -16,23 +16,28 @@ import java.util.Random;
 public class Enemy extends GameObject{
 
     private static final int FRAME_COLS = 4, FRAME_ROWS = 1;
+    private int numLife = 1;
 
+    private final String ALIEN_CYAN = "alienCyan";
+    private final String ALIEN_YELLOW = "alienYellow";
 
     Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
     Texture walkSheet;
 
-    String textureString = "alienCyan";
+    String textureString = ALIEN_CYAN;
 
     public Enemy(float x, float y, float h, World world, Batch batch, Assets assets){
         super(assets.getTexture("alienCyan"), x, y, h, world, batch);
 
+        this.assets = assets;
         Random random = new Random();
         int randomNumber = random.nextInt(2);
 
-        if(randomNumber == 1){
-            textureString = "alienYellow";
+        if (randomNumber == 1) {
+            textureString = ALIEN_YELLOW;
             texture = assets.getTexture(textureString);
             sprite.setTexture(texture);
+            numLife = 2;
         }
 
         PolygonShape enemyShape = new PolygonShape();
@@ -45,6 +50,11 @@ public class Enemy extends GameObject{
        // body.setLinearVelocity(-3f, 0);
         body.setFixedRotation(true);
 
+        setAnimation();
+
+    }
+
+    private void setAnimation() {
         walkSheet = assets.getTexture(textureString + "Walking");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet,
                 walkSheet.getWidth() / FRAME_COLS,
@@ -61,15 +71,10 @@ public class Enemy extends GameObject{
 
         walkAnimation = new Animation<>(0.16f, walkFrames);
 
-
-
-
     }
 
 
-    public void draw(float stateTime){
-
-
+    public void draw(float stateTime) {
             TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             sprite = new Sprite(currentFrame);
 
@@ -86,4 +91,20 @@ public class Enemy extends GameObject{
     public String getTextureString() {
         return textureString;
     }
+
+    public void decreaseNumLife() {
+        --numLife;
+        if (numLife == 0) {
+            destroyable = true;
+        } else {
+            body.setLinearVelocity(0, 0);
+            textureString = ALIEN_CYAN;
+            setAnimation();
+        }
+    }
+
+    public int getNumLife() {
+        return numLife;
+    }
+
 }

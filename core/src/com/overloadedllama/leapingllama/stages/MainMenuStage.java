@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.screens.CreditScreen;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 import com.overloadedllama.leapingllama.screens.SettingScreen;
@@ -100,7 +100,7 @@ public class MainMenuStage extends MyAbstractStage {
 
         // USER-MONEY TABLE
         userMoneyTable.top().left();
-        userMoneyTable.add(userButton).width(240F).height(80F).padTop(padTop);
+        userMoneyTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).padLeft(15f);
         userMoneyTable.add(moneyButton).padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 15f).padTop(padTop);
         addActor(userMoneyTable);
 
@@ -116,29 +116,24 @@ public class MainMenuStage extends MyAbstractStage {
         mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
         addActor(mainMenuTable);
 
-
         // FADEOUT BACKGROUND
         fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), tableHeight);
+        fadeoutBackground.setVisible(false);
         addActor(fadeoutBackground);
 
         // SCROLL TABLE AND SCROLLER
         scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
         scrollTable.row();
-
         for (int i = 0; i < numLevels; ++i) {
             scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
             scrollTable.row();
         }
-
         scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
-
         scroller = new ScrollPane(scrollTable);
         levelTable.setFillParent(true);
         levelTable.add(scroller).fill().expand();
-        addActor(levelTable);
-
-        fadeoutBackground.setVisible(false);
         levelTable.setVisible(false);
+        addActor(levelTable);
 
         // CHOOSE USER TABLE
         backButton1 = new ImageButton(backButtonSkin);

@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 
 public class LoadScreen extends MyAbstractScreen {
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.overloadedllama.leapingllama.assetman.Assets;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.screens.LoadScreen;
 
 public class GameApp extends Game {

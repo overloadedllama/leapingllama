@@ -1,9 +1,10 @@
-package com.overloadedllama.leapingllama;
+package com.overloadedllama.leapingllama.resources;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.overloadedllama.leapingllama.LlamaConstants;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 

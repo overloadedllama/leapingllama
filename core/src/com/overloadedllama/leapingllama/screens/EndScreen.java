@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
+import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 
 
 public class EndScreen extends MyAbstractScreen {
@@ -41,6 +42,7 @@ public class EndScreen extends MyAbstractScreen {
         starArray = new Image[3];
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void show() {
         startTime = System.currentTimeMillis();
@@ -50,10 +52,11 @@ public class EndScreen extends MyAbstractScreen {
 
         scoreLabelSkin = assets.getSkin("bigButton");
 
+        System.out.printf("Total level score: %.1f --- last score: %.1f%n", totalLevelScore, lastScore);
+
         if (level > -1) {
             if (!win) {
-                scoreLabel = new Label("SCORE: " + lastScore + " - BEST SCORE LEVEL " + level + ": " + Settings.getLevelBestScore(level), scoreLabelSkin);
-
+                scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE LEVEL %d: %.1f", lastScore, level, Settings.getLevelBestScore(level)), scoreLabelSkin);
                 if (Settings.checkSetNewUserBestScore(level, lastScore)) {
                     System.out.println("NEW BEST SCORE: " + lastScore);
                 } else {
@@ -66,11 +69,12 @@ public class EndScreen extends MyAbstractScreen {
         } else {
             // check for new record in endless game mode
             if (Settings.checkSetNewUserBestScore(-1, lastScore)) {
-                scoreLabel = new Label("NEW ENDLESS BEST SCORE! " + ((int) lastScore), scoreLabelSkin);
+                scoreLabel = new Label(String.format("NEW ENDLESS BEST SCORE! %.1f", lastScore), scoreLabelSkin);
             } else {
-                scoreLabel = new Label("SCORE: " + ((int) lastScore) + " - BEST SCORE: "+ Settings.getLevelBestScore(-1), scoreLabelSkin);
+                scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE: %.1f", lastScore, Settings.getLevelBestScore(-1)), scoreLabelSkin);
             }
         }
+
         // use this to check next levels work fine
         // Settings.updateUserLevel();
 
@@ -82,7 +86,7 @@ public class EndScreen extends MyAbstractScreen {
             if (lastScore < totalLevelScore / 3) {
                 starNum = 0;
             } else {
-                if (lastScore < totalLevelScore / 3 * 2) {
+                if (lastScore < (totalLevelScore / 3) * 2) {
                     starNum = 1;
                 } else {
                     if (lastScore < totalLevelScore - 50)
@@ -91,6 +95,8 @@ public class EndScreen extends MyAbstractScreen {
                         starNum = 3;
                 }
             }
+
+            System.out.println("Star Num: " + starNum);
 
             for (int i = 0; i < 3; ++i) {
                 if (i < starNum) {
@@ -105,9 +111,12 @@ public class EndScreen extends MyAbstractScreen {
             endTable.add(starArray[1]).width(starWidth).height(starHeight).padBottom(150f);
             endTable.add(starArray[2]).width(starWidth).height(starHeight).padLeft(100f);
 
-            for (float i = 0; i < 3; ++i) {
-                if (i <= starNum) {
-                    starArray[(int) i].addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn((float) (2.0 + 1 * i))));
+            if (starNum > 0) {
+                for (float i = 0; i < 3; ++i) {
+                    if (i <= starNum) {
+                        System.out.printf("Star %.0f ON", i);
+                        starArray[(int) i].addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn((float) (2.0 + 1 * i))));
+                    }
                 }
             }
         }

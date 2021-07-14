@@ -11,7 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.listener.MyGestureListener;
 
 import java.util.HashMap;

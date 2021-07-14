@@ -13,7 +13,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.resources.ShopItem;
 
 public class ShopScreen extends MyAbstractScreen {

@@ -2,12 +2,11 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.listener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
@@ -15,8 +14,6 @@ import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
 import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
 
 import java.util.*;
-
-import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 
 
 public class GameScreen extends MyAbstractScreen {
@@ -225,10 +222,9 @@ public class GameScreen extends MyAbstractScreen {
         stageUi.renderer();
 
         actions = stageUi.getActions();
-
         manageActions();
-
         stageUi.setActions(actions);
+
         debugRenderer.render(world, camera.combined);
 
         super.render(delta);
@@ -344,7 +340,7 @@ public class GameScreen extends MyAbstractScreen {
             levelLoaded = true;
             levelParser = new LevelParser();
             queue.addAll(levelParser.getQueue());
-        }else if(distance > 0.1){
+        } else if (distance > 0.1) {
             levelLoaded = false;
         }
 

@@ -3,7 +3,7 @@ package com.overloadedllama.leapingllama.screens;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.overloadedllama.leapingllama.GameApp;
 
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.stages.MainMenuStage;
 
 public class MainMenuScreen extends MyAbstractScreen {

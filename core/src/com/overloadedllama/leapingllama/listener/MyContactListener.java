@@ -1,7 +1,7 @@
 package com.overloadedllama.leapingllama.listener;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.LlamaConstants;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.screens.GameScreen;
@@ -24,7 +24,7 @@ public class MyContactListener implements ContactListener, LlamaConstants {
         if (fa == null || fb == null) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
-        if (isBulletEnemyObstacleContact(fa, fb)) {
+        if (isBulletEnemyContact(fa, fb)) {
             //System.out.println("COLLISION BULLET-ENEMY DETECTED!");
         } else if (isLlamaEnemyContact(fa, fb)) {
             //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
@@ -47,24 +47,20 @@ public class MyContactListener implements ContactListener, LlamaConstants {
     public void postSolve(Contact contact, ContactImpulse impulse) {    }
 
 
-    private boolean isBulletEnemyObstacleContact(Fixture a, Fixture b) {
-            if (a.getUserData() instanceof Bullet) {
-                if ((b.getUserData() instanceof Enemy || b.getUserData() instanceof Obstacle)) {
-                    ((Bullet) a.getUserData()).setDestroyable(true);
-                    ((GameObject) b.getUserData()).setDestroyable(true);
-                }
-                parent.updateEnemiesKilled();
-                return true;
-            }
+    private boolean isBulletEnemyContact(Fixture a, Fixture b) {
+        if ((a.getUserData() instanceof Bullet) && (b.getUserData() instanceof Enemy)) {
+            ((Bullet) a.getUserData()).setDestroyable(true);
+            ((Enemy) b.getUserData()).decreaseNumLife();
+            parent.updateEnemiesKilled();
+            return true;
+        }
 
-            if (b.getUserData() instanceof Bullet) {
-                if ((a.getUserData() instanceof Enemy) || (a.getUserData() instanceof Obstacle)) {
-                    ((Bullet) b.getUserData()).setDestroyable(true);
-                    ((GameObject) a.getUserData()).setDestroyable(true);
-                }
-                parent.updateEnemiesKilled();
-                return true;
-            }
+        if ((b.getUserData() instanceof Bullet) && (a.getUserData() instanceof Enemy)) {
+            ((Bullet) b.getUserData()).setDestroyable(true);
+            ((Enemy) a.getUserData()).decreaseNumLife();
+            parent.updateEnemiesKilled();
+            return true;
+        }
 
         return false;
     }
