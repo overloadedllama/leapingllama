@@ -338,9 +338,14 @@ public class GameScreen extends MyAbstractScreen {
      */
     private void loadLevel(double distance) {
 
-        if (distance == 0) {
+        boolean levelLoaded = false;
+
+        if (distance <= 0.1 && !levelLoaded) {
+            levelLoaded = true;
             levelParser = new LevelParser();
             queue.addAll(levelParser.getQueue());
+        }else if(distance > 0.1){
+            levelLoaded = false;
         }
 
         QueueObject queueObject = queue.peek();
