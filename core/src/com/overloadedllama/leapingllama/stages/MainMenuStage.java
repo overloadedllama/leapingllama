@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.Settings;
+import com.overloadedllama.leapingllama.screens.CreditScreen;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 import com.overloadedllama.leapingllama.screens.SettingScreen;
 import com.overloadedllama.leapingllama.screens.ShopScreen;
@@ -166,6 +167,13 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new ShopScreen(gameApp));
+            }
+        });
+
+        creditsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new CreditScreen(gameApp));
             }
         });
 
