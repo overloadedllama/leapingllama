@@ -145,7 +145,12 @@ public class LlamaDbHandler {
             SQLiteDatabase db = dbHelper.getWritableDatabase();
 
             ContentValues newBest = new ContentValues();
-            String LEVEL = "level" + level;
+            String LEVEL;
+            if (level >= 0) {
+                LEVEL = "level" + level;
+            } else {
+                LEVEL = "endless";
+            }
             newBest.put(LEVEL, score);
 
             String selection = LlamaDbContracts.Level.PRIMARY_KEY + " LIKE ?";

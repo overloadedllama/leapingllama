@@ -46,7 +46,7 @@ public class LoadScreen extends MyAbstractScreen {
         }));
 
         // used just for debug now
-        Settings.resetAllProgresses();
+        //Settings.resetAllProgresses();
 
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override

@@ -66,7 +66,7 @@ public class EndScreen extends MyAbstractScreen {
         } else {
             // check for new record in endless game mode
             if (Settings.checkSetNewUserBestScore(-1, lastScore)) {
-                scoreLabel = new Label("NEW ENDLESS BEST SCORE! " + lastScore, scoreLabelSkin);
+                scoreLabel = new Label("NEW ENDLESS BEST SCORE! " + ((int) lastScore), scoreLabelSkin);
             } else {
                 scoreLabel = new Label("SCORE: " + ((int) lastScore) + " - BEST SCORE: "+ Settings.getLevelBestScore(-1), scoreLabelSkin);
             }

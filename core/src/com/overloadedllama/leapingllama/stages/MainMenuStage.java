@@ -141,7 +141,7 @@ public class MainMenuStage extends MyAbstractStage {
         levelTable.setVisible(false);
 
         // CHOOSE USER TABLE
-        backButton1 = backButton;
+        backButton1 = new ImageButton(backButtonSkin);
         userLabel = new Label("CURRENT USER: ", textButtonFieldLabelSkin);
         userLabel.setAlignment(Align.center);
         userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
