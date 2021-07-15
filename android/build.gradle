@@ -1,3 +1,4 @@
+//noinspection DuplicatePlatformClasses
 android {
     buildToolsVersion "29.0.3"
     compileSdkVersion 30
@@ -22,6 +23,8 @@ android {
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
+
     }
     buildTypes {
         release {

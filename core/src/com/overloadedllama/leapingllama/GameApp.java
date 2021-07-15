@@ -9,17 +9,26 @@ import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.screens.LoadScreen;
 
+
+
 public class GameApp extends Game {
+
+
 	public SpriteBatch batch;
 	public BitmapFont font;
 	private Assets assets;
+
 
 	public final static float WIDTH = 1280f;
 	public final static float HEIGHT = 720f;
 
 	private final Context context;
 
+
+
 	public GameApp(Context context) {
+
+
 		this.context = context;
 		this.assets = new Assets();
 		new Settings(context, assets);
@@ -48,5 +57,9 @@ public class GameApp extends Game {
 	public Context getContext() { return context; }
 
 	public Assets getAssets() { return assets; }
+
+
+
+
 }
 
