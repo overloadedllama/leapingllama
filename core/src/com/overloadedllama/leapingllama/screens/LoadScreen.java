@@ -2,6 +2,8 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 
 public class LoadScreen extends MyAbstractScreen {
@@ -23,6 +26,9 @@ public class LoadScreen extends MyAbstractScreen {
 
     private ProgressBar progressBar;
     private Skin progressBarSkin;
+
+    Sky sky;
+    Batch batch;
 
 
     public LoadScreen(final GameApp gameApp) {
@@ -63,11 +69,19 @@ public class LoadScreen extends MyAbstractScreen {
         loadScreenTable.add(progressBar).height(120f).width(260f).padTop(30f);
         loadScreenStage.addActor(loadScreenTable);
 
+        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        batch = new SpriteBatch();
+
     }
 
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+
+        batch.begin();
+        sky.draw(batch, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.end();
+
 
         // only if there isn't any asset on loading queue yet the button works
         if (assets.update() && startLoading) {
@@ -87,6 +101,8 @@ public class LoadScreen extends MyAbstractScreen {
         gameApp.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/4, GameApp.HEIGHT/2 - (float) logo.getHeight()/4, (float) logo.getWidth()/2, (float) logo.getHeight()/2);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
         gameApp.batch.end();
+
+        sky.update();
 
    }
 

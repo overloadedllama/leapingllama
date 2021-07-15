@@ -2,6 +2,9 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -9,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 
 public class SettingScreen extends MyAbstractScreen {
@@ -29,12 +33,24 @@ public class SettingScreen extends MyAbstractScreen {
     // Skins
     private Skin textButtonSkin;
 
+
+    //Sky
+    Sky sky;
+    Batch batch;
+
+
+
     public SettingScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
     public void show() {
+
+        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        batch = new SpriteBatch();
+
+
         settingsStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         settingTable = new Table();
         backButtonTable = new Table();
@@ -124,6 +140,12 @@ public class SettingScreen extends MyAbstractScreen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+        batch.begin();
+        sky.draw(batch, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.end();
+
+        sky.update();
+
 
         settingsStage.act();
         settingsStage.draw();
@@ -133,6 +155,8 @@ public class SettingScreen extends MyAbstractScreen {
         gameApp.batch.begin();
         gameApp.font.setColor(0 , 255, 0, 1);
         gameApp.batch.end();
+
+
 
     }
 

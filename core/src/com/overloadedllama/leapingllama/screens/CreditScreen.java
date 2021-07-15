@@ -53,7 +53,7 @@ public class CreditScreen extends MyAbstractScreen{
         mainTable = new Table();
         mainTable.setFillParent(true);
 
-        mainTable.setDebug(true);
+        //mainTable.setDebug(true);
 
         creditTable = new Table();
         creditTable.add(credits).width(GameApp.WIDTH/2).height(GameApp.HEIGHT/1.5f).space(20, 20, 20, 20);

@@ -3,6 +3,8 @@ package com.overloadedllama.leapingllama.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,6 +15,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
+import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.resources.ShopItem;
 
@@ -48,6 +51,9 @@ public class ShopScreen extends MyAbstractScreen {
     private Skin coinLabelSkin;
     private Skin bigButtonSkin;
 
+    Sky sky;
+    Batch batch;
+
     public ShopScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
@@ -56,7 +62,8 @@ public class ShopScreen extends MyAbstractScreen {
     public void show() {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
-
+        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        batch = new SpriteBatch();
 
         shopStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         upperTable = new Table();
@@ -160,6 +167,12 @@ public class ShopScreen extends MyAbstractScreen {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+
+        batch.begin();
+        sky.draw(batch, viewport.getScreenWidth(), viewport.getScreenHeight());
+        batch.end();
+
+        sky.update();
 
         shopStage.act();
         shopStage.draw();
