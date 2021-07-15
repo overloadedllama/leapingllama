@@ -157,7 +157,6 @@ public class LevelCreator {
 
         //checking that there's ground where there isn't any platform
 
-        distance = 0;
 
         for (int d = 0; d<distanceMax; d++){
             if (!platformsI.get(d)){
@@ -167,7 +166,6 @@ public class LevelCreator {
 
         //randomization of enemies
 
-        distance = 0;
 
         for (int d = 0; d<distanceMax; d++){
             if (random.nextDouble()>0.95){
@@ -178,9 +176,15 @@ public class LevelCreator {
 
         }
 
+        //checking that enemies starts at at least 15 m
+        for (int d = 0; d<15; d++){
+            enemies.add(d, false);
+        }
+
+
         //randomization of obstacles
         for (int d = 0; d<distanceMax; d++){
-            if (random.nextDouble()>0.95){
+            if (random.nextDouble()>0.97){
                 obstacles.add(true);
             }
             else
@@ -188,6 +192,10 @@ public class LevelCreator {
 
         }
 
+        //checking that obstacle starts at at least 15 m
+        for (int d = 0; d<15; d++){
+            obstacles.add(d, false);
+        }
 
         //randomization of money
 
