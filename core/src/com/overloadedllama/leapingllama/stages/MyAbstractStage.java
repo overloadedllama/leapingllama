@@ -1,6 +1,7 @@
 package com.overloadedllama.leapingllama.stages;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.overloadedllama.leapingllama.GameApp;
@@ -14,7 +15,7 @@ public abstract class MyAbstractStage extends Stage implements LlamaConstants {
     float tableWidth, tableHeight;
 
     public MyAbstractStage(GameApp gameApp) {
-        super(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        super(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         this.gameApp = gameApp;
         this.assets = gameApp.getAssets();
 

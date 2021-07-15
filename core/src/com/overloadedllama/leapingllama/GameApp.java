@@ -19,7 +19,7 @@ public class GameApp extends Game {
 	private Assets assets;
 
 
-	public final static float WIDTH = 1280f;
+	public final static float WIDTH = 1440f;
 	public final static float HEIGHT = 720f;
 
 	private final Context context;

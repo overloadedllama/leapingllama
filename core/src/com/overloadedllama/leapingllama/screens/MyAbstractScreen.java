@@ -42,6 +42,7 @@ public abstract class MyAbstractScreen implements Screen, LlamaConstants {
     public void render(float delta) {
         camera.update();
         gameApp.batch.setProjectionMatrix(camera.combined);
+
     }
 
 

@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
@@ -65,7 +66,7 @@ public class ShopScreen extends MyAbstractScreen {
         sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
         batch = new SpriteBatch();
 
-        shopStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        shopStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         upperTable = new Table();
         itemListTable = new Table();
 
@@ -95,8 +96,8 @@ public class ShopScreen extends MyAbstractScreen {
         float itemHeight = 140f;
 
         upperTable.top().left();
-        upperTable.add(backButton).width(260F).height(itemHeight);
-        upperTable.add(userMoneyText).width(140f).height(itemHeight).padLeft(GameApp.WIDTH - 400f - pad);
+        upperTable.add(backButton).height(itemHeight).padLeft(pad);
+        upperTable.add(userMoneyText).width(140f).height(itemHeight).padLeft(GameApp.WIDTH - 250f - pad);
 
         itemListTable.center();
         itemListTable.add(previousItem).width(200f).height(100f).padRight(15f);
