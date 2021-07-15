@@ -63,6 +63,7 @@ public class EndScreen extends MyAbstractScreen {
                     System.out.println("SCORE: " + lastScore);
                 }
             } else {
+                Settings.updateUserMaxLevel();
                 Settings.checkSetNewUserBestScore(level, totalLevelScore);
                 scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
             }
@@ -76,7 +77,7 @@ public class EndScreen extends MyAbstractScreen {
         }
 
         // use this to check next levels work fine
-        // Settings.updateUserLevel();
+        // Settings.updateUserMaxLevel();
 
         scoreLabel.setFontScale(1.2f);
         scoreLabel.setAlignment(Align.center);
@@ -89,14 +90,12 @@ public class EndScreen extends MyAbstractScreen {
                 if (lastScore < (totalLevelScore / 3) * 2) {
                     starNum = 1;
                 } else {
-                    if (lastScore < totalLevelScore - 50)
+                    if (lastScore < totalLevelScore - 100)
                         starNum = 2;
                     else
                         starNum = 3;
                 }
             }
-
-            System.out.println("Star Num: " + starNum);
 
             for (int i = 0; i < 3; ++i) {
                 if (i < starNum) {
@@ -114,18 +113,21 @@ public class EndScreen extends MyAbstractScreen {
             if (starNum > 0) {
                 for (float i = 0; i < 3; ++i) {
                     if (i <= starNum) {
-                        System.out.printf("Star %.0f ON", i);
+                        System.out.printf("Star %.0f ON\n", i);
                         starArray[(int) i].addAction(Actions.sequence(Actions.alpha(0.0f), Actions.fadeIn((float) (2.0 + 1 * i))));
                     }
                 }
             }
+
+            // DATABASE OPERATION
+            if (starNum > Settings.getLevelStarNum(level))
+                Settings.setLevelStarNum(level, starNum);
         }
 
         endTable.row();
         endTable.add(scoreLabel).width(1000f).height(180f).padTop(40f).colspan(3);
 
         endStage.addActor(endTable);
-
 
     }
 

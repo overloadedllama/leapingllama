@@ -8,17 +8,12 @@ import android.provider.BaseColumns;
  *      money INT NOT NULL DEFAULT 0,
  *      levelReached INT NOT NULL DEFAULT 0
  *
- *
- *  It is not the best solution, a table with (user, numLevel) as PK would works best
- *  Table Level
- *      user VARCHAR(20) PK REFERENCES Player,
- *      endless REAL NOT NULL DEFAULT 0,
- *      level0 REAL NOT NULL DEFAULT 0,
- *      level1 REAL NOT NULL DEFAULT 0,
- *      level2 REAL NOT NULL DEFAULT 0,
- *      level3 REAL NOT NULL DEFAULT 0,
- *      level4 REAL NOT NULL DEFAULT 0,
- *      level5 REAL NOT NULL DEFAULT 0
+ * Table Level
+ *      user VARCHAR(20) REFERENCES Player,
+ *      level INT NOT NULL,
+ *      starNum INT NOT NULL DEFAULT 0,
+ *      score REAL NOT NULL DEFAULT 0,
+ *      PRIMARY KEY (user, level)
  *
  * Are music/sounds really necessaries?
  *
@@ -49,16 +44,14 @@ public class LlamaDbContracts {
 
     }
 
-    public static class Level implements BaseColumns {
-        public static final String TABLE_NAME = "level";
-        public static final String PRIMARY_KEY = "user";
-        public static final String LEVEL_0 = "level0";
-        public static final String LEVEL_1 = "level1";
-        public static final String LEVEL_2 = "level2";
-        public static final String LEVEL_3 = "level3";
-        public static final String LEVEL_4 = "level4";
-        public static final String LEVEL_5 = "level5";
-        public static final String ENDLESS = "endless";
+    public static class Levels implements BaseColumns {
+        public static final String TABLE_NAME = "levels";
+        public static final String USER = "user";
+        public static final String LEVEL = "level";
+        public static final String STAR_NUM = "starNum";
+        public static final String SCORE = "score";
+        public static final String PRIMARY_KEY = USER + ", " + LEVEL;
+
     }
 
     public static class Settings implements BaseColumns {
@@ -88,21 +81,19 @@ public class LlamaDbContracts {
 
 
     /**
-     * String referred to Level Table
+     * SQL Strings referred to Levels Table
      */
-    public static final String SQL_CREATE_LEVEL =
-            "CREATE TABLE " + Level.TABLE_NAME + " (" +
-                    Level.PRIMARY_KEY + " VARCHAR(20) PRIMARY KEY REFERENCES Player, " +
-                    Level.LEVEL_0 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.LEVEL_1 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.LEVEL_2 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.LEVEL_3 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.LEVEL_4 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.LEVEL_5 + " REAL NOT NULL DEFAULT 0, " +
-                    Level.ENDLESS + " REAL NOT NULL DEFAULT 0)";
+    public static final String SQL_CREATE_LEVELS =
+            "CREATE TABLE " + Levels.TABLE_NAME + " (" +
+                    Levels.USER + " VARCHAR(20) REFERENCES Player, " +
+                    Levels.LEVEL + " INT NOT NULL, " +
+                    Levels.SCORE + " INT NOT NULL DEFAULT 0, " +
+                    Levels.STAR_NUM + " INT NOT NULL DEFAULT 0," +
+                    "PRIMARY KEY (" + Levels.PRIMARY_KEY + "))";
 
-    public static final String SQL_DELETE_LEVEL =
-            "DROP TABLE IF EXISTS " + Level.TABLE_NAME;
+    public static final String SQL_LEVELS_DROP =
+            "DROP TABLE IF EXISTS " + Levels.TABLE_NAME;
+
 
 
     /**
@@ -120,5 +111,13 @@ public class LlamaDbContracts {
 
     public static final String SQL_SETTINGS_DROP =
             "DROP TABLE IF EXISTS " + Settings.TABLE_NAME;
+
+
+
+
+    // old
+    public static final String SQL_LEVEL_DROP =
+            "DROP TABLE IF EXISTS " + "level";
+
 
 }

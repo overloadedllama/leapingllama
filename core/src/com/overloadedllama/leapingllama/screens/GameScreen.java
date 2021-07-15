@@ -454,7 +454,8 @@ public class GameScreen extends MyAbstractScreen {
                     }
                 });
                 e.remove();
-                enemiesDead.add(new EnemyDied(enemy.getTextureString(), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
+                if (!Settings.hasBonusLife())
+                    enemiesDead.add(new EnemyDied(enemy.getTextureString(), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
             }
         }
 
@@ -494,6 +495,19 @@ public class GameScreen extends MyAbstractScreen {
                     }
                 });
                 a.remove();
+            }
+        }
+
+        for (Iterator<Obstacle> o = obstacles.iterator(); o.hasNext(); ) {
+            final Obstacle obstacle = o.next();
+            if (obstacle.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(obstacle.getBody());
+                    }
+                });
+                o.remove();
             }
         }
 
@@ -544,8 +558,7 @@ public class GameScreen extends MyAbstractScreen {
             for (Obstacle obstacle : obstacles) {
                 obstacle.setDestroyable(true);
             }
-
-            llama.setY(6);
+            removeObjects();
 
             Settings.setBonusLife();
         }

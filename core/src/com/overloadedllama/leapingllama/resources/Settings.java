@@ -23,7 +23,6 @@ public final class Settings implements LlamaConstants {
     public static final String TEST_USER = "test";
     private static String currentUser = TEST_USER;
 
-    private static double userBestScore = -1;
 
     private static final String ON = "on";
     private static final String OFF = "off";
@@ -133,8 +132,11 @@ public final class Settings implements LlamaConstants {
 
     public static int getUserLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MAX_LEVEL); }
 
-    public static void updateUserLevel() { llamaDbHandler.setUserLevel(currentUser); }
+    public static void updateUserMaxLevel() { llamaDbHandler.setUserMaxLevel(currentUser); }
 
+    public static int getLevelStarNum(int level) { return llamaDbHandler.getLevelStarNum(currentUser, level); }
+
+    public static void setLevelStarNum(int level, int starNum) { llamaDbHandler.setLevelStarNum(currentUser, level, starNum); }
 
     /**
      * call the llamaDbHandler method to check and eventually set the new current user best score
@@ -142,16 +144,10 @@ public final class Settings implements LlamaConstants {
      * @return true if lastScore if higher than the bestScore, else false
      */
     public static boolean checkSetNewUserBestScore(int level, double lastScore) {
-        if (llamaDbHandler.checkSetNewUserBestScore(currentUser, level, lastScore)) {
-            userBestScore = lastScore;
-            return true;
-        }
-        return false;
+        return llamaDbHandler.checkSetNewUserBestScore(currentUser, level, lastScore);
     }
 
-    public static double getLevelBestScore(int level) {
-        return llamaDbHandler.getLevelBestScore(currentUser, level);
-    }
+    public static double getLevelBestScore(int level) { return llamaDbHandler.getLevelBestScore(currentUser, level); }
 
     public static void resetAllProgresses() {
         llamaDbHandler.resetProgresses(currentUser);

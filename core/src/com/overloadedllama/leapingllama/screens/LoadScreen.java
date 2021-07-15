@@ -52,6 +52,7 @@ public class LoadScreen extends MyAbstractScreen {
             @Override
             public void run() {
                 Settings.insertNewUser(Settings.TEST_USER);
+
             }
         }));
 
@@ -73,7 +74,6 @@ public class LoadScreen extends MyAbstractScreen {
             Settings.setSoundsMusics();
             gameApp.setScreen(new MainMenuScreen(gameApp));
         } else {
-            //System.out.println("PROGRESS BAR VALUE: " + assets.getProgress() * 100);
             progressBar.setValue(assets.getProgress() * 100);
         }
 

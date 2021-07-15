@@ -97,14 +97,10 @@ public class Enemy extends GameObject{
         if (numLife == 0) {
             destroyable = true;
         } else {
-            body.setLinearVelocity(0, 0);
+            body.applyForceToCenter(-100000000, 10000000, true);
             textureString = ALIEN_CYAN;
             setAnimation();
         }
-    }
-
-    public int getNumLife() {
-        return numLife;
     }
 
 }

@@ -24,8 +24,8 @@ public class ShopScreen extends MyAbstractScreen {
 
     int index;
     int itemValue;
+    int userMoney;
     final int numItems = 2;
-    float userMoney;
 
     private ShopItem[] shopItems;
 
