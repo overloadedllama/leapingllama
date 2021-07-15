@@ -33,7 +33,6 @@ public class Ground extends GameObject{
         createBody(BodyDef.BodyType.KinematicBody, shape, 1, 0.01f, 0);
 
         fixtureDef.filter.categoryBits = CATEGORY_GROUND;
-        fixtureDef.filter.maskBits = MASK_GROUND;
 
         shape.dispose();
 

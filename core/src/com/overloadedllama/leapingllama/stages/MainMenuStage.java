@@ -2,6 +2,7 @@ package com.overloadedllama.leapingllama.stages;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -64,6 +65,8 @@ public class MainMenuStage extends MyAbstractStage {
 
         maxUserLevel = Settings.getUserLevel();
 
+        fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
+
         mainMenuTable = new Table();
         userMoneyTable = new Table();
         levelTable = new Table();
@@ -71,7 +74,6 @@ public class MainMenuStage extends MyAbstractStage {
 
         scrollTable = new Table();
 
-        fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
 
         // creation of Skins
         textButtonFieldLabelSkin = assets.getSkin("bigButton");
@@ -122,13 +124,23 @@ public class MainMenuStage extends MyAbstractStage {
         addActor(fadeoutBackground);
 
         // SCROLL TABLE AND SCROLLER
-        scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+        scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop).colspan(4);
         scrollTable.row();
         for (int i = 0; i < numLevels; ++i) {
             scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+            int starNum = Settings.getLevelStarNum(i);
+            for (int j = 0; j < 3; ++j) {
+                Image star;
+                if (j < starNum) {
+                    star = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
+                } else {
+                    star = new Image(new Texture(Gdx.files.internal("world/starLost.png")));
+                }
+                scrollTable.add(star).size(100f, 100f).padLeft(15f);
+            }
             scrollTable.row();
         }
-        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(4);
         scroller = new ScrollPane(scrollTable);
         levelTable.setFillParent(true);
         levelTable.add(scroller).fill().expand();
