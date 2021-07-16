@@ -47,6 +47,9 @@ public class ShopScreen extends MyAbstractScreen {
     // Labels
     private Label userMoneyText;
     private Label itemCost;
+    private Label itemTitle;
+
+
 
     // Skins
     private Skin backButtonSkin;
@@ -76,8 +79,8 @@ public class ShopScreen extends MyAbstractScreen {
 
         index = 0;
         shopItems = new ShopItem[2];
-        shopItems[0] = new ShopItem(BONUS_AMMO, new Texture(Gdx.files.internal("world/bonusAmmo.png")), 5);
-        shopItems[1] = new ShopItem(BONUS_LIFE, new Texture(Gdx.files.internal("world/heart.png")), 10);
+        shopItems[0] = new ShopItem("Start the next round with an ammunition bonus.", BONUS_AMMO, new Texture(Gdx.files.internal("world/bonusAmmo.png")), 5);
+        shopItems[1] = new ShopItem("Get a second chance for the next round.", BONUS_LIFE, new Texture(Gdx.files.internal("world/heart.png")), 10);
         image = new Image(shopItems[0].getTexture());
 
         backButtonSkin = assets.getSkin("backButton");
@@ -87,6 +90,7 @@ public class ShopScreen extends MyAbstractScreen {
         rightArrow = assets.getSkin("rightArrow");
         justTextSkin = assets.getSkin("justText");
 
+
         backButton = new ImageButton(backButtonSkin);
         userMoney = Settings.getUserMoney();
         userMoneyText = new Label("COINS:\n" + userMoney, coinLabelSkin);
@@ -95,12 +99,14 @@ public class ShopScreen extends MyAbstractScreen {
         nextItem = new Button(rightArrow);
 
         itemValue = shopItems[0].getValue();
-        buyButton = new TextButton("BUY!", bigButtonSkin);
+        buyButton = new TextButton("", bigButtonSkin);
 
 
-        itemCost = new Label("ITEM COST: "+  shopItems[0].getValue(), justTextSkin);
+        itemCost = new Label("", justTextSkin);
+        itemTitle = new Label("", justTextSkin);
+        setButtons(0);
 
-        //buyButton.setDisabled(true);
+
 
         float pad = 15f;
         float itemHeight = 140f;
@@ -112,6 +118,8 @@ public class ShopScreen extends MyAbstractScreen {
         shopStage.addActor(upperTable);
 
         itemListTable.center();
+        itemListTable.add(itemTitle).colspan(3).padBottom(pad);
+        itemListTable.row();
         itemListTable.add(previousItem).size(100).padRight(15f);
         itemListTable.add(image).width(400f).height(400f);
         itemListTable.add(nextItem).size(100).padLeft(15f);
@@ -144,8 +152,7 @@ public class ShopScreen extends MyAbstractScreen {
                     index--;
                 }
                 image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
-                itemValue = shopItems[index].getValue();
-                itemCost.setText("ITEM COST: " + itemValue);
+                setButtons(index);
             }
         });
 
@@ -158,8 +165,8 @@ public class ShopScreen extends MyAbstractScreen {
                 else
                     index++;
                 image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
-                itemValue = shopItems[index].getValue();
-                itemCost.setText("ITEM COST: " + itemValue);
+                setButtons(index);
+
             }
         });
 
@@ -167,21 +174,57 @@ public class ShopScreen extends MyAbstractScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                if(!buyButton.isDisabled()) {
+                    if (Settings.checkSetUserMoney(-itemValue)) {       // set itemValue negative
+                        if (Settings.isSOUND())
+                            Settings.playSound(CASH);
+                        if (shopItems[index].getId().equals(BONUS_AMMO)) {
+                            Settings.setBonusAmmo();
+                        } else if (shopItems[index].getId().equals(BONUS_LIFE)) {
+                            Settings.setBonusLife();
+                        }
 
-                if (Settings.checkSetUserMoney(-itemValue)) {       // set itemValue negative
-                    if (Settings.isSOUND())
-                        Settings.playSound(CASH);
-                    if (shopItems[index].getId().equals(BONUS_AMMO)) {
-                        Settings.setBonusAmmo();
-                    } else if (shopItems[index].getId().equals(BONUS_LIFE)) {
-                        Settings.setBonusLife();
+                        userMoneyText.setText("COINS:\n" + (userMoney - itemValue));
+                        Settings.playSound("cash");
+
+                        setButtons(index);
                     }
-
-                    userMoneyText.setText("COINS:\n" + (userMoney - itemValue));
-                    Settings.playSound("cash");
                 }
             }
         });
+    }
+
+    private void setButtons(int i) {
+        itemValue = shopItems[i].getValue();
+        itemCost.setText("ITEM COST: " + itemValue);
+        itemTitle.setText(shopItems[i].getName());
+
+
+
+        if (shopItems[i].getId().equals(BONUS_AMMO)) {
+            if(Settings.hasBonusAmmo()){
+                buyButton.setDisabled(true);
+                buyButton.setText("BOUGHT!");
+            }else{
+                buyButton.setDisabled(false);
+                buyButton.setText("BUY!");
+            }
+        } else if (shopItems[i].getId().equals(BONUS_LIFE)) {
+            if(Settings.hasBonusLife()){
+                buyButton.setDisabled(true);
+                buyButton.setText("BOUGHT!");
+            }else{
+                buyButton.setDisabled(false);
+                buyButton.setText("BUY!");
+            }
+        }
+
+        if(Settings.getUserMoney() < itemValue){
+            buyButton.setDisabled(true);
+            buyButton.setText("U R 2 POOR");
+        }
+
+
     }
 
     @Override

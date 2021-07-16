@@ -6,8 +6,10 @@ public class ShopItem {
     String id;
     Texture texture;
     int value;
+    String name;
 
-    public ShopItem(String id, Texture texture, int value) {
+    public ShopItem(String name, String id, Texture texture, int value) {
+        this.name = name;
         this.id = id;
         this.texture = texture;
         this.value = value;
@@ -23,5 +25,9 @@ public class ShopItem {
 
     public String getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
