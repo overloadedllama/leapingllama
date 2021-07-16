@@ -1,5 +1,6 @@
 package com.overloadedllama.leapingllama.screens;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -7,10 +8,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.GameApp;
@@ -23,13 +26,16 @@ public class CreditScreen extends MyAbstractScreen{
     Table mainTable, creditTable;
     Label credits, title;
     Batch batch;
-
+    Button backButton;
 
 
     Sky sky;
 
     public CreditScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
+
+
+
     }
 
 
@@ -67,12 +73,33 @@ public class CreditScreen extends MyAbstractScreen{
 
 
         title = new Label("CREDITS", new Skin(Gdx.files.internal("ui/justTextButton.json"), new TextureAtlas(Gdx.files.internal("ui/justTextButton.atlas"))));
-        title.setFontScale(2.5f);
+        title.setFontScale(2f);
+
+        backButton = new ImageButton(assets.getSkin("backButton"));
+
+
         mainTable.add(title);
+        mainTable.add(backButton);
+
         mainTable.row();
 
         mainTable.add(creditTable).width(GameApp.WIDTH/2);
         stage.addActor(mainTable);
+
+        Gdx.input.setInputProcessor(stage);
+
+
+        backButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
+
+                dispose();
+
+                super.clicked(event, x, y);
+            }
+        });
+
     }
 
     @Override
@@ -89,8 +116,13 @@ public class CreditScreen extends MyAbstractScreen{
         stage.act();
         stage.draw();
 
+
         sky.update();
+
+
+
     }
+
 
     @Override
     public void pause() {
@@ -109,6 +141,6 @@ public class CreditScreen extends MyAbstractScreen{
 
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }
