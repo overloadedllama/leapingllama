@@ -69,7 +69,7 @@ public class CreditScreen extends MyAbstractScreen{
         backButton = new ImageButton(assets.getSkin("backButton"));
 
         mainTable.add(title);
-        mainTable.add(backButton).padBottom(5);
+        mainTable.add(backButton).padBottom(5).align(Align.right);
 
         mainTable.row();
 

@@ -22,7 +22,7 @@ public class MainMenuStage extends MyAbstractStage {
     float defaultButtonHeight = 100F;
 
     // Image
-    private final Image fadeoutBackground;
+    // private final Image fadeoutBackground;
 
     // Tables
     private final Table mainMenuTable;
@@ -59,14 +59,14 @@ public class MainMenuStage extends MyAbstractStage {
     private final Skin textButtonFieldLabelSkin;
     private final Skin moneyButtonSkin;
     private final Skin backButtonSkin;
-
+    private final Skin justTextSkin;
 
     public MainMenuStage(final GameApp game) {
         super(game);
 
         maxUserLevel = Settings.getUserLevel();
 
-        fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
+        // fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
 
         mainMenuTable = new Table();
         userMoneyTable = new Table();
@@ -80,7 +80,7 @@ public class MainMenuStage extends MyAbstractStage {
         textButtonFieldLabelSkin = assets.getSkin("bigButton");
         moneyButtonSkin = assets.getSkin("coin");
         backButtonSkin = assets.getSkin("backButton");
-
+        justTextSkin = assets.getSkin("justText");
         // creation of TextButtons
         backButton = new ImageButton(backButtonSkin);
         playButton = new TextButton("PLAY", textButtonFieldLabelSkin);
@@ -120,14 +120,22 @@ public class MainMenuStage extends MyAbstractStage {
         addActor(mainMenuTable);
 
         // FADEOUT BACKGROUND
-        fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), tableHeight);
-        fadeoutBackground.setVisible(false);
-        addActor(fadeoutBackground);
+        //deactivated because it made the mood a bit too goth.
+        // fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), getViewport().getScreenHeight());
+        // fadeoutBackground.setVisible(false);
+        // addActor(fadeoutBackground);
 
-        // SCROLL TABLE AND SCROLLER
-        scrollTable.add(backButton).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop).colspan(4);
+        // LEVEL SCROLL TABLE AND SCROLLER
+        scrollTable.add(backButton).padTop(padTop).colspan(1).align(Align.left); //removed .size(defaultButtonWidth, defaultButtonHeight)
+        Label titleLevelChooser = new Label("LEVELS", justTextSkin);
+        titleLevelChooser.setFontScale(2);
+        scrollTable.add(titleLevelChooser).align(Align.right).colspan(3);
+
         scrollTable.row();
+        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(1);
+        scrollTable.add(new Label("BEST SCORE: " + String.valueOf(Math.round(Settings.getLevelBestScore(-1)*10)/10), justTextSkin)).colspan(3);
         for (int i = 0; i < numLevels; ++i) {
+            scrollTable.row();
             scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
             int starNum = Settings.getLevelStarNum(i);
             for (int j = 0; j < 3; ++j) {
@@ -139,9 +147,9 @@ public class MainMenuStage extends MyAbstractStage {
                 }
                 scrollTable.add(star).size(100f, 100f).padLeft(15f);
             }
-            scrollTable.row();
+
         }
-        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(4);
+        // scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(4);
         scroller = new ScrollPane(scrollTable);
         levelTable.setFillParent(true);
         levelTable.add(scroller).fill().expand();
@@ -150,12 +158,17 @@ public class MainMenuStage extends MyAbstractStage {
 
         // CHOOSE USER TABLE
         backButton1 = new ImageButton(backButtonSkin);
-        userLabel = new Label("CURRENT USER: ", textButtonFieldLabelSkin);
+        userLabel = new Label("CURRENT USER: ", justTextSkin);
         userLabel.setAlignment(Align.center);
         userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
         userTextField.setAlignment(Align.center);
         chooseUserTable.top();
-        chooseUserTable.add(backButton1).size(100f, defaultButtonHeight).padTop(padTop).colspan(2);
+        chooseUserTable.add(backButton1).padTop(padTop).align(Align.left);  //removed size(100f, defaultButtonHeight).colspan(2).
+
+        Label titleUserChooser = new Label("USERS", justTextSkin);
+        titleUserChooser.setFontScale(2);
+        chooseUserTable.add(titleUserChooser).align(Align.right);
+
         chooseUserTable.row();
         chooseUserTable.add(userLabel).size(defaultButtonWidth, defaultButtonHeight).padRight(15f).padTop(15f);
         chooseUserTable.add(userTextField).size(defaultButtonWidth, defaultButtonHeight).padTop(15f);
@@ -176,7 +189,7 @@ public class MainMenuStage extends MyAbstractStage {
                 super.clicked(event, x, y);
                 mainMenuTable.setVisible(false);
                 userMoneyTable.setVisible(false);
-                fadeoutBackground.setVisible(true);
+                //fadeoutBackground.setVisible(true);
                 chooseUserTable.setVisible(true);
             }
         });
@@ -185,7 +198,7 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                fadeoutBackground.setVisible(false);
+                //fadeoutBackground.setVisible(false);
                 chooseUserTable.setVisible(false);
                 Settings.insertNewUser(userTextField.getText());
                 Settings.setCurrentUser(userTextField.getText());
@@ -207,7 +220,7 @@ public class MainMenuStage extends MyAbstractStage {
 
                 mainMenuTable.setVisible(false);
                 userMoneyTable.setVisible(false);
-                fadeoutBackground.setVisible(true);
+                //fadeoutBackground.setVisible(true);
                 levelTable.setVisible(true);
             }
         });
@@ -255,7 +268,7 @@ public class MainMenuStage extends MyAbstractStage {
                 mainMenuTable.setVisible(true);
                 userMoneyTable.setVisible(true);
                 levelTable.setVisible(false);
-                fadeoutBackground.remove();
+                //fadeoutBackground.setVisible(false);
             }
         });
 

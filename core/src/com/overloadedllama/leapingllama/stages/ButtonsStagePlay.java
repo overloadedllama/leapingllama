@@ -150,11 +150,11 @@ public class ButtonsStagePlay extends MyAbstractStage {
         buttonPauseTable.top().left();
         buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad);
 
-        if (Settings.getGameMode().equals("LX_DX")) {
+        if (Settings.getGameMode().equals("LEFT HANDED")) {
             buttonsMovement.bottom().left();
             buttonsAction.bottom().right();
             gestures = false;
-        } else if (Settings.getGameMode().equals("DX_LX")){
+        } else if (Settings.getGameMode().equals("RIGHT HANDED")){
             buttonsMovement.bottom().right();
             buttonsAction.bottom().left();
             gestures = false;

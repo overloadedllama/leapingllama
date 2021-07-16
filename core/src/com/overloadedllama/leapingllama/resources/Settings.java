@@ -72,9 +72,9 @@ public final class Settings implements LlamaConstants {
 
     public static String getGameMode() {
         if (gameMode == GAME_MODE.LX_DX) {
-            return "LX_DX";
+            return "LEFT HANDED";
         } else if (gameMode == GAME_MODE.DX_LX) {
-            return "DX_LX";
+            return "RIGHT HANDED";
         } else {
             return "GESTURES";
         }

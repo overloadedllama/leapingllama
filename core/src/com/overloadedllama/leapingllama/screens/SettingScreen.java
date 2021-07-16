@@ -64,7 +64,7 @@ public class SettingScreen extends MyAbstractScreen {
         // creation of TextButtons
         musicButton = new TextButton("MUSIC: " + Settings.getStringSetting(MUSIC), textButtonSkin);
         soundButton = new TextButton("SOUND: " + Settings.getStringSetting(SOUND), textButtonSkin);
-        lxDxButton = new TextButton("GAME BUTTONS: " + Settings.getStringSetting(GAME_MODE_), textButtonSkin);
+        lxDxButton = new TextButton(Settings.getStringSetting(GAME_MODE_), textButtonSkin);
         backButton = new ImageButton(backButtonSkin);
         backButton.setDisabled(false);
 
@@ -121,15 +121,15 @@ public class SettingScreen extends MyAbstractScreen {
         lxDxButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Settings.getStringSetting(GAME_MODE_).equals("LX_DX")) {
+                if (Settings.getStringSetting(GAME_MODE_).equals("LEFT HANDED")) {
                     Settings.setGameMode();
-                    lxDxButton.setText("GAME BUTTONS: DX-LX");
-                } else if (Settings.getStringSetting(GAME_MODE_).equals("DX_LX")){
+                    lxDxButton.setText("RIGHT HANDED");
+                } else if (Settings.getStringSetting(GAME_MODE_).equals("RIGHT HANDED")){
                     Settings.setGameMode();
-                    lxDxButton.setText("GAME BUTTONS: GESTURES");
+                    lxDxButton.setText("GESTURES");
                 } else {
                     Settings.setGameMode();
-                    lxDxButton.setText("GAME BUTTONS: LX_DX");
+                    lxDxButton.setText("LEFT HANDED");
                 }
             }
         });
