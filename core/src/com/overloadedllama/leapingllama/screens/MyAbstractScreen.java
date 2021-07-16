@@ -25,7 +25,7 @@ public abstract class MyAbstractScreen implements Screen, LlamaConstants {
 
         assets = gameApp.getAssets();
 
-        ScreenUtils.clear(0.1f, 0, 0.2f, 1);
+        ScreenUtils.clear(0.56f, 0.72f, 0.8f, 1);
 
         camera = new OrthographicCamera();
         viewport = new ExtendViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);

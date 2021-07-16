@@ -69,11 +69,11 @@ public class CreditScreen extends MyAbstractScreen{
         backButton = new ImageButton(assets.getSkin("backButton"));
 
         mainTable.add(title);
-        mainTable.add(backButton);
+        mainTable.add(backButton).padBottom(5);
 
         mainTable.row();
 
-        mainTable.add(creditTable).width(GameApp.WIDTH/2);
+        mainTable.add(creditTable).width(GameApp.WIDTH/2).colspan(2);
         stage.addActor(mainTable);
 
         Gdx.input.setInputProcessor(stage);

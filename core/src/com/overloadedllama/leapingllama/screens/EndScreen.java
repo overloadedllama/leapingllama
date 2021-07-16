@@ -3,14 +3,16 @@ package com.overloadedllama.leapingllama.screens;
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.resources.Settings;
@@ -30,6 +32,10 @@ public class EndScreen extends MyAbstractScreen {
     private final Image[] starArray;
     private Label scoreLabel;
     private Skin scoreLabelSkin;
+    private Skin optionButtonsSkin;
+
+    TextButton mainMenuButton, retryButton;
+
 
     public EndScreen(final GameApp gameApp, int level, double lastScore, double totalLevelScore, boolean win) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
@@ -49,7 +55,8 @@ public class EndScreen extends MyAbstractScreen {
         endStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         endTable = new Table();
 
-        scoreLabelSkin = assets.getSkin("bigButton");
+        scoreLabelSkin = assets.getSkin("justText");
+        optionButtonsSkin = assets.getSkin("bigButton");
 
         //System.out.printf("Total level score: %.1f --- last score: %.1f%n", totalLevelScore, lastScore);
 
@@ -126,20 +133,63 @@ public class EndScreen extends MyAbstractScreen {
         endTable.row();
         endTable.add(scoreLabel).width(1000f).height(180f).padTop(40f).colspan(3);
 
+
+        endTable.row();
+
+        mainMenuButton = new TextButton("MAIN MENU", optionButtonsSkin);
+        retryButton = new TextButton("RETRY", optionButtonsSkin);
+
+        Table buttonTable = new Table();
+        buttonTable.add(mainMenuButton);
+        buttonTable.add(retryButton).padLeft(5);
+
+        endTable.add(buttonTable).colspan(3);
+
         endStage.addActor(endTable);
+
+
+
+        Gdx.input.setInputProcessor(endStage);
+
+        mainMenuButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameApp.setScreen(new MainMenuScreen(gameApp));
+              //  assets.unloadGameAssets();
+
+                dispose();
+
+
+                super.clicked(event, x, y);
+            }
+        });
+
+        retryButton.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameApp.setScreen(new GameScreen(gameApp, level));
+                dispose();
+
+
+                super.clicked(event, x, y);
+            }
+        });
+
 
     }
 
     @Override
     public void render(float delta) {
-        ScreenUtils.clear(new Color(Color.NAVY));
+        //ScreenUtils.clear(new Color(Color.NAVY));
+        ScreenUtils.clear(0.56f, 0.72f, 0.8f, 1);
+
 
         endStage.act();
         endStage.draw();
 
         super.render(delta);
 
-        if (Gdx.input.isTouched() && (System.currentTimeMillis() - startTime) > 400) {
+        /*if (Gdx.input.isTouched() && (System.currentTimeMillis() - startTime) > 400) {
             endStage.addAction(Actions.run(new Runnable() {
                 @Override
                 public void run() {
@@ -148,7 +198,7 @@ public class EndScreen extends MyAbstractScreen {
             }));
             gameApp.setScreen(new MainMenuScreen(gameApp));
             dispose();
-        }
+        }*/
     }
 
     @Override

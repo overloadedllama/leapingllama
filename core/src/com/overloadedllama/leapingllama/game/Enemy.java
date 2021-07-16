@@ -21,7 +21,7 @@ public class Enemy extends GameObject{
     private final String ALIEN_CYAN = "alienCyan";
     private final String ALIEN_YELLOW = "alienYellow";
 
-    Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
+    Animation<TextureRegion> walkAnimation;
     Texture walkSheet;
 
     String textureString = ALIEN_CYAN;
@@ -43,7 +43,7 @@ public class Enemy extends GameObject{
         PolygonShape enemyShape = new PolygonShape();
         enemyShape.setAsBox(w/2, h/2);
 
-        super.createBody(BodyDef.BodyType.DynamicBody, enemyShape, 20, 1f, 0f);
+        super.createBody(BodyDef.BodyType.DynamicBody, enemyShape, 800, 1f, 0f);
 
         enemyShape.dispose();
 
@@ -97,7 +97,10 @@ public class Enemy extends GameObject{
         if (numLife == 0) {
             destroyable = true;
         } else {
-            body.applyForceToCenter(-100000000, 10000000, true);
+            body.applyForceToCenter(-100000000, 0, true);
+            body.setLinearVelocity(0, 0f);
+
+
             textureString = ALIEN_CYAN;
             setAnimation();
         }
