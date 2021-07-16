@@ -1,0 +1,69 @@
+
+hugeButton.png
+size: 1024, 1024
+format: RGBA8888
+filter: Linear, Linear
+repeat: none
+buttonBigDisabled
+  rotate: false
+  xy: 1, 586
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+buttonBigNormal
+  rotate: false
+  xy: 1, 504
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+buttonBigPressed
+  rotate: false
+  xy: 215, 586
+  size: 212, 80
+  orig: 212, 80
+  offset: 0, 0
+  index: -1
+pixeled
+  rotate: false
+  xy: 1, 750
+  size: 506, 99
+  orig: 506, 99
+  offset: 0, 0
+  index: -1
+white-pixel
+  rotate: false
+  xy: 951, 949
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+hugeButtonDisabled
+  rotate: false
+  xy: 509, 870
+  size: 440, 80
+  orig: 440, 80
+  offset: 0, 0
+  index: -1
+hugeButtonNormal
+  rotate: false
+  xy: 1, 668
+  size: 440, 80
+  orig: 440, 80
+  offset: 0, 0
+  index: -1
+hugeButtonPressed
+  rotate: false
+  xy: 509, 788
+  size: 440, 80
+  orig: 440, 80
+  offset: 0, 0
+  index: -1
+pixeledWhite
+  rotate: false
+  xy: 1, 851
+  size: 506, 99
+  orig: 506, 99
+  offset: 0, 0
+  index: -1

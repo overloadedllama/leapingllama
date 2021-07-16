@@ -1,0 +1,85 @@
+{
+"com.badlogic.gdx.graphics.g2d.BitmapFont": {
+	"pixeledWhite": {
+		"file": "pixeledWhite.fnt"
+	},
+	"pixeled": {
+		"file": "pixeled.fnt"
+	}
+},
+"com.badlogic.gdx.graphics.Color": {
+	"darkBrown": {
+		"r": 0.2,
+		"g": 0.18218882,
+		"b": 0.14466667,
+		"a": 1
+	},
+	"lightYellow": {
+		"r": 1,
+		"g": 0.98514,
+		"b": 0.82,
+		"a": 1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable": {
+	"cursor": {
+		"name": "white-pixel",
+		"color": "darkBrown",
+		"minWidth": 2,
+		"minHeight": 7
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle": {
+	"default": {
+		"up": "hugeButtonNormal",
+		"down": "hugeButtonPressed",
+		"disabled": "hugeButtonDisabled"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle": {
+	"default": {
+		"font": "pixeled",
+		"up": "buttonBigNormal",
+		"down": "buttonBigPressed",
+		"disabled": "buttonBigDisabled",
+		"checked": "buttonBigPressed",
+		"pressedOffsetX": -1,
+		"pressedOffsetY": -1,
+		"checkedOffsetX": -1,
+		"checkedOffsetY": -1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle": {
+	"default": {
+		"font": "pixeled",
+		"fontColor": "lightYellow",
+		"background": "hugeButtonPressed"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle": {
+	"default": {
+		"font": "pixeled",
+		"up": "hugeButtonNormal",
+		"down": "hugeButtonPressed",
+		"focused": "hugeButtonPressed",
+		"disabled": "hugeButtonDisabled",
+		"pressedOffsetX": -1,
+		"pressedOffsetY": -1
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle": {
+	"default": {
+		"font": "pixeled",
+		"fontColor": "darkBrown",
+		"background": "hugeButtonNormal",
+		"focusedBackground": "hugeButtonPressed",
+		"disabledBackground": "hugeButtonDisabled",
+		"cursor": "cursor"
+	}
+},
+"com.badlogic.gdx.scenes.scene2d.ui.TextTooltip$TextTooltipStyle": {
+	"default": {
+		"label": "default"
+	}
+}
+}

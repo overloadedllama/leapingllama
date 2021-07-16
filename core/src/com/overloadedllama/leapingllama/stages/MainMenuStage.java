@@ -18,7 +18,7 @@ import com.overloadedllama.leapingllama.screens.ShopScreen;
 public class MainMenuStage extends MyAbstractStage {
     final int numLevels = 6;
     int maxUserLevel;
-    float defaultButtonWidth = 350F;
+    float defaultButtonWidth;
     float defaultButtonHeight = 100F;
 
     // Image
@@ -61,6 +61,7 @@ public class MainMenuStage extends MyAbstractStage {
     private final Skin moneyButtonSkin;
     private final Skin backButtonSkin;
     private final Skin justTextSkin;
+    private final Skin hugeButtonSkin;
 
     public MainMenuStage(final GameApp game) {
         super(game);
@@ -82,10 +83,11 @@ public class MainMenuStage extends MyAbstractStage {
         moneyButtonSkin = assets.getSkin("coin");
         backButtonSkin = assets.getSkin("backButton");
         justTextSkin = assets.getSkin("justText");
+        hugeButtonSkin = assets.getSkin("hugeButton");
         // creation of TextButtons
         backButton = new ImageButton(backButtonSkin);
-        playButton = new TextButton("PLAY", textButtonFieldLabelSkin);
-        shopButton = new TextButton("SHOP", textButtonFieldLabelSkin);
+        playButton = new TextButton("PLAY", hugeButtonSkin);
+        shopButton = new TextButton("SHOP", hugeButtonSkin);
         settingsButton = new TextButton("SETTINGS", textButtonFieldLabelSkin);
         creditsButton = new TextButton("CREDITS", textButtonFieldLabelSkin);
         quitButton = new TextButton("QUIT", textButtonFieldLabelSkin);
@@ -103,6 +105,8 @@ public class MainMenuStage extends MyAbstractStage {
         userNameLabel = new Label("", justTextSkin);
         float padTop = 15f;
 
+        defaultButtonWidth = 220;
+
         // MONEY TABLE
         userMoneyTable.top().right();
         //userMoneyTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).padLeft(15f);
@@ -116,15 +120,15 @@ public class MainMenuStage extends MyAbstractStage {
 
 
         // MAIN MENU TABLE
-        mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(2);
+        mainMenuTable.add(playButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(padTop).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(shopButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(2);
+        mainMenuTable.add(shopButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(padTop).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(settingsButton).width(defaultButtonWidth/2-padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
-        mainMenuTable.add(userButton).width(defaultButtonWidth/2).height(defaultButtonHeight).padTop(padTop).align(Align.right);
+        mainMenuTable.add(settingsButton).width(defaultButtonWidth-padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
+        mainMenuTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).align(Align.right);
         mainMenuTable.row();
-        mainMenuTable.add(creditsButton).width(defaultButtonWidth/2 -padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
-        mainMenuTable.add(quitButton).width(defaultButtonWidth/2).height(defaultButtonHeight).padTop(padTop).align(Align.right);
+        mainMenuTable.add(creditsButton).width(defaultButtonWidth -padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
+        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).align(Align.right);
         addActor(mainMenuTable);
 
         // FADEOUT BACKGROUND
