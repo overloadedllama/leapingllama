@@ -97,7 +97,7 @@ public class MainMenuStage extends MyAbstractStage {
             levelButtons[i].setDisabled(!(i <= maxUserLevel));
         }
         endlessMode = new TextButton("ENDLESS", textButtonFieldLabelSkin);
-        userButton = new TextButton("  USER: " + Settings.getCurrentUser(), textButtonFieldLabelSkin);
+        userButton = new TextButton("USER: " + Settings.getCurrentUser(), textButtonFieldLabelSkin);
 
         float padTop = 15f;
 

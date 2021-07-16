@@ -38,18 +38,23 @@ public class ShopScreen extends MyAbstractScreen {
     // Images
     private Image image;
 
-    // TextButtons
-    private TextButton previousItem;
-    private TextButton nextItem;
+    // Buttons
+    private Button previousItem;
+    private Button nextItem;
     private TextButton buyButton;
+
 
     // Labels
     private Label userMoneyText;
+    private Label itemCost;
 
     // Skins
     private Skin backButtonSkin;
     private Skin coinLabelSkin;
     private Skin bigButtonSkin;
+    private Skin leftArrow;
+    private Skin rightArrow;
+    private Skin justTextSkin;
 
     Sky sky;
     Batch batch;
@@ -78,18 +83,24 @@ public class ShopScreen extends MyAbstractScreen {
         backButtonSkin = assets.getSkin("backButton");
         coinLabelSkin = assets.getSkin("coin");
         bigButtonSkin = assets.getSkin("bigButton");
+        leftArrow = assets.getSkin("leftArrow");
+        rightArrow = assets.getSkin("rightArrow");
+        justTextSkin = assets.getSkin("justText");
 
         backButton = new ImageButton(backButtonSkin);
         userMoney = Settings.getUserMoney();
-        userMoneyText = new Label("money: " + userMoney, coinLabelSkin);
+        userMoneyText = new Label("COINS:\n" + userMoney, coinLabelSkin);
         userMoneyText.setAlignment(Align.center);
-        previousItem = new TextButton("previous", bigButtonSkin);
-        previousItem.setDisabled(true);
-        nextItem = new TextButton("next", bigButtonSkin);
-        nextItem.setDisabled(true);
+        previousItem = new Button(leftArrow);
+        nextItem = new Button(rightArrow);
+
         itemValue = shopItems[0].getValue();
-        buyButton = new TextButton("" + shopItems[0].getValue(), bigButtonSkin);
-        buyButton.setDisabled(true);
+        buyButton = new TextButton("BUY!", bigButtonSkin);
+
+
+        itemCost = new Label("ITEM COST: "+  shopItems[0].getValue(), justTextSkin);
+
+        //buyButton.setDisabled(true);
 
         float pad = 15f;
         float itemHeight = 140f;
@@ -101,11 +112,17 @@ public class ShopScreen extends MyAbstractScreen {
         shopStage.addActor(upperTable);
 
         itemListTable.center();
-        itemListTable.add(previousItem).width(200f).height(100f).padRight(15f);
+        itemListTable.add(previousItem).size(100).padRight(15f);
         itemListTable.add(image).width(400f).height(400f);
-        itemListTable.add(nextItem).width(200f).height(100f).padLeft(15f);
+        itemListTable.add(nextItem).size(100).padLeft(15f);
+        itemListTable.row();
+        itemListTable.add(itemCost).colspan(3).padTop(15f);
         itemListTable.row();
         itemListTable.add(buyButton).colspan(3).width(200f).height(120f).padTop(15f);
+
+
+
+
         shopStage.addActor(itemListTable);
 
         Gdx.input.setInputProcessor(shopStage);
@@ -128,7 +145,7 @@ public class ShopScreen extends MyAbstractScreen {
                 }
                 image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
                 itemValue = shopItems[index].getValue();
-                buyButton.setText("" + itemValue);
+                itemCost.setText("ITEM COST: " + itemValue);
             }
         });
 
@@ -142,7 +159,7 @@ public class ShopScreen extends MyAbstractScreen {
                     index++;
                 image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
                 itemValue = shopItems[index].getValue();
-                buyButton.setText("" + itemValue);
+                itemCost.setText("ITEM COST: " + itemValue);
             }
         });
 
@@ -160,7 +177,8 @@ public class ShopScreen extends MyAbstractScreen {
                         Settings.setBonusLife();
                     }
 
-                    userMoneyText.setText("" + (userMoney - itemValue));
+                    userMoneyText.setText("COINS:\n" + (userMoney - itemValue));
+                    Settings.playSound("cash");
                 }
             }
         });

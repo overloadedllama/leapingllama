@@ -102,6 +102,8 @@ public class Assets implements LlamaConstants {
         SkinLoader.SkinParameter coin = new SkinLoader.SkinParameter("ui/coin.atlas");
         SkinLoader.SkinParameter ammo = new SkinLoader.SkinParameter("ui/ammo.atlas");
         SkinLoader.SkinParameter justTextButton = new SkinLoader.SkinParameter("ui/justTextButton.atlas");
+        SkinLoader.SkinParameter leftArrow = new SkinLoader.SkinParameter("ui/leftArrow.atlas");
+        SkinLoader.SkinParameter rightArrow = new SkinLoader.SkinParameter("ui/rightArrow.atlas");
 
         // loading skins
         manager.load("ui/bigButton.json", Skin.class, bigButton);
@@ -109,6 +111,9 @@ public class Assets implements LlamaConstants {
         manager.load("ui/coin.json", Skin.class, coin);
         manager.load("ui/ammo.json", Skin.class, ammo);
         manager.load("ui/justTextButton.json", Skin.class, justTextButton);
+        manager.load("ui/leftArrow.json", Skin.class, leftArrow);
+        manager.load("ui/rightArrow.json", Skin.class, rightArrow);
+
 
         // loading textures
         manager.load("world/sky.png", Texture.class);
@@ -136,6 +141,8 @@ public class Assets implements LlamaConstants {
             case "pause":  return manager.get("ui/pauseButton.json");
             case "ammo": return  manager.get("ui/ammo.json");
             case "justText": return manager.get("ui/justTextButton.json");
+            case "leftArrow": return manager.get("ui/leftArrow.json");
+            case "rightArrow": return manager.get ("ui/rightArrow.json");
             default:
                 throw new IllegalArgumentException("Skin " + skin + " doesn't exist.");
         }
