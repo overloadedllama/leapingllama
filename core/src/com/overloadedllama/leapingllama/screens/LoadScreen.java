@@ -98,7 +98,7 @@ public class LoadScreen extends MyAbstractScreen {
 
         gameApp.batch.begin();
         gameApp.font.setColor(0 , 255, 0, 1);
-        gameApp.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/4, GameApp.HEIGHT/2 - (float) logo.getHeight()/4, (float) logo.getWidth()/2, (float) logo.getHeight()/2);
+        gameApp.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/8, GameApp.HEIGHT/2 - (float) logo.getHeight()/8, (float) logo.getWidth()/4, (float) logo.getHeight()/4);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
         gameApp.batch.end();
 

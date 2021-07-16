@@ -2,6 +2,7 @@ package com.overloadedllama.leapingllama.stages;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -120,6 +121,8 @@ public class MainMenuStage extends MyAbstractStage {
 
 
         // MAIN MENU TABLE
+        mainMenuTable.add(new Image(new Texture(Gdx.files.internal("gameLogo.png")))).colspan(2);
+        mainMenuTable.row();
         mainMenuTable.add(playButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(padTop).colspan(2);
         mainMenuTable.row();
         mainMenuTable.add(shopButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(padTop).colspan(2);
