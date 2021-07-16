@@ -41,6 +41,12 @@ public interface LlamaConstants {
     String BONUS_LIFE = "bonusLife";
     String BONUS_AMMO = "bonusAmmo";
 
+    // Settings
+    String MUSIC = "music";
+    String SOUND = "sound";
+    String GORE = "gore";
+    String GAME_MODE_ = "gameMode";
+
     // Filter categories
     short CATEGORY_LLAMA = 0x001;
     short CATEGORY_ENEMY = 0x002;

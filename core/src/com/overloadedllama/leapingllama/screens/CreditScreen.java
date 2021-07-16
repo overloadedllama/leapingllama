@@ -1,30 +1,24 @@
 package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
 
-import java.awt.*;
 
 public class CreditScreen extends MyAbstractScreen{
     Stage stage;
     Table mainTable, creditTable;
     Label credits, title;
     Batch batch;
-
-
 
     Sky sky;
 
@@ -40,9 +34,9 @@ public class CreditScreen extends MyAbstractScreen{
         batch = new SpriteBatch();
         stage = new Stage(viewport, batch);
 
-        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        sky = new Sky(assets.getTexture("sky"));
 
-        credits = new Label(longCreditString, new Skin(Gdx.files.internal("ui/justTextButton.json"), new TextureAtlas(Gdx.files.internal("ui/justTextButton.atlas"))));
+        credits = new Label(longCreditString, assets.getSkin("justText"));
         credits.setWrap(true);
         credits.setAlignment(Align.center);
         credits.setSize(GameApp.WIDTH/2, GameApp.HEIGHT/1.5f);
@@ -59,14 +53,7 @@ public class CreditScreen extends MyAbstractScreen{
         creditTable.add(credits).width(GameApp.WIDTH/2).height(GameApp.HEIGHT/1.5f).space(20, 20, 20, 20);
         creditTable.background(new SpriteDrawable(new Sprite(new Texture(Gdx.files.internal("ui/bigTextPane.png")))));
 
-
-
-
-
-
-
-
-        title = new Label("CREDITS", new Skin(Gdx.files.internal("ui/justTextButton.json"), new TextureAtlas(Gdx.files.internal("ui/justTextButton.atlas"))));
+        title = new Label("CREDITS", assets.getSkin("justText"));
         title.setFontScale(2.5f);
         mainTable.add(title);
         mainTable.row();
@@ -77,6 +64,10 @@ public class CreditScreen extends MyAbstractScreen{
 
     @Override
     public void render(float delta) {
+        if (Gdx.input.isTouched()) {
+            gameApp.setScreen(new MainMenuScreen(gameApp));
+        }
+
 
         camera.update();
         gameApp.batch.setProjectionMatrix(camera.combined);

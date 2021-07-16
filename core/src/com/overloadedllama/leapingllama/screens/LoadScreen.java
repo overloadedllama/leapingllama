@@ -46,7 +46,7 @@ public class LoadScreen extends MyAbstractScreen {
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
-                assets.loadAllAssets();
+                assets.loadBasicAssets();
                 startLoading = true;
             }
         }));
@@ -85,7 +85,7 @@ public class LoadScreen extends MyAbstractScreen {
 
         // only if there isn't any asset on loading queue yet the button works
         if (assets.update() && startLoading) {
-            Settings.setSoundsMusics();
+            Settings.setBasicSoundsMusics();
             gameApp.setScreen(new MainMenuScreen(gameApp));
         } else {
             progressBar.setValue(assets.getProgress() * 100);
