@@ -3,7 +3,6 @@ package com.overloadedllama.leapingllama.screens;
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -52,7 +51,7 @@ public class EndScreen extends MyAbstractScreen {
 
         scoreLabelSkin = assets.getSkin("bigButton");
 
-        System.out.printf("Total level score: %.1f --- last score: %.1f%n", totalLevelScore, lastScore);
+        //System.out.printf("Total level score: %.1f --- last score: %.1f%n", totalLevelScore, lastScore);
 
         if (level > -1) {
             if (!win) {
@@ -99,9 +98,9 @@ public class EndScreen extends MyAbstractScreen {
 
             for (int i = 0; i < 3; ++i) {
                 if (i < starNum) {
-                    starArray[i] = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
+                    starArray[i] = new Image(assets.getTexture("starWon"));
                 } else {
-                    starArray[i] = new Image(new Texture(Gdx.files.internal("world/starLost.png")));
+                    starArray[i] = new Image(assets.getTexture("starLost"));
                 }
             }
 
@@ -141,6 +140,12 @@ public class EndScreen extends MyAbstractScreen {
         super.render(delta);
 
         if (Gdx.input.isTouched() && (System.currentTimeMillis() - startTime) > 400) {
+            endStage.addAction(Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    assets.unloadGameAssets();
+                }
+            }));
             gameApp.setScreen(new MainMenuScreen(gameApp));
             dispose();
         }

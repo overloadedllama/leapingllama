@@ -2,11 +2,12 @@ package com.overloadedllama.leapingllama.stages;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.screens.CreditScreen;
@@ -103,7 +104,7 @@ public class MainMenuStage extends MyAbstractStage {
         // USER-MONEY TABLE
         userMoneyTable.top().left();
         userMoneyTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).padLeft(15f);
-        userMoneyTable.add(moneyButton).padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 15f).padTop(padTop);
+        userMoneyTable.add(moneyButton).padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f).padTop(padTop).padRight(15f);
         addActor(userMoneyTable);
 
         // MAIN MENU TABLE
@@ -132,9 +133,9 @@ public class MainMenuStage extends MyAbstractStage {
             for (int j = 0; j < 3; ++j) {
                 Image star;
                 if (j < starNum) {
-                    star = new Image(new Texture(Gdx.files.internal("world/starWon.png")));
+                    star = new Image(assets.getTexture("starWon"));
                 } else {
-                    star = new Image(new Texture(Gdx.files.internal("world/starLost.png")));
+                    star = new Image(assets.getTexture("starLost"));
                 }
                 scrollTable.add(star).size(100f, 100f).padLeft(15f);
             }
@@ -154,10 +155,10 @@ public class MainMenuStage extends MyAbstractStage {
         userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
         userTextField.setAlignment(Align.center);
         chooseUserTable.top();
-        chooseUserTable.add(backButton1).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop).colspan(2);
+        chooseUserTable.add(backButton1).size(100f, defaultButtonHeight).padTop(padTop).colspan(2);
         chooseUserTable.row();
-        chooseUserTable.add(userLabel).size(defaultButtonWidth, defaultButtonHeight).padRight(10f);
-        chooseUserTable.add(userTextField).size(defaultButtonWidth, defaultButtonHeight);
+        chooseUserTable.add(userLabel).size(defaultButtonWidth, defaultButtonHeight).padRight(15f).padTop(15f);
+        chooseUserTable.add(userTextField).size(defaultButtonWidth, defaultButtonHeight).padTop(15f);
         chooseUserTable.setVisible(false);
         addActor(chooseUserTable);
 
@@ -197,7 +198,15 @@ public class MainMenuStage extends MyAbstractStage {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                addAction(Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        assets.loadGameAssets();
+                    }
+                }));
+
                 mainMenuTable.setVisible(false);
+                userMoneyTable.setVisible(false);
                 fadeoutBackground.setVisible(true);
                 levelTable.setVisible(true);
             }
@@ -236,7 +245,15 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+
+                try {
+                    assets.unloadGameAssets();
+                } catch (GdxRuntimeException e) {
+                    System.out.println("Game assets aren't totally loaded yet, loaded: " + assets.getProgress() * 100 + "%");
+                }
+
                 mainMenuTable.setVisible(true);
+                userMoneyTable.setVisible(true);
                 levelTable.setVisible(false);
                 fadeoutBackground.remove();
             }
@@ -249,8 +266,11 @@ public class MainMenuStage extends MyAbstractStage {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         super.clicked(event, x, y);
-                        Settings.stopMusic(MAIN_MENU_MUSIC);
-                        ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, finalI));
+                        if (assets.update()) {
+                            Settings.setGameSoundsMusics();
+                            Settings.stopMusic(MAIN_MENU_MUSIC);
+                            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, finalI));
+                        }
                     }
                 });
             }
@@ -268,6 +288,8 @@ public class MainMenuStage extends MyAbstractStage {
 
     public void renderer() {
         super.renderer();
+        assets.update();
+
         userButton.setText(Settings.getCurrentUser());
         moneyButton.setText("" + Settings.getUserMoney());
     }

@@ -23,10 +23,6 @@ public final class Settings implements LlamaConstants {
     public static final String TEST_USER = "test";
     private static String currentUser = TEST_USER;
 
-
-    private static final String ON = "on";
-    private static final String OFF = "off";
-
     // if MUSIC/SOUND/GORE == true, then it is set ON, else OFF
     private static boolean SOUND = true;
     private static float SOUND_VOLUME = 1;
@@ -97,28 +93,26 @@ public final class Settings implements LlamaConstants {
     public static boolean isGORE() { return GORE; }
     public static void setGORE(boolean GORE) { Settings.GORE = GORE; }
 
-    // this method converts boolean values returned by above methods into String values
-    public static String getSetting(String setting) {
-
-        String ret = ON;    // default value
+    public static String getStringSetting(String setting) {
+        final String ON = "ON", OFF = "OFF";
         switch (setting) {
-            case "MUSIC": if (isMUSIC()) ret = ON; else ret = OFF; break;
-            case "SOUND": if (isSOUND()) ret = ON; else ret = OFF; break;
-            case "GORE": if (isGORE()) ret = ON; else ret = OFF; break;
-            case "GAME_MODE":
-                if (gameMode == GAME_MODE.LX_DX)
-                    ret = "LX_DX";
-                else if (gameMode == GAME_MODE.DX_LX)
-                    ret = "DX_LX";
-                else
-                    ret = "GESTURES";
-                break;
+            case LlamaConstants.MUSIC: if (MUSIC) return ON; else return OFF;
+            case LlamaConstants.SOUND: if (SOUND) return ON; else return OFF;
+            case LlamaConstants.GORE: if (GORE) return ON; else return OFF;
+            case LlamaConstants.GAME_MODE_: return getGameMode();
+            default:
+                throw new IllegalArgumentException("Setting " + setting + " doesn't exist");
         }
-
-        return ret;
     }
 
 
+
+
+    /**
+     * Checks if the username doesn't exist yet, and, in that case, creates it,
+     * with all his basic values.
+     * @param user the new user
+     */
     public static void insertNewUser(String user) {
         llamaDbHandler.insertNewUser(user);
     }
@@ -141,6 +135,7 @@ public final class Settings implements LlamaConstants {
     /**
      * call the llamaDbHandler method to check and eventually set the new current user best score
      * @param lastScore the last current user score (as distance reached)
+     * @param level the level related to the score
      * @return true if lastScore if higher than the bestScore, else false
      */
     public static boolean checkSetNewUserBestScore(int level, double lastScore) {
@@ -158,18 +153,19 @@ public final class Settings implements LlamaConstants {
 
     // SOUNDS AND MUSICS
 
-    /**
-     * this method can't be called into constructor method because assets aren't loaded yet
-     *
-     */
-    public static void setSoundsMusics() {
+    // this method can't be called into constructor method because assets aren't loaded yet
+    public static void setBasicSoundsMusics() {
+        cash = assets.getSound(CASH);
+
+        mainMenuMusic = assets.getMusic(MAIN_MENU_MUSIC);
+    }
+
+    public static void setGameSoundsMusics() {
         punch = assets.getSound(PUNCH);
         shot = assets.getSound(SHOT);
-        cash = assets.getSound(CASH);
         load = assets.getSound(LOAD);
 
         gameMusic = assets.getMusic(GAME_MUSIC1);
-        mainMenuMusic = assets.getMusic(MAIN_MENU_MUSIC);
     }
 
     public static void playSound(String sound) {
@@ -181,6 +177,8 @@ public final class Settings implements LlamaConstants {
             case SHOT: shot.play(SOUND_VOLUME); break;
             case CASH: cash.play(SOUND_VOLUME); break;
             case LOAD: load.play(SOUND_VOLUME); break;
+            default:
+                throw new IllegalArgumentException("Sound " + sound + " doesn't exists.");
         }
     }
 
@@ -191,14 +189,17 @@ public final class Settings implements LlamaConstants {
         switch (music) {
             case GAME_MUSIC1: gameMusic.setLooping(true); gameMusic.play(); break;
             case MAIN_MENU_MUSIC: mainMenuMusic.setLooping(true); mainMenuMusic.play(); break;
-
+            default:
+                throw new IllegalArgumentException("Music " + music + " doesn't exists.");
         }
     }
 
     public static void stopMusic(String music) {
         switch (music) {
-            case GAME_MUSIC1: gameMusic.stop();
-            case MAIN_MENU_MUSIC: mainMenuMusic.stop();
+            case GAME_MUSIC1: gameMusic.stop(); break;
+            case MAIN_MENU_MUSIC: mainMenuMusic.stop(); break;
+            default:
+                throw new IllegalArgumentException("Music " + music + " doesn't exists.");
         }
     }
 

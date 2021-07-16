@@ -24,14 +24,16 @@ public class SettingScreen extends MyAbstractScreen {
     private final String ON = "on";
     private final String OFF = "off";
 
+    private ImageButton backButton;
+
     // TextButtons
     private TextButton musicButton;
     private TextButton soundButton;
     private TextButton lxDxButton;
-    private TextButton backButton;
 
     // Skins
     private Skin textButtonSkin;
+    private Skin backButtonSkin;
 
 
     //Sky
@@ -57,29 +59,26 @@ public class SettingScreen extends MyAbstractScreen {
 
         // creation of the Skins
         textButtonSkin = assets.getSkin("bigButton");
+        backButtonSkin = assets.getSkin("backButton");
 
         // creation of TextButtons
-        musicButton = new TextButton("MUSIC: " + Settings.getSetting("MUSIC"), textButtonSkin);
-        musicButton.setDisabled(false);
-        soundButton = new TextButton("SOUND: " + Settings.getSetting("SOUND"), textButtonSkin);
-        musicButton.setDisabled(false);
-        lxDxButton = new TextButton("GAME BUTTONS: LX-DX", textButtonSkin);
-        lxDxButton.setDisabled(false);
-        backButton = new TextButton("BACK", textButtonSkin);
-        backButton.setDisabled(true);
+        musicButton = new TextButton("MUSIC: " + Settings.getStringSetting(MUSIC), textButtonSkin);
+        soundButton = new TextButton("SOUND: " + Settings.getStringSetting(SOUND), textButtonSkin);
+        lxDxButton = new TextButton("GAME BUTTONS: " + Settings.getStringSetting(GAME_MODE_), textButtonSkin);
+        backButton = new ImageButton(backButtonSkin);
+        backButton.setDisabled(false);
 
         // adding items to settingTable and backButtonTable and them to settingsStage
         float w = 300f, h = 120f;
         settingTable.add(musicButton).width(w).height(h);
         settingTable.row();
-        settingTable.add(soundButton).width(w).height(h).padTop(10f);
+        settingTable.add(soundButton).width(w).height(h).padTop(15f);
         settingTable.row();
-        settingTable.add(lxDxButton).width(w).height(h).pad(10f);
+        settingTable.add(lxDxButton).width(w).height(h).pad(15f);
+        settingsStage.addActor(settingTable);
 
         backButtonTable.top().left();
-        backButtonTable.add(backButton).width(w).height(80f);
-
-        settingsStage.addActor(settingTable);
+        backButtonTable.add(backButton).width(h).height(h).padLeft(15f).padTop(15f);
         settingsStage.addActor(backButtonTable);
 
         Gdx.input.setInputProcessor(settingsStage);
@@ -122,10 +121,10 @@ public class SettingScreen extends MyAbstractScreen {
         lxDxButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Settings.getSetting("GAME_MODE").equals("LX_DX")) {
+                if (Settings.getStringSetting(GAME_MODE_).equals("LX_DX")) {
                     Settings.setGameMode();
                     lxDxButton.setText("GAME BUTTONS: DX-LX");
-                } else if (Settings.getSetting("GAME_MODE").equals("DX_LX")){
+                } else if (Settings.getStringSetting(GAME_MODE_).equals("DX_LX")){
                     Settings.setGameMode();
                     lxDxButton.setText("GAME BUTTONS: GESTURES");
                 } else {
@@ -146,7 +145,6 @@ public class SettingScreen extends MyAbstractScreen {
 
         sky.update();
 
-
         settingsStage.act();
         settingsStage.draw();
 
@@ -155,8 +153,6 @@ public class SettingScreen extends MyAbstractScreen {
         gameApp.batch.begin();
         gameApp.font.setColor(0 , 255, 0, 1);
         gameApp.batch.end();
-
-
 
     }
 

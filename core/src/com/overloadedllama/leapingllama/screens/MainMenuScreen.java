@@ -11,6 +11,8 @@ import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.stages.MainMenuStage;
 
+// todo fix screen size
+
 public class MainMenuScreen extends MyAbstractScreen {
     private MainMenuStage mainMenuStage;
 

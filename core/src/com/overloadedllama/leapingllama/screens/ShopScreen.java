@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
@@ -63,7 +62,7 @@ public class ShopScreen extends MyAbstractScreen {
     public void show() {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
-        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        sky = new Sky(assets.getTexture("sky"));
         batch = new SpriteBatch();
 
         shopStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
@@ -94,10 +93,12 @@ public class ShopScreen extends MyAbstractScreen {
 
         float pad = 15f;
         float itemHeight = 140f;
+        float itemWidth = 140f;
 
         upperTable.top().left();
-        upperTable.add(backButton).height(itemHeight).padLeft(pad);
-        upperTable.add(userMoneyText).width(140f).height(itemHeight).padLeft(GameApp.WIDTH - 250f - pad);
+        upperTable.add(backButton).size(itemWidth, itemHeight).padLeft(pad);
+        upperTable.add(userMoneyText).size(itemWidth, itemHeight).padLeft(GameApp.WIDTH - itemWidth * 2 - pad * 2);
+        shopStage.addActor(upperTable);
 
         itemListTable.center();
         itemListTable.add(previousItem).width(200f).height(100f).padRight(15f);
@@ -105,9 +106,7 @@ public class ShopScreen extends MyAbstractScreen {
         itemListTable.add(nextItem).width(200f).height(100f).padLeft(15f);
         itemListTable.row();
         itemListTable.add(buyButton).colspan(3).width(200f).height(120f).padTop(15f);
-
         shopStage.addActor(itemListTable);
-        shopStage.addActor(upperTable);
 
         Gdx.input.setInputProcessor(shopStage);
 
@@ -153,6 +152,8 @@ public class ShopScreen extends MyAbstractScreen {
                 super.clicked(event, x, y);
 
                 if (Settings.checkSetUserMoney(-itemValue)) {       // set itemValue negative
+                    if (Settings.isSOUND())
+                        Settings.playSound(CASH);
                     if (shopItems[index].getId().equals(BONUS_AMMO)) {
                         Settings.setBonusAmmo();
                     } else if (shopItems[index].getId().equals(BONUS_LIFE)) {
