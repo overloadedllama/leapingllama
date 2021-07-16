@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -25,7 +24,9 @@ public class CreditScreen extends MyAbstractScreen{
     Table mainTable, creditTable;
     Label credits, title;
     Batch batch;
-    Button backButton;
+    Button buttonBack;
+    Button buttonGooglePlay;
+    Button buttonGithub;
 
     Sky sky;
 
@@ -51,8 +52,11 @@ public class CreditScreen extends MyAbstractScreen{
         credits.setAlignment(Align.center);
         credits.setSize(GameApp.WIDTH/2, GameApp.HEIGHT/1.5f);
 
-        //credits.setColor(Color.BLACK);
 
+        buttonGooglePlay = new TextButton("GIVE US 5 STARS\nON THE STORE", assets.getSkin("bigButton"));
+        buttonGithub = new TextButton("COLLAB ON GITHUB", assets.getSkin("bigButton"));
+
+        buttonGooglePlay.setDisabled(true);
 
         mainTable = new Table();
         mainTable.setFillParent(true);
@@ -66,20 +70,24 @@ public class CreditScreen extends MyAbstractScreen{
         title = new Label("CREDITS", assets.getSkin("justText"));
         title.setFontScale(2f);
 
-        backButton = new ImageButton(assets.getSkin("backButton"));
+        buttonBack = new ImageButton(assets.getSkin("backButton"));
 
         mainTable.add(title);
-        mainTable.add(backButton).padBottom(5).align(Align.right);
+        mainTable.add(buttonBack).padBottom(5).align(Align.right);
 
         mainTable.row();
+        mainTable.add(creditTable).width(GameApp.WIDTH/2).colspan(2).padBottom(15);
 
-        mainTable.add(creditTable).width(GameApp.WIDTH/2).colspan(2);
+        mainTable.row();
+        mainTable.add(buttonGooglePlay).width(GameApp.WIDTH/4 - 7).align(Align.left);
+        mainTable.add(buttonGithub).width(GameApp.WIDTH/4 -8).align(Align.right);
+
         stage.addActor(mainTable);
 
         Gdx.input.setInputProcessor(stage);
 
 
-        backButton.addListener(new ClickListener(){
+        buttonBack.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
@@ -90,13 +98,20 @@ public class CreditScreen extends MyAbstractScreen{
             }
         });
 
+        buttonGithub.addListener(new ClickListener(){
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.net.openURI("https://github.com/overloadedllama/leapingllama");
+
+                super.clicked(event, x, y);
+            }
+        });
+
     }
 
     @Override
     public void render(float delta) {
-        if (Gdx.input.isTouched()) {
-            gameApp.setScreen(new MainMenuScreen(gameApp));
-        }
+
 
 
         camera.update();
