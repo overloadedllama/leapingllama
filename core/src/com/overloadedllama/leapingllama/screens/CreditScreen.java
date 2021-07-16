@@ -53,7 +53,7 @@ public class CreditScreen extends MyAbstractScreen{
         credits.setSize(GameApp.WIDTH/2, GameApp.HEIGHT/1.5f);
 
 
-        buttonGooglePlay = new TextButton("GIVE US 5 STARS\nON THE STORE", assets.getSkin("bigButton"));
+        buttonGooglePlay = new TextButton("GIVE US 5 STARS", assets.getSkin("bigButton"));
         buttonGithub = new TextButton("COLLAB ON GITHUB", assets.getSkin("bigButton"));
 
         buttonGooglePlay.setDisabled(true);

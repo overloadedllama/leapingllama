@@ -20,7 +20,7 @@ public final class Settings implements LlamaConstants {
     private static LlamaDbHandler llamaDbHandler;
     private static Assets assets;
 
-    public static final String TEST_USER = "test";
+    public static final String TEST_USER = "User0001";
     private static String currentUser = TEST_USER;
 
     // if MUSIC/SOUND/GORE == true, then it is set ON, else OFF

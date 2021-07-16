@@ -18,7 +18,7 @@ import com.overloadedllama.leapingllama.screens.ShopScreen;
 public class MainMenuStage extends MyAbstractStage {
     final int numLevels = 6;
     int maxUserLevel;
-    float defaultButtonWidth = 240F;
+    float defaultButtonWidth = 350F;
     float defaultButtonHeight = 100F;
 
     // Image
@@ -30,6 +30,7 @@ public class MainMenuStage extends MyAbstractStage {
     private final Table levelTable;
     private final Table chooseUserTable;
     private final Table scrollTable;
+    private final Table howdyTable;
 
     // ScrollPane
     private final ScrollPane scroller;
@@ -54,7 +55,7 @@ public class MainMenuStage extends MyAbstractStage {
 
     // Label
     private final Label userLabel;
-
+    private final Label userNameLabel;
     // Skin
     private final Skin textButtonFieldLabelSkin;
     private final Skin moneyButtonSkin;
@@ -72,7 +73,7 @@ public class MainMenuStage extends MyAbstractStage {
         userMoneyTable = new Table();
         levelTable = new Table();
         chooseUserTable = new Table();
-
+        howdyTable = new Table();
         scrollTable = new Table();
 
 
@@ -96,27 +97,34 @@ public class MainMenuStage extends MyAbstractStage {
             levelButtons[i] = new TextButton("LEVEL " + i, textButtonFieldLabelSkin);
             levelButtons[i].setDisabled(!(i <= maxUserLevel));
         }
-        endlessMode = new TextButton("ENDLESS", textButtonFieldLabelSkin);
-        userButton = new TextButton("USER: " + Settings.getCurrentUser(), textButtonFieldLabelSkin);
-
+        endlessMode = new TextButton("ENDLESS MODE", textButtonFieldLabelSkin);
+        //userButton = new TextButton("USER: " + Settings.getCurrentUser(), textButtonFieldLabelSkin);
+        userButton = new TextButton("USERS", textButtonFieldLabelSkin);
+        userNameLabel = new Label("", justTextSkin);
         float padTop = 15f;
 
-        // USER-MONEY TABLE
-        userMoneyTable.top().left();
-        userMoneyTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).padLeft(15f);
-        userMoneyTable.add(moneyButton).padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f).padTop(padTop).padRight(15f);
+        // MONEY TABLE
+        userMoneyTable.top().right();
+        //userMoneyTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).padLeft(15f);
+        userMoneyTable.add(moneyButton).padTop(padTop).padRight(15f); //padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f)
         addActor(userMoneyTable);
 
+        // USERS TABLE
+        howdyTable.top().left();
+        howdyTable.add(userNameLabel).padTop(padTop).padLeft(25f);
+        addActor(howdyTable);
+
+
         // MAIN MENU TABLE
-        mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.add(playButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(shopButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.add(shopButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(settingsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.add(settingsButton).width(defaultButtonWidth/2-padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
+        mainMenuTable.add(userButton).width(defaultButtonWidth/2).height(defaultButtonHeight).padTop(padTop).align(Align.right);
         mainMenuTable.row();
-        mainMenuTable.add(creditsButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
-        mainMenuTable.row();
-        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop);
+        mainMenuTable.add(creditsButton).width(defaultButtonWidth/2 -padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
+        mainMenuTable.add(quitButton).width(defaultButtonWidth/2).height(defaultButtonHeight).padTop(padTop).align(Align.right);
         addActor(mainMenuTable);
 
         // FADEOUT BACKGROUND
@@ -149,7 +157,6 @@ public class MainMenuStage extends MyAbstractStage {
             }
 
         }
-        // scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(4);
         scroller = new ScrollPane(scrollTable);
         levelTable.setFillParent(true);
         levelTable.add(scroller).fill().expand();
@@ -189,6 +196,7 @@ public class MainMenuStage extends MyAbstractStage {
                 super.clicked(event, x, y);
                 mainMenuTable.setVisible(false);
                 userMoneyTable.setVisible(false);
+                howdyTable.setVisible(false);
                 //fadeoutBackground.setVisible(true);
                 chooseUserTable.setVisible(true);
             }
@@ -205,6 +213,7 @@ public class MainMenuStage extends MyAbstractStage {
                 System.out.println("CURRENT USER: " + Settings.getCurrentUser());
                 mainMenuTable.setVisible(true);
                 userMoneyTable.setVisible(true);
+                howdyTable.setVisible(true);
             }
         });
 
@@ -220,6 +229,7 @@ public class MainMenuStage extends MyAbstractStage {
 
                 mainMenuTable.setVisible(false);
                 userMoneyTable.setVisible(false);
+                howdyTable.setVisible(false);
                 //fadeoutBackground.setVisible(true);
                 levelTable.setVisible(true);
             }
@@ -266,6 +276,7 @@ public class MainMenuStage extends MyAbstractStage {
                 }
 
                 mainMenuTable.setVisible(true);
+                howdyTable.setVisible(true);
                 userMoneyTable.setVisible(true);
                 levelTable.setVisible(false);
                 //fadeoutBackground.setVisible(false);
@@ -308,7 +319,7 @@ public class MainMenuStage extends MyAbstractStage {
         super.renderer();
         assets.update();
 
-        userButton.setText(Settings.getCurrentUser());
+        userNameLabel.setText("Howdy, " + Settings.getCurrentUser());
         moneyButton.setText("" + Settings.getUserMoney());
     }
 
@@ -319,6 +330,9 @@ public class MainMenuStage extends MyAbstractStage {
 
         userMoneyTable.invalidateHierarchy();
         userMoneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+
+        howdyTable.invalidateHierarchy();
+        howdyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
         mainMenuTable.invalidateHierarchy();
         mainMenuTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
