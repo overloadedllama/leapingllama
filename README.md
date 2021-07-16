@@ -1,1 +1,1 @@
-![](/android/assets/logo.png)
+![](/android/assets/gameLogo.png)
