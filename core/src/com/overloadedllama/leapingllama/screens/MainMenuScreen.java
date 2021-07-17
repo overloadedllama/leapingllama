@@ -1,7 +1,5 @@
 package com.overloadedllama.leapingllama.screens;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
@@ -21,7 +19,6 @@ public class MainMenuScreen extends MyAbstractScreen {
 
     public MainMenuScreen(final GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
-
     }
 
     @Override
@@ -29,7 +26,7 @@ public class MainMenuScreen extends MyAbstractScreen {
         mainMenuStage = new MainMenuStage(gameApp);
         Settings.playMusic(gameApp.getAssets().MAIN_MENU_MUSIC);
 
-        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        sky = new Sky(assets.getTexture("sky"));
         batch = new SpriteBatch();
 
     }
@@ -45,12 +42,7 @@ public class MainMenuScreen extends MyAbstractScreen {
 
         sky.update();
 
-
-
         mainMenuStage.renderer();
-
-
-
 
         super.render(delta);
     }

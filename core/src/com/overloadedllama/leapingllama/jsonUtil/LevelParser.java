@@ -182,10 +182,14 @@ public class LevelParser implements LlamaConstants {
         InfRunParser(difficulty, levelLength);
     }
 
+    /**
+     *
+     * @param difficulty the level difficulty
+     * @param levelLength the level length
+     */
     private void InfRunParser(float difficulty, int levelLength) {
-
         queue = new PriorityQueue<>();
-        LevelCreator levelCreator = new LevelCreator(1, levelLength, 0, difficulty);
+        LevelCreator levelCreator = new LevelCreator(1, levelLength, levelLength, difficulty);
 
         enemies = levelCreator.getListEnemies();
         grounds = levelCreator.getListGrounds();
@@ -215,6 +219,9 @@ public class LevelParser implements LlamaConstants {
 
     }
 
+    /**
+     * From the arrays read by .json file composes the queue passed to GameScreen
+     */
     private void queueParser(){
         for (String actorString : actorStrings) {
             ArrayList<Double> array = getActorArray(actorString);
@@ -264,8 +271,9 @@ public class LevelParser implements LlamaConstants {
                 return platformsII;
             case OBSTACLES:
                 return obstacles;
+            default:
+                throw new IllegalArgumentException("Actor " + actorString + " doesn't exist.");
         }
-        return null;
     }
 
     private ArrayList<Double> getSupportArray(String actorString) {
@@ -280,8 +288,9 @@ public class LevelParser implements LlamaConstants {
                 return platformsLen;
             case PLATFORM2:
                 return platformsIILen;
+            default:
+                throw new IllegalArgumentException("Actor " + actorString + " doesn't exist.");
         }
-        return null;
     }
 
     private boolean hasLength(String actorString) {

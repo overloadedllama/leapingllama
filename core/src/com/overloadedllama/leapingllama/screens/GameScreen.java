@@ -32,8 +32,6 @@ public class GameScreen extends MyAbstractScreen {
     ButtonsStagePlay stageUi;
     World world;
 
-   /* Texture sky;
-    float xSky = 0;*/
     HashMap<String, Boolean> actions;
 
     Llama llama;
@@ -47,7 +45,7 @@ public class GameScreen extends MyAbstractScreen {
     static ArrayList<Ammo> ammos;
 
     Box2DDebugRenderer debugRenderer;
-    static final int CHUNK_LENGTH = 50;
+    static final int CHUNK_LENGTH = 100;
     static final float STEP_TIME = 1.0f / 60.0f;
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
@@ -87,6 +85,8 @@ public class GameScreen extends MyAbstractScreen {
     Sky sky;
 
     boolean levelLoaded = true;
+
+
     // METHODS
 
     public GameScreen(final GameApp gameApp, int levelNumber) {
@@ -99,12 +99,9 @@ public class GameScreen extends MyAbstractScreen {
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
-        /*sky = gameApp.getAssets().getTexture("sky");
-        sky.setWrap(Repeat,Repeat);*/
         sky = new Sky(gameApp.getAssets().getTexture("sky"));
 
         actions = new HashMap<>();
-
 
         if (levelNumber != -1) {
             levelParser = new LevelParser(levelNumber);
@@ -113,9 +110,8 @@ public class GameScreen extends MyAbstractScreen {
             totalLevelScore = levelParser.getTotalLevelScore();
         } else {
             levelLength = CHUNK_LENGTH;
-            levelParser = new LevelParser(difficulty, (int) (CHUNK_LENGTH));
+            levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
             queue = levelParser.getQueue();
-
 
         }
     }
@@ -154,12 +150,11 @@ public class GameScreen extends MyAbstractScreen {
         Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
     }
 
-
     @Override
-    public void render(float delta)     {
+    public void render(float delta) {
         ScreenUtils.clear(new Color(Color.BLACK));
-        switch(state) {
 
+        switch(state) {
             case RUN:
 
                 stepWorld();
@@ -177,9 +172,12 @@ public class GameScreen extends MyAbstractScreen {
 
                 updatePosition();
                 removeObjects();
-                loadLevel(distance%levelLength);
+                loadLevel(distance % levelLength);
                 llama.preserveX(llamaX);
                 
+                break;
+
+            case PAUSE:
                 break;
         }
 
@@ -331,21 +329,19 @@ public class GameScreen extends MyAbstractScreen {
     }
 
 
+    boolean start = true;
     /**
      *
      * @param distance the distance reached by llama
      */
-
     private void loadLevel(double distance) {
-
-
-
-        if (distance <= 0.1 && !levelLoaded) {
+        if (distance <= 0.01 && !levelLoaded) {
             levelLoaded = true;
-            //difficulty += 0.005f;
-            levelParser = new LevelParser(difficulty, (int)(CHUNK_LENGTH));
+            difficulty += 0.005f;
+            levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
             queue.addAll(levelParser.getQueue());
-        } else if (distance > 0.1) {
+            System.out.println("Added elements to the queue");
+        } else if (distance > 0.01) {
             levelLoaded = false;
         }
 
@@ -361,8 +357,14 @@ public class GameScreen extends MyAbstractScreen {
             float xCreation;
             float lCreation;
             if (queueObject.getX() < METER_WIDTH) {
-                xCreation = (float) queueObject.getX();
-                lCreation = (float) (queueObject.getLength() + METER_WIDTH- queueObject.getX());
+                if (start) {
+                    start = false;
+                    System.out.println("queue object X: " + queueObject.getX());
+                    xCreation = (float) queueObject.getX();
+                    lCreation = (float) (queueObject.getLength() + METER_WIDTH - queueObject.getX());
+                } else {
+                    return;
+                }
             } else {
                 xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
                 lCreation = (float) queueObject.getLength();
@@ -459,6 +461,7 @@ public class GameScreen extends MyAbstractScreen {
                     }
                 });
                 e.remove();
+                Settings.playSound(ALIEN_GROWL);
                 if (!Settings.hasBonusLife())
                     enemiesDead.add(new EnemyDied(enemy.getTextureString(), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
             }

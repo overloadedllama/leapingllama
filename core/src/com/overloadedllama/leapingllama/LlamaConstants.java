@@ -37,6 +37,9 @@ public interface LlamaConstants {
     String CASH = "cash";
     String LOAD = "load";
 
+    // Only Sounds
+    String ALIEN_GROWL = "alienGrowl";
+
     // Shop Item ids
     String BONUS_LIFE = "bonusLife";
     String BONUS_AMMO = "bonusAmmo";

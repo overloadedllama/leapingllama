@@ -22,12 +22,9 @@ public class MainMenuStage extends MyAbstractStage {
     float defaultButtonWidth;
     float defaultButtonHeight = 100F;
 
-    // Image
-    // private final Image fadeoutBackground;
-
     // Tables
     private final Table mainMenuTable;
-    private final Table userMoneyTable;
+    private final Table moneyTable;
     private final Table levelTable;
     private final Table chooseUserTable;
     private final Table scrollTable;
@@ -69,14 +66,13 @@ public class MainMenuStage extends MyAbstractStage {
 
         maxUserLevel = Settings.getUserLevel();
 
-        // fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
-
         mainMenuTable = new Table();
-        userMoneyTable = new Table();
+        moneyTable = new Table();
         levelTable = new Table();
         chooseUserTable = new Table();
         howdyTable = new Table();
         scrollTable = new Table();
+
 
 
         // creation of Skins
@@ -85,6 +81,7 @@ public class MainMenuStage extends MyAbstractStage {
         backButtonSkin = assets.getSkin("backButton");
         justTextSkin = assets.getSkin("justText");
         hugeButtonSkin = assets.getSkin("hugeButton");
+
         // creation of TextButtons
         backButton = new ImageButton(backButtonSkin);
         playButton = new TextButton("PLAY", hugeButtonSkin);
@@ -101,7 +98,6 @@ public class MainMenuStage extends MyAbstractStage {
             levelButtons[i].setDisabled(!(i <= maxUserLevel));
         }
         endlessMode = new TextButton("ENDLESS MODE", textButtonFieldLabelSkin);
-        //userButton = new TextButton("USER: " + Settings.getCurrentUser(), textButtonFieldLabelSkin);
         userButton = new TextButton("USERS", textButtonFieldLabelSkin);
         userNameLabel = new Label("", justTextSkin);
         float padTop = 15f;
@@ -109,16 +105,14 @@ public class MainMenuStage extends MyAbstractStage {
         defaultButtonWidth = 220;
 
         // MONEY TABLE
-        userMoneyTable.top().right();
-        //userMoneyTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).padLeft(15f);
-        userMoneyTable.add(moneyButton).padTop(padTop).padRight(15f); //padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f)
-        addActor(userMoneyTable);
+        moneyTable.top().right();
+        moneyTable.add(moneyButton).padTop(padTop).padRight(15f); //padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f)
+        addActor(moneyTable);
 
         // USERS TABLE
         howdyTable.top().left();
         howdyTable.add(userNameLabel).padTop(padTop).padLeft(25f);
         addActor(howdyTable);
-
 
         // MAIN MENU TABLE
         mainMenuTable.add(new Image(new Texture(Gdx.files.internal("gameLogo.png")))).colspan(2);
@@ -134,11 +128,6 @@ public class MainMenuStage extends MyAbstractStage {
         mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).align(Align.right);
         addActor(mainMenuTable);
 
-        // FADEOUT BACKGROUND
-        //deactivated because it made the mood a bit too goth.
-        // fadeoutBackground.setBounds(0, 0, getViewport().getScreenWidth(), getViewport().getScreenHeight());
-        // fadeoutBackground.setVisible(false);
-        // addActor(fadeoutBackground);
 
         // LEVEL SCROLL TABLE AND SCROLLER
         scrollTable.add(backButton).padTop(padTop).colspan(1).align(Align.left); //removed .size(defaultButtonWidth, defaultButtonHeight)
@@ -202,9 +191,8 @@ public class MainMenuStage extends MyAbstractStage {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 mainMenuTable.setVisible(false);
-                userMoneyTable.setVisible(false);
+                moneyTable.setVisible(false);
                 howdyTable.setVisible(false);
-                //fadeoutBackground.setVisible(true);
                 chooseUserTable.setVisible(true);
             }
         });
@@ -213,13 +201,12 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                //fadeoutBackground.setVisible(false);
                 chooseUserTable.setVisible(false);
                 Settings.insertNewUser(userTextField.getText());
                 Settings.setCurrentUser(userTextField.getText());
                 System.out.println("CURRENT USER: " + Settings.getCurrentUser());
                 mainMenuTable.setVisible(true);
-                userMoneyTable.setVisible(true);
+                moneyTable.setVisible(true);
                 howdyTable.setVisible(true);
             }
         });
@@ -235,9 +222,8 @@ public class MainMenuStage extends MyAbstractStage {
                 }));
 
                 mainMenuTable.setVisible(false);
-                userMoneyTable.setVisible(false);
+                moneyTable.setVisible(false);
                 howdyTable.setVisible(false);
-                //fadeoutBackground.setVisible(true);
                 levelTable.setVisible(true);
             }
         });
@@ -284,9 +270,8 @@ public class MainMenuStage extends MyAbstractStage {
 
                 mainMenuTable.setVisible(true);
                 howdyTable.setVisible(true);
-                userMoneyTable.setVisible(true);
+                moneyTable.setVisible(true);
                 levelTable.setVisible(false);
-                //fadeoutBackground.setVisible(false);
             }
         });
 
@@ -335,8 +320,8 @@ public class MainMenuStage extends MyAbstractStage {
         chooseUserTable.invalidateHierarchy();
         chooseUserTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
-        userMoneyTable.invalidateHierarchy();
-        userMoneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
+        moneyTable.invalidateHierarchy();
+        moneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
         howdyTable.invalidateHierarchy();
         howdyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);

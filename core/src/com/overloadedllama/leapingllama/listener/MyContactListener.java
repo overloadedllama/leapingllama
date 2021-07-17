@@ -25,7 +25,7 @@ public class MyContactListener implements ContactListener, LlamaConstants {
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
         if (isBulletEnemyContact(fa, fb)) {
-            //System.out.println("COLLISION BULLET-ENEMY DETECTED!");
+
         } else if (isLlamaEnemyContact(fa, fb)) {
             //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
         } else if (isLlamaGroundPlatformContact(fa, fb, contact)) {

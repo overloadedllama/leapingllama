@@ -45,6 +45,14 @@ public class LevelCreator {
     private ArrayList<Integer> listAmmoNum = new ArrayList<>();
 
     int d = 0;
+
+    /**
+     *
+     * @param level
+     * @param minLevelLength
+     * @param scalingLevelLength
+     * @param difficulty
+     */
     public LevelCreator(int level, int minLevelLength, int scalingLevelLength, float difficulty) {
         this.level = level;
         this.difficulty = difficulty;
@@ -168,6 +176,7 @@ public class LevelCreator {
             }
         }
 
+        // d = 0 ?
         for (; d<distanceMax; d++){
 
             grounds.remove(d);
@@ -266,11 +275,6 @@ public class LevelCreator {
 
 
     private void parsing(int level, int levelLength) {
-
-
-
-
-
         parseArray(enemies, listEnemies);
         parseArray(obstacles, listObstacles);
         parseArray(money, listMoney);
@@ -287,7 +291,7 @@ public class LevelCreator {
     private void parseArray(ArrayList<Boolean> booleans, ArrayList<Double> positions, ArrayList<Double> lengths) {
         distance = 0;
         double counter = 0.0;
-        double position = (double) distance;
+        double position = distance;
         boolean isEmpty = false;
 
         while (distance<distanceMax){
@@ -311,7 +315,7 @@ public class LevelCreator {
                 if (booleans.get(distance)){
                     isEmpty = false;
                     counter++;
-                    position = (double) distance;
+                    position = distance;
                 }
             }
 

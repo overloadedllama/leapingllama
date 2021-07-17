@@ -17,7 +17,6 @@ import com.overloadedllama.leapingllama.LlamaConstants;
 public class Assets implements LlamaConstants {
     private final AssetManager manager;
 
-
     public Assets() {
         this.manager = new AssetManager();
     }
@@ -55,6 +54,7 @@ public class Assets implements LlamaConstants {
         manager.load("sounds/punch.wav", Sound.class);
         manager.load("sounds/laser.wav", Sound.class);
         manager.load("sounds/rifleLoad.wav", Sound.class);
+        manager.load("sounds/alienGrowl.wav", Sound.class);
 
         // loading musics
         manager.load("musics/gameMusic1.mp3", Music.class);
@@ -90,6 +90,8 @@ public class Assets implements LlamaConstants {
         // unload sounds
         manager.unload("sounds/punch.wav");
         manager.unload("sounds/laser.wav");
+        manager.unload("sounds/rifleLoad.wav");
+        manager.unload("sounds/alienGrowl.wav");
 
         // unload musics
         manager.unload("music/gameMusic.mp3");
@@ -182,6 +184,7 @@ public class Assets implements LlamaConstants {
             case SHOT: return manager.get("sounds/laser.wav");
             case CASH: return manager.get("sounds/cashRegister.wav");
             case LOAD: return manager.get("sounds/rifleLoad.wav");
+            case ALIEN_GROWL: return manager.get("sounds/alienGrowl.wav");
             default:
                 throw new IllegalArgumentException("Sound " + sound + " doesn't exist.");
         }

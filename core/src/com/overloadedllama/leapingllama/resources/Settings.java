@@ -46,6 +46,8 @@ public final class Settings implements LlamaConstants {
     private static Sound shot;
     private static Sound cash;
     private static Sound load;
+    private static Sound alienGrowl;
+
     // Music
     private static Music gameMusic;
     private static Music mainMenuMusic;
@@ -166,6 +168,7 @@ public final class Settings implements LlamaConstants {
         punch = assets.getSound(PUNCH);
         shot = assets.getSound(SHOT);
         load = assets.getSound(LOAD);
+        alienGrowl = assets.getSound(ALIEN_GROWL);
 
         gameMusic = assets.getMusic(GAME_MUSIC1);
     }
@@ -179,6 +182,7 @@ public final class Settings implements LlamaConstants {
             case SHOT: shot.play(SOUND_VOLUME); break;
             case CASH: cash.play(SOUND_VOLUME); break;
             case LOAD: load.play(SOUND_VOLUME); break;
+            case ALIEN_GROWL: alienGrowl.play(SOUND_VOLUME); break;
             default:
                 throw new IllegalArgumentException("Sound " + sound + " doesn't exists.");
         }

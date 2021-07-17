@@ -15,6 +15,8 @@ import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 
+import java.util.Set;
+
 public class SettingScreen extends MyAbstractScreen {
 
     private Stage settingsStage;
@@ -30,16 +32,15 @@ public class SettingScreen extends MyAbstractScreen {
     private TextButton musicButton;
     private TextButton soundButton;
     private TextButton lxDxButton;
+    private TextButton goreButton;
 
     // Skins
     private Skin textButtonSkin;
     private Skin backButtonSkin;
 
-
     //Sky
     Sky sky;
     Batch batch;
-
 
 
     public SettingScreen(GameApp gameApp) {
@@ -49,9 +50,8 @@ public class SettingScreen extends MyAbstractScreen {
     @Override
     public void show() {
 
-        sky = new Sky(new Texture(Gdx.files.internal("world/sky.png")));
+        sky = new Sky(assets.getTexture("sky"));
         batch = new SpriteBatch();
-
 
         settingsStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
         settingTable = new Table();
@@ -65,16 +65,19 @@ public class SettingScreen extends MyAbstractScreen {
         musicButton = new TextButton("MUSIC: " + Settings.getStringSetting(MUSIC), textButtonSkin);
         soundButton = new TextButton("SOUND: " + Settings.getStringSetting(SOUND), textButtonSkin);
         lxDxButton = new TextButton(Settings.getStringSetting(GAME_MODE_), textButtonSkin);
+        goreButton = new TextButton("GORE: " + Settings.getStringSetting(GORE), textButtonSkin);
         backButton = new ImageButton(backButtonSkin);
         backButton.setDisabled(false);
 
         // adding items to settingTable and backButtonTable and them to settingsStage
-        float w = 300f, h = 120f;
+        float w = 300f, h = 120f, padTop = 15f;
         settingTable.add(musicButton).width(w).height(h);
         settingTable.row();
-        settingTable.add(soundButton).width(w).height(h).padTop(15f);
+        settingTable.add(soundButton).width(w).height(h).padTop(padTop);
         settingTable.row();
-        settingTable.add(lxDxButton).width(w).height(h).pad(15f);
+        settingTable.add(lxDxButton).width(w).height(h).pad(padTop);
+        settingTable.row();
+        settingTable.add(goreButton).width(w).height(h).padTop(padTop);
         settingsStage.addActor(settingTable);
 
         backButtonTable.top().left();
@@ -130,6 +133,20 @@ public class SettingScreen extends MyAbstractScreen {
                 } else {
                     Settings.setGameMode();
                     lxDxButton.setText("LEFT HANDED");
+                }
+            }
+        });
+
+        goreButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                if (Settings.isGORE()) {
+                    Settings.setGORE(false);
+                    goreButton.setText("GORE: OFF");
+                } else {
+                    Settings.setGORE(true);
+                    goreButton.setText("GORE: ON");
                 }
             }
         });

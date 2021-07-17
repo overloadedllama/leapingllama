@@ -90,20 +90,20 @@ public class CreditScreen extends MyAbstractScreen{
         buttonBack.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
 
                 dispose();
 
-                super.clicked(event, x, y);
             }
         });
 
         buttonGithub.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
                 Gdx.net.openURI("https://github.com/overloadedllama/leapingllama");
 
-                super.clicked(event, x, y);
             }
         });
 
