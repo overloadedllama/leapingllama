@@ -147,7 +147,7 @@ public class LevelParser implements LlamaConstants {
             }
         }
 
-
+/*
         if (    coins.size() != coinsNum.size() ||
                 ammos.size() != ammoNum.size() ||
                 grounds.size() != groundsLen.size() ||
@@ -155,7 +155,7 @@ public class LevelParser implements LlamaConstants {
                 platforms.size() !=  platformsLen.size()) {
             throw new IllegalArgumentException();
         }
-
+*/
         queueParser();
 
         totalAmmosSpawned = ammos.size();
@@ -165,7 +165,7 @@ public class LevelParser implements LlamaConstants {
     }
 
 
-    public LevelParser(){
+    public LevelParser(float difficulty, int levelLength){
         enemies = new ArrayList<>();
         grounds = new ArrayList<>();
         groundsLen  = new ArrayList<>();
@@ -179,13 +179,13 @@ public class LevelParser implements LlamaConstants {
         ammoNum  = new ArrayList<>();
         obstacles = new ArrayList<>();
 
-        InfRunParser();
+        InfRunParser(difficulty, levelLength);
     }
 
-    private void InfRunParser() {
+    private void InfRunParser(float difficulty, int levelLength) {
 
         queue = new PriorityQueue<>();
-        LevelCreator levelCreator = new LevelCreator(1);
+        LevelCreator levelCreator = new LevelCreator(1, levelLength, 0, difficulty);
 
         enemies = levelCreator.getListEnemies();
         grounds = levelCreator.getListGrounds();

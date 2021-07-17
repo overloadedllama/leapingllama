@@ -9,12 +9,14 @@ import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 
 /**
- * We can convert Settings into an Interface, more readable?
+ *
  *
  * a class that contains all the game settings and methods used to change them on
  * the smartphone.
  *
  */
+//We can convert Settings into an Interface, more readable
+
 public final class Settings implements LlamaConstants {
     @SuppressLint("StaticFieldLeak")
     private static LlamaDbHandler llamaDbHandler;

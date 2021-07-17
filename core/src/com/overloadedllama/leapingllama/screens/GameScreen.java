@@ -47,7 +47,7 @@ public class GameScreen extends MyAbstractScreen {
     static ArrayList<Ammo> ammos;
 
     Box2DDebugRenderer debugRenderer;
-    static final double CHUNK_LENGTH = 50;
+    static final int CHUNK_LENGTH = 50;
     static final float STEP_TIME = 1.0f / 60.0f;
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
@@ -80,10 +80,13 @@ public class GameScreen extends MyAbstractScreen {
     int enemiesKilled = 0;
     double totalLevelScore;
 
+    float difficulty = 0.05f;
+
     Tube tube;
 
     Sky sky;
 
+    boolean levelLoaded = true;
     // METHODS
 
     public GameScreen(final GameApp gameApp, int levelNumber) {
@@ -110,7 +113,7 @@ public class GameScreen extends MyAbstractScreen {
             totalLevelScore = levelParser.getTotalLevelScore();
         } else {
             levelLength = CHUNK_LENGTH;
-            levelParser = new LevelParser();
+            levelParser = new LevelParser(difficulty, (int) (CHUNK_LENGTH));
             queue = levelParser.getQueue();
 
 
@@ -332,13 +335,15 @@ public class GameScreen extends MyAbstractScreen {
      *
      * @param distance the distance reached by llama
      */
+
     private void loadLevel(double distance) {
 
-        boolean levelLoaded = false;
+
 
         if (distance <= 0.1 && !levelLoaded) {
             levelLoaded = true;
-            levelParser = new LevelParser();
+            //difficulty += 0.005f;
+            levelParser = new LevelParser(difficulty, (int)(CHUNK_LENGTH));
             queue.addAll(levelParser.getQueue());
         } else if (distance > 0.1) {
             levelLoaded = false;
