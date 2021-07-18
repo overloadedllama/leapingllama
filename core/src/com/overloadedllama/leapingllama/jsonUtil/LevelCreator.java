@@ -48,10 +48,10 @@ public class LevelCreator {
 
     /**
      *
-     * @param level
-     * @param minLevelLength
-     * @param scalingLevelLength
-     * @param difficulty
+     * @param level is the number of the level
+     * @param minLevelLength is the length of the first level
+     * @param scalingLevelLength is the factor x. the nth level length l = minLevelLength + n * x
+     * @param difficulty is the hardness of the level that goes to 0 (no enemies) to 1 (at least two enemies per meter). Recommended values are from 0.025 to 0.07
      */
     public LevelCreator(int level, int minLevelLength, int scalingLevelLength, float difficulty) {
         this.level = level;
@@ -176,13 +176,7 @@ public class LevelCreator {
             }
         }
 
-        // d = 0 ?
-        for (; d<distanceMax; d++){
 
-            grounds.remove(d);
-            grounds.set(d, Boolean.TRUE);
-
-        }
 
         //randomization of enemies
 
@@ -261,10 +255,11 @@ public class LevelCreator {
         }
 
 
-        //System.out.println(level);
+        System.out.println(level);
         //System.out.println(enemies);
-        //System.out.println(grounds);
-        //System.out.println(platformsI);
+        System.out.println(platformsI);
+
+        System.out.println(grounds);
         //System.out.println(platformsII);
 
         parsing(level, distanceMax);
@@ -296,6 +291,7 @@ public class LevelCreator {
 
         while (distance<distanceMax){
 
+/*
             if(!isEmpty){
                 if (booleans.get(distance)){
                     counter++;
@@ -317,10 +313,42 @@ public class LevelCreator {
                     counter++;
                     position = distance;
                 }
+
+
+
+
+            }
+            distance++;
+*/
+ /* todo  delete this old algorithm (only if the new works perfectly)
+ */
+            while (!booleans.get(distance) && distance < distanceMax) {
+
+                distance++;
+
+                if(distance +1 == distanceMax)
+                    break;
             }
 
-            distance++;
 
+            positions.add((double) distance);
+
+
+
+            while (booleans.get(distance) && distance < distanceMax) {
+                distance++;
+                counter++;
+
+                if(distance +1 == distanceMax)
+                    break;
+            }
+
+            lengths.add(counter);
+
+            if(distance +1 == distanceMax)
+                break;
+
+/* */
         }
 
     }

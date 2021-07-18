@@ -94,7 +94,7 @@ public class GameObject implements LlamaConstants {
         sprite.setPosition(x-w/2,y-h/2);
     }
 
-    public void createBody (BodyDef.BodyType type, PolygonShape shape, float density, float friction, float restitution){
+    public void createBody (BodyDef.BodyType type, Shape shape, float density, float friction, float restitution){
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = type;
         bodyDef.position.set(x,y);

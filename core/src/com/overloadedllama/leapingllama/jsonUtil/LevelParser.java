@@ -189,7 +189,7 @@ public class LevelParser implements LlamaConstants {
      */
     private void InfRunParser(float difficulty, int levelLength) {
         queue = new PriorityQueue<>();
-        LevelCreator levelCreator = new LevelCreator(1, levelLength, levelLength, difficulty);
+        LevelCreator levelCreator = new LevelCreator(1, levelLength, 0, difficulty);
 
         enemies = levelCreator.getListEnemies();
         grounds = levelCreator.getListGrounds();
@@ -217,6 +217,10 @@ public class LevelParser implements LlamaConstants {
         totalCoinsSpawned = coins.size();
         totalEnemiesSpawned = enemies.size();
 
+        System.out.println("plaform" + platforms);
+        System.out.println("plaform l" + platformsLen);
+        System.out.println("ground" + grounds);
+        System.out.println("ground l" + groundsLen);
     }
 
     /**

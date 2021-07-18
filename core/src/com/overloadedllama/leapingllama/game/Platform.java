@@ -18,9 +18,7 @@ public class Platform extends GameObject{
     public Platform(float x, float y, float h, float length, float v, World world, Batch batch, Assets assets) {
         super(assets.getTexture("platform"), x, y, h, world, batch);
 
-        w0 = w;
         w = length;
-        tileCount = (int) (w0/w);
 
 
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
@@ -32,8 +30,8 @@ public class Platform extends GameObject{
 
         sprite = new Sprite(textureRegion);
         sprite.setSize(w, h);
-        sprite.setOrigin(x, y);
-        sprite.setPosition(x - w / 2, y);
+        //sprite.setOrigin(x, y);
+        //sprite.setPosition(x - w / 2, y);
 
 
         PolygonShape shape = new PolygonShape();

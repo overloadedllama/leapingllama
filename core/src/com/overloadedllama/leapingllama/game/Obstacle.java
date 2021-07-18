@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.overloadedllama.leapingllama.assetman.Assets;
@@ -26,8 +27,8 @@ public class Obstacle extends GameObject{
         super(assets.getTexture("alienOrangeFlying"), x, y, h, world, batch);
 
 
-        PolygonShape enemyShape = new PolygonShape();
-        enemyShape.setAsBox(w/2, h/2);
+        CircleShape enemyShape = new CircleShape();
+        enemyShape.setRadius(h/2);
 
         super.createBody(BodyDef.BodyType.KinematicBody, enemyShape, 20, 1f, 0f);
 
