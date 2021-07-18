@@ -2,17 +2,13 @@ package com.overloadedllama.leapingllama.screens;
 
 import android.annotation.SuppressLint;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.resources.Settings;
@@ -29,7 +25,7 @@ public class EndScreen extends MyAbstractScreen {
     private Stage endStage;
     private Table endTable;
 
-    private final Image[] starArray;
+    private Image[] starArray;
     private Label scoreLabel;
     private Skin scoreLabelSkin;
     private Skin optionButtonsSkin;
@@ -44,7 +40,6 @@ public class EndScreen extends MyAbstractScreen {
         this.totalLevelScore = totalLevelScore;
         this.win = win;
 
-        starArray = new Image[3];
     }
 
     @SuppressLint("DefaultLocale")
@@ -58,9 +53,9 @@ public class EndScreen extends MyAbstractScreen {
         scoreLabelSkin = assets.getSkin("justText");
         optionButtonsSkin = assets.getSkin("bigButton");
 
-        //System.out.printf("Total level score: %.1f --- last score: %.1f%n", totalLevelScore, lastScore);
-
         if (level > -1) {
+            starArray = new Image[3];
+
             if (!win) {
                 scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE LEVEL %d: %.1f", lastScore, level, Settings.getLevelBestScore(level)), scoreLabelSkin);
                 if (Settings.checkSetNewUserBestScore(level, lastScore)) {
@@ -69,7 +64,6 @@ public class EndScreen extends MyAbstractScreen {
                     System.out.println("SCORE: " + lastScore);
                 }
             } else {
-                Settings.updateUserMaxLevel();
                 Settings.checkSetNewUserBestScore(level, totalLevelScore);
                 scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
             }
@@ -103,6 +97,8 @@ public class EndScreen extends MyAbstractScreen {
                 }
             }
 
+            System.out.printf("Total level score: %.1f --- , last score: %.1f --- starNum: %d", totalLevelScore, lastScore, starNum);
+
             for (int i = 0; i < 3; ++i) {
                 if (i < starNum) {
                     starArray[i] = new Image(assets.getTexture("starWon"));
@@ -125,9 +121,12 @@ public class EndScreen extends MyAbstractScreen {
                 }
             }
 
-            // DATABASE OPERATION
+            // DATABASE OPERATIONS - update level star Number and,
+            // if player got at least 2 stars, unlocks next level
             if (starNum > Settings.getLevelStarNum(level))
                 Settings.setLevelStarNum(level, starNum);
+            if (starNum >= 2)
+                Settings.updateUserMaxLevel();
         }
 
         endTable.row();
@@ -154,24 +153,22 @@ public class EndScreen extends MyAbstractScreen {
         mainMenuButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
                 gameApp.setScreen(new MainMenuScreen(gameApp));
-              //  assets.unloadGameAssets();
+                //  assets.unloadGameAssets();
 
                 dispose();
 
-
-                super.clicked(event, x, y);
             }
         });
 
         retryButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
                 gameApp.setScreen(new GameScreen(gameApp, level));
                 dispose();
 
-
-                super.clicked(event, x, y);
             }
         });
 
@@ -183,22 +180,10 @@ public class EndScreen extends MyAbstractScreen {
         //ScreenUtils.clear(new Color(Color.NAVY));
         ScreenUtils.clear(0.56f, 0.72f, 0.8f, 1);
 
-
         endStage.act();
         endStage.draw();
 
         super.render(delta);
-
-        /*if (Gdx.input.isTouched() && (System.currentTimeMillis() - startTime) > 400) {
-            endStage.addAction(Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    assets.unloadGameAssets();
-                }
-            }));
-            gameApp.setScreen(new MainMenuScreen(gameApp));
-            dispose();
-        }*/
     }
 
     @Override

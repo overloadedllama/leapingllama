@@ -19,8 +19,6 @@ import android.provider.BaseColumns;
  *
  * Table Settings:
  *      user VARCHAR(20) PK REFERENCES Player
- *      music INT NOT NULL DEFAULT 0,
- *      sound INT NOT NULL DEFAULT 0,
  *      tan INT NOT NULL DEFAULT 0,
  *      t-shirt INT NOT NULL DEFAULT 0,
  *      gun INT NOT NULL DEFAULT 0,
@@ -60,8 +58,6 @@ public class LlamaDbContracts {
         public static final String TAN = "tan";
         public static final String T_SHIRT = "t_shirt";
         public static final String GUN = "gun";
-        public static final String MUSIC = "music";
-        public static final String SOUND = "sound";
         public static final String GORE = "gore";
 
     }
@@ -83,7 +79,7 @@ public class LlamaDbContracts {
     /**
      * SQL Strings referred to Levels Table
      */
-    public static final String SQL_CREATE_LEVELS =
+    public static final String SQL_LEVELS_CREATE =
             "CREATE TABLE " + Levels.TABLE_NAME + " (" +
                     Levels.USER + " VARCHAR(20) REFERENCES Player, " +
                     Levels.LEVEL + " INT NOT NULL, " +
@@ -102,8 +98,6 @@ public class LlamaDbContracts {
     public static final String SQL_SETTINGS_CREATE =
             "CREATE TABLE " + Settings.TABLE_NAME + " (" +
                     Settings.PRIMARY_KEY + " VARCHAR(20) PRIMARY KEY REFERENCES Player (user), " +
-                    Settings.MUSIC + " INT NOT NULL DEFAULT 0, " +
-                    Settings.SOUND + " INT NOT NULL DEFAULT 0, " +
                     Settings.TAN + " INT NOT NULL DEFAULT 0, " +
                     Settings.T_SHIRT + " INT NOT NULL DEFAULT 0, " +
                     Settings.GUN + " INT NOT NULL DEFAULT 0, " +

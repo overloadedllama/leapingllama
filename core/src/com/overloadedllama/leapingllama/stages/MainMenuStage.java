@@ -100,47 +100,47 @@ public class MainMenuStage extends MyAbstractStage {
         endlessMode = new TextButton("ENDLESS MODE", textButtonFieldLabelSkin);
         userButton = new TextButton("USERS", textButtonFieldLabelSkin);
         userNameLabel = new Label("", justTextSkin);
-        float padTop = 15f;
 
+        float pad = 15f;
         defaultButtonWidth = 220;
 
         // MONEY TABLE
         moneyTable.top().right();
-        moneyTable.add(moneyButton).padTop(padTop).padRight(15f); //padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f)
+        moneyTable.add(moneyButton).size(120f).padTop(pad).padRight(pad); //padLeft(GameApp.WIDTH - 240f - moneyButton.getWidth() - 30f)
         addActor(moneyTable);
 
         // USERS TABLE
         howdyTable.top().left();
-        howdyTable.add(userNameLabel).padTop(padTop).padLeft(25f);
+        howdyTable.add(userNameLabel).padTop(pad).padLeft(25f);
         addActor(howdyTable);
 
         // MAIN MENU TABLE
         mainMenuTable.add(new Image(new Texture(Gdx.files.internal("gameLogo.png")))).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(playButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(padTop).colspan(2);
+        mainMenuTable.add(playButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(pad).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(shopButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(padTop).colspan(2);
+        mainMenuTable.add(shopButton).width(defaultButtonWidth*2).height(defaultButtonHeight).padTop(pad).colspan(2);
         mainMenuTable.row();
-        mainMenuTable.add(settingsButton).width(defaultButtonWidth-padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
-        mainMenuTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).align(Align.right);
+        mainMenuTable.add(settingsButton).width(defaultButtonWidth-pad).height(defaultButtonHeight).padTop(pad).align(Align.left);
+        mainMenuTable.add(userButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(pad).align(Align.right);
         mainMenuTable.row();
-        mainMenuTable.add(creditsButton).width(defaultButtonWidth -padTop).height(defaultButtonHeight).padTop(padTop).align(Align.left);
-        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).align(Align.right);
+        mainMenuTable.add(creditsButton).width(defaultButtonWidth -pad).height(defaultButtonHeight).padTop(pad).align(Align.left);
+        mainMenuTable.add(quitButton).width(defaultButtonWidth).height(defaultButtonHeight).padTop(pad).align(Align.right);
         addActor(mainMenuTable);
 
 
         // LEVEL SCROLL TABLE AND SCROLLER
-        scrollTable.add(backButton).padTop(padTop).colspan(1).align(Align.left); //removed .size(defaultButtonWidth, defaultButtonHeight)
+        scrollTable.add(backButton).padTop(pad).colspan(1).align(Align.left); //removed .size(defaultButtonWidth, defaultButtonHeight)
         Label titleLevelChooser = new Label("LEVELS", justTextSkin);
         titleLevelChooser.setFontScale(2);
         scrollTable.add(titleLevelChooser).align(Align.right).colspan(3);
 
         scrollTable.row();
-        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(padTop).colspan(1);
+        scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(pad).colspan(1);
         scrollTable.add(new Label("BEST SCORE: " + String.valueOf(Math.round(Settings.getLevelBestScore(-1)*10)/10), justTextSkin)).colspan(3);
         for (int i = 0; i < numLevels; ++i) {
             scrollTable.row();
-            scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(padTop);
+            scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(pad);
             int starNum = Settings.getLevelStarNum(i);
             for (int j = 0; j < 3; ++j) {
                 Image star;
@@ -166,7 +166,7 @@ public class MainMenuStage extends MyAbstractStage {
         userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
         userTextField.setAlignment(Align.center);
         chooseUserTable.top();
-        chooseUserTable.add(backButton1).padTop(padTop).align(Align.left);  //removed size(100f, defaultButtonHeight).colspan(2).
+        chooseUserTable.add(backButton1).padTop(pad).align(Align.left);
 
         Label titleUserChooser = new Label("USERS", justTextSkin);
         titleUserChooser.setFontScale(2);

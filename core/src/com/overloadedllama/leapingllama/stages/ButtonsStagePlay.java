@@ -131,7 +131,7 @@ public class ButtonsStagePlay extends MyAbstractStage {
 
         // TextButtons,
         buttonPlay = new TextButton("RESUME", buttonSkin);
-        buttonSaveExit = new TextButton("SAVE AND EXIT", buttonSkin);
+        buttonSaveExit = new TextButton("EXIT", buttonSkin);
 
         // Labels
         labelDistance = new Label("", justTextSkin);

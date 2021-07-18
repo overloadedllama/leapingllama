@@ -32,9 +32,6 @@ public class CreditScreen extends MyAbstractScreen{
 
     public CreditScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
-
-
-
     }
 
 
@@ -112,8 +109,6 @@ public class CreditScreen extends MyAbstractScreen{
     @Override
     public void render(float delta) {
 
-
-
         camera.update();
         gameApp.batch.setProjectionMatrix(camera.combined);
 
@@ -121,14 +116,10 @@ public class CreditScreen extends MyAbstractScreen{
         sky.draw(batch, viewport.getWorldWidth(), viewport.getWorldHeight());
         batch.end();
 
-
         stage.act();
         stage.draw();
 
-
         sky.update();
-
-
 
     }
 

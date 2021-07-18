@@ -2,7 +2,6 @@ package com.overloadedllama.leapingllama.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -10,12 +9,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 
-import java.util.Set;
 
 public class SettingScreen extends MyAbstractScreen {
 
@@ -42,7 +40,6 @@ public class SettingScreen extends MyAbstractScreen {
     Sky sky;
     Batch batch;
 
-
     public SettingScreen(GameApp gameApp) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
     }
@@ -53,7 +50,7 @@ public class SettingScreen extends MyAbstractScreen {
         sky = new Sky(assets.getTexture("sky"));
         batch = new SpriteBatch();
 
-        settingsStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        settingsStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         settingTable = new Table();
         backButtonTable = new Table();
 
@@ -70,18 +67,18 @@ public class SettingScreen extends MyAbstractScreen {
         backButton.setDisabled(false);
 
         // adding items to settingTable and backButtonTable and them to settingsStage
-        float w = 300f, h = 120f, padTop = 15f;
+        float w = 300f, h = 120f, pad = 15f;
         settingTable.add(musicButton).width(w).height(h);
         settingTable.row();
-        settingTable.add(soundButton).width(w).height(h).padTop(padTop);
+        settingTable.add(soundButton).width(w).height(h).padTop(pad);
         settingTable.row();
-        settingTable.add(lxDxButton).width(w).height(h).pad(padTop);
+        settingTable.add(lxDxButton).width(w).height(h).pad(pad);
         settingTable.row();
-        settingTable.add(goreButton).width(w).height(h).padTop(padTop);
+        settingTable.add(goreButton).width(w).height(h).padTop(pad);
         settingsStage.addActor(settingTable);
 
         backButtonTable.top().left();
-        backButtonTable.add(backButton).width(h).height(h).padLeft(15f).padTop(15f);
+        backButtonTable.add(backButton).width(h).height(h).padLeft(pad).padTop(pad);
         settingsStage.addActor(backButtonTable);
 
         Gdx.input.setInputProcessor(settingsStage);
@@ -98,11 +95,11 @@ public class SettingScreen extends MyAbstractScreen {
             public void clicked(InputEvent event, float x, float y) {
                 if (Settings.isMUSIC()) {
                     Settings.setMUSIC(false);
-                    Settings.stopMusic("mainMenuMusic");
+                    Settings.stopMusic(MAIN_MENU_MUSIC);
                     musicButton.getLabel().setText("MUSIC: " + OFF);
                 } else {
                     Settings.setMUSIC(true);
-                    Settings.playMusic("mainMenuMusic");
+                    Settings.playMusic(MAIN_MENU_MUSIC);
                     musicButton.getLabel().setText("MUSIC: " + ON);
                 }
             }
@@ -143,10 +140,10 @@ public class SettingScreen extends MyAbstractScreen {
                 super.clicked(event, x, y);
                 if (Settings.isGORE()) {
                     Settings.setGORE(false);
-                    goreButton.setText("GORE: OFF");
+                    goreButton.setText("GORE: " + OFF);
                 } else {
                     Settings.setGORE(true);
-                    goreButton.setText("GORE: ON");
+                    goreButton.setText("GORE: " + ON);
                 }
             }
         });

@@ -43,13 +43,10 @@ public class ShopScreen extends MyAbstractScreen {
     private Button nextItem;
     private TextButton buyButton;
 
-
     // Labels
     private Label userMoneyText;
     private Label itemCost;
     private Label itemTitle;
-
-
 
     // Skins
     private Skin backButtonSkin;
@@ -109,27 +106,23 @@ public class ShopScreen extends MyAbstractScreen {
 
 
         float pad = 15f;
-        float itemHeight = 140f;
-        float itemWidth = 140f;
+        float size = 120f;
 
         upperTable.top().left();
-        upperTable.add(backButton).size(itemWidth, itemHeight).padLeft(pad);
-        upperTable.add(userMoneyText).size(itemWidth, itemHeight).padLeft(GameApp.WIDTH - itemWidth * 2 - pad * 2);
+        upperTable.add(backButton).size(size).padLeft(pad).padTop(pad);
+        upperTable.add(userMoneyText).size(size).padLeft(GameApp.WIDTH - size * 2 - pad * 2).padTop(pad);
         shopStage.addActor(upperTable);
 
         itemListTable.center();
         itemListTable.add(itemTitle).colspan(3).padBottom(pad);
         itemListTable.row();
-        itemListTable.add(previousItem).size(100).padRight(15f);
-        itemListTable.add(image).width(400f).height(400f);
-        itemListTable.add(nextItem).size(100).padLeft(15f);
+        itemListTable.add(previousItem).size(100).padRight(pad);
+        itemListTable.add(image).size(400f);
+        itemListTable.add(nextItem).size(100).padLeft(pad);
         itemListTable.row();
-        itemListTable.add(itemCost).colspan(3).padTop(15f);
+        itemListTable.add(itemCost).colspan(3).padTop(pad);
         itemListTable.row();
-        itemListTable.add(buyButton).colspan(3).width(200f).height(120f).padTop(15f);
-
-
-
+        itemListTable.add(buyButton).colspan(3).width(200f).height(120f).padTop(pad);
 
         shopStage.addActor(itemListTable);
 
@@ -199,27 +192,25 @@ public class ShopScreen extends MyAbstractScreen {
         itemCost.setText("ITEM COST: " + itemValue);
         itemTitle.setText(shopItems[i].getName());
 
-
-
         if (shopItems[i].getId().equals(BONUS_AMMO)) {
-            if(Settings.hasBonusAmmo()){
+            if (Settings.hasBonusAmmo()) {
                 buyButton.setDisabled(true);
                 buyButton.setText("BOUGHT!");
-            }else{
+            } else {
                 buyButton.setDisabled(false);
                 buyButton.setText("BUY!");
             }
         } else if (shopItems[i].getId().equals(BONUS_LIFE)) {
-            if(Settings.hasBonusLife()){
+            if (Settings.hasBonusLife()) {
                 buyButton.setDisabled(true);
                 buyButton.setText("BOUGHT!");
-            }else{
+            } else {
                 buyButton.setDisabled(false);
                 buyButton.setText("BUY!");
             }
         }
 
-        if(Settings.getUserMoney() < itemValue){
+        if (Settings.getUserMoney() < itemValue) {
             buyButton.setDisabled(true);
             buyButton.setText("U R 2 POOR");
         }
