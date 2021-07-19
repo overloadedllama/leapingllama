@@ -72,7 +72,7 @@ public class SettingScreen extends MyAbstractScreen {
         settingTable.row();
         settingTable.add(soundButton).width(w).height(h).padTop(pad);
         settingTable.row();
-        settingTable.add(lxDxButton).width(w).height(h).pad(pad);
+        settingTable.add(lxDxButton).width(w).height(h).padTop(pad);
         settingTable.row();
         settingTable.add(goreButton).width(w).height(h).padTop(pad);
         settingsStage.addActor(settingTable);

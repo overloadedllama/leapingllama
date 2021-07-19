@@ -88,34 +88,32 @@ public class LevelCreator {
 
         //randomization of platform I
         distance = 0;
-        while (distance<distanceMax){
+        while (distance < distanceMax) {
             //space
             random = new Random();
             distanceTmp = 10 + random.nextInt(10);
-            distance+=distanceTmp;
-            for (int d = 0; d<distanceTmp; d++) {
+            distance += distanceTmp;
+            for (int d = 0; d < distanceTmp; d++) {
                 platformsI.add(Boolean.FALSE);
             }
 
             //length
             random = new Random();
             distanceTmp = 2 + random.nextInt(4);
-            distance+=distanceTmp;
-            for ( d = 0; d<distanceTmp; d++) {
+            distance += distanceTmp;
+            for (d = 0; d < distanceTmp; d++) {
                 platformsI.add(Boolean.TRUE);
             }
-
         }
 
         //checking that platform starts at at least 10 m
-        for ( d = 0; d<10; d++){
+        for (d = 0; d < 10; d++) {
             platformsI.set(d, false);
         }
 
-
         //randomization of platform II
         distance = 0;
-        while (distance<distanceMax){
+        while (distance<distanceMax) {
             //space
             distanceTmp = 50 + random.nextInt(50);
             distance+=distanceTmp;
@@ -170,7 +168,7 @@ public class LevelCreator {
 
         //checking that there's ground where there isn't any platform 1
 
-        for (d= 0; d<distanceMax; d++){
+        for (d = 0; d < distanceMax; d++) {
             if (!platformsI.get(d)){
                 grounds.set(d, Boolean.TRUE);
             }
@@ -182,7 +180,7 @@ public class LevelCreator {
 
 
         for ( d = 0; d<distanceMax; d++){
-            if (random.nextDouble()>1-difficulty){
+            if (random.nextDouble() > 1 - difficulty){
                 enemies.add(true);
             }
             else
@@ -210,7 +208,6 @@ public class LevelCreator {
             }
             else
                 obstacles.add(false);
-
         }
 
         //checking that obstacle starts at at least 15 m
@@ -255,11 +252,11 @@ public class LevelCreator {
         }
 
 
-        System.out.println(level);
+        //System.out.println(level);
         //System.out.println(enemies);
-        System.out.println(platformsI);
+        //System.out.println(platformsI);
 
-        System.out.println(grounds);
+        //System.out.println(grounds);
         //System.out.println(platformsII);
 
         parsing(level, distanceMax);
@@ -289,7 +286,7 @@ public class LevelCreator {
         double position = distance;
         boolean isEmpty = false;
 
-        while (distance<distanceMax){
+        //while (distance<distanceMax){
 
 /*
             if(!isEmpty){
@@ -322,34 +319,59 @@ public class LevelCreator {
 */
  /* todo  delete this old algorithm (only if the new works perfectly)
  */
+        /*
             while (!booleans.get(distance) && distance < distanceMax) {
 
                 distance++;
 
-                if(distance +1 == distanceMax)
+                if (distance + 1 == distanceMax)
                     break;
-            }
+            }*/
 
 
-            positions.add((double) distance);
+        //positions.add((double) distance);
 
 
-
+            /*
             while (booleans.get(distance) && distance < distanceMax) {
                 distance++;
                 counter++;
 
                 if(distance +1 == distanceMax)
                     break;
+            } */
+
+
+        for (int d = 0; d < distanceMax - 1; ++d) {
+            counter = 0;
+
+            if (!booleans.get(d) && booleans.get(d + 1)) {
+                ++d;
+                positions.add((double) d);
+                while (d < distanceMax && booleans.get(d)) {
+                    ++d;
+                    ++counter;
+                }
+                lengths.add(counter);
+
+            } else if (d == 0 && booleans.get(d)) {
+                positions.add((double) d);
+                while (booleans.get(d) && d < distanceMax) {
+                    ++d;
+                    ++counter;
+                }
+                lengths.add(counter);
+
             }
+        }
 
-            lengths.add(counter);
-
+/*
             if(distance +1 == distanceMax)
                 break;
+        }*/
 
-/* */
-        }
+        System.out.println("positions: " + positions);
+        System.out.println("lengths: " + lengths);
 
     }
 

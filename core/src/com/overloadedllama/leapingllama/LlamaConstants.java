@@ -2,6 +2,8 @@ package com.overloadedllama.leapingllama;
 
 public interface LlamaConstants {
 
+    int MAX_LEVEL = 5;
+
     String LLAMA = "llama";
 
     String LEVEL_LENGTH = "levelLength";

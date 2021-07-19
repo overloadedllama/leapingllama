@@ -44,7 +44,7 @@ public class GameScreen extends MyAbstractScreen {
     static  ArrayList<Coin> coins;
     static ArrayList<Ammo> ammos;
 
-    Box2DDebugRenderer debugRenderer;
+
     static final int CHUNK_LENGTH = 100;
     static final float STEP_TIME = 1.0f / 60.0f;
     static final int VELOCITY_ITERATIONS = 6;
@@ -83,6 +83,8 @@ public class GameScreen extends MyAbstractScreen {
     Tube tube;
 
     Sky sky;
+
+    Box2DDebugRenderer debugRenderer;
 
     boolean levelLoaded = true;
 
@@ -329,24 +331,21 @@ public class GameScreen extends MyAbstractScreen {
      */
     private void loadLevel(double distance) {
 
-
         if (distance <= 0.01 + METER_WIDTH && !levelLoaded) {
+            start = false;
             levelLoaded = true;
             difficulty += 0.005f;
             levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
             queue.addAll(levelParser.getQueue());
-            System.out.println("Added elements to the queue");
+            //System.out.println("Added elements to the queue");
         } else if (distance > 0.01 + METER_WIDTH) {
             levelLoaded = false;
         }
-
-
 
         while(true) {
             QueueObject queueObject = queue.peek();
             if (queueObject == null)
                 return;
-
 
             if (queueObject.getX() - queueObject.getLength() / 2 < distance + METER_WIDTH) {
                 queueObject = queue.poll();
@@ -357,12 +356,12 @@ public class GameScreen extends MyAbstractScreen {
                 float lCreation;
                 if (queueObject.getX() < METER_WIDTH) {
                     if (start) {
-                        start = false;
-                        System.out.println("queue object X: " + queueObject.getX());
+                        //System.out.println("queue object X: " + queueObject.getX());
                         xCreation = (float) queueObject.getX();
                         lCreation = (float) (queueObject.getLength() + METER_WIDTH - queueObject.getX());
                     } else {
-                        return;
+                        xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
+                        lCreation = (float) queueObject.getLength();
                     }
                 } else {
                     xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
@@ -394,8 +393,11 @@ public class GameScreen extends MyAbstractScreen {
                             yCreation = 4.2F;
                         }
                         obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity * 2, world, gameApp.batch, assets));
+                        break;
+                    default:
+                        // throws an exception or something else?
                 }
-            }else {
+            } else {
                 break;
             }
         }
@@ -448,6 +450,10 @@ public class GameScreen extends MyAbstractScreen {
 
     }
 
+    /**
+     * Removes all the GameObjects that are destroyable. First checks that llama
+     * is not out of bounds (if is not felt out of ground mainly), next all the others.
+     */
     private void removeObjects() {
         if (isOutOfBonds(llama))
             gameOver();
@@ -546,7 +552,7 @@ public class GameScreen extends MyAbstractScreen {
 
         if (go instanceof Enemy || go instanceof Bullet || go instanceof Ammo || go instanceof Coin) {
             return go.getBody().getPosition().x < -viewport.getWorldWidth() ||
-                    go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
+                    //go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
                     go.getBody().getPosition().y < 0;
         } else if (go instanceof Platform || go instanceof Ground) {
             //return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
@@ -573,7 +579,7 @@ public class GameScreen extends MyAbstractScreen {
 
     /**
      * if the player has bought the second life when he dies (enemy/obstacle collision, falling out of ground...)
-     * all the enemies are destroyed and the llama restarts at y = 6 (does it work fine?)
+     * all the enemies are destroyed
      */
     public void gameOver() {
         if (!Settings.hasBonusLife()) {

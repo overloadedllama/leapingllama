@@ -202,6 +202,13 @@ public class LevelParser implements LlamaConstants {
         obstacles = levelCreator.getListObstacles();
         ammos = levelCreator.getListAmmo();
 
+        System.out.println("Grounds X: " + grounds);
+        System.out.println("Grounds Length: " + groundsLen);
+
+        System.out.println("PlatformI X: " + platforms);
+        System.out.println("PlatformI Length: " + platformsLen);
+
+
         coinsNum = new ArrayList<>();
         ammoNum  = new ArrayList<>();
 

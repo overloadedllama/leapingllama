@@ -1,6 +1,7 @@
 package com.overloadedllama.leapingllama.screens;
 
 import android.annotation.SuppressLint;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -30,7 +31,7 @@ public class EndScreen extends MyAbstractScreen {
     private Skin scoreLabelSkin;
     private Skin optionButtonsSkin;
 
-    TextButton mainMenuButton, retryButton;
+    TextButton mainMenuButton, retryButton, nextLevelButton;
 
 
     public EndScreen(final GameApp gameApp, int level, double lastScore, double totalLevelScore, boolean win) {
@@ -121,12 +122,19 @@ public class EndScreen extends MyAbstractScreen {
                 }
             }
 
-            // DATABASE OPERATIONS - update level star Number and,
-            // if player got at least 2 stars, unlocks next level
-            if (starNum > Settings.getLevelStarNum(level))
-                Settings.setLevelStarNum(level, starNum);
-            if (starNum >= 2)
-                Settings.updateUserMaxLevel();
+            // DB multiple operations on different thread
+            endStage.addAction(Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    // DATABASE OPERATIONS - update level star Number and,
+                    // if player got at least 2 stars, unlocks next level
+                    if (starNum > Settings.getLevelStarNum(level))
+                        Settings.setLevelStarNum(level, starNum);
+                    if (starNum >= 2)
+                        Settings.updateUserMaxLevel();
+                }
+            }));
+
         }
 
         endTable.row();
@@ -137,10 +145,16 @@ public class EndScreen extends MyAbstractScreen {
 
         mainMenuButton = new TextButton("MAIN MENU", optionButtonsSkin);
         retryButton = new TextButton("RETRY", optionButtonsSkin);
+        if (win && level < MAX_LEVEL) {
+            nextLevelButton = new TextButton("NEXT LEVEL", optionButtonsSkin);
+        }
 
         Table buttonTable = new Table();
         buttonTable.add(mainMenuButton);
         buttonTable.add(retryButton).padLeft(5);
+        if (win) {
+            buttonTable.add(nextLevelButton).padLeft(5f);
+        }
 
         endTable.add(buttonTable).colspan(3);
 
@@ -154,8 +168,9 @@ public class EndScreen extends MyAbstractScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                gameApp.setScreen(new MainMenuScreen(gameApp));
-                //  assets.unloadGameAssets();
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
+                // gameApp.setScreen(new MainMenuScreen(gameApp));
+                // assets.unloadGameAssets();
 
                 dispose();
 
@@ -166,24 +181,33 @@ public class EndScreen extends MyAbstractScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                gameApp.setScreen(new GameScreen(gameApp, level));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, level));
+                //gameApp.setScreen(new GameScreen(gameApp, level));
                 dispose();
 
             }
         });
 
-
+        if (nextLevelButton != null) {
+            nextLevelButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    super.clicked(event, x, y);
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, level + 1));
+                }
+            });
+        }
     }
 
     @Override
     public void render(float delta) {
+        super.render(delta);
         //ScreenUtils.clear(new Color(Color.NAVY));
         ScreenUtils.clear(0.56f, 0.72f, 0.8f, 1);
 
         endStage.act();
         endStage.draw();
 
-        super.render(delta);
     }
 
     @Override
