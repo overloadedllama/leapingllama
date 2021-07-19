@@ -150,7 +150,7 @@ public class LevelCreator {
         distance = 0;
         while (distance<distanceMax){
             //space
-            distanceTmp = 5+random.nextInt(10);
+            distanceTmp =  5+random.nextInt(10);
             distance+=distanceTmp;
             for ( d = 0; d<distanceTmp; d++) {
                 grounds.add(Boolean.FALSE);
@@ -286,10 +286,10 @@ public class LevelCreator {
         double position = distance;
         boolean isEmpty = false;
 
-        //while (distance<distanceMax){
+        while (distance<distanceMax) {
 
-/*
-            if(!isEmpty){
+
+         /*  if(!isEmpty){
                 if (booleans.get(distance)){
                     counter++;
                 }else{
@@ -316,32 +316,37 @@ public class LevelCreator {
 
             }
             distance++;
-*/
- /* todo  delete this old algorithm (only if the new works perfectly)
- */
-        /*
-            while (!booleans.get(distance) && distance < distanceMax) {
 
-                distance++;
 
-                if (distance + 1 == distanceMax)
+          */
+            /* todo  delete this old algorithm (only if the new works perfectly)
+             */
+
+            while (distance < distanceMax) {
+                if (!booleans.get(distance) ) {
+                    distance++;
+                }else
                     break;
-            }*/
+            }
 
 
-        //positions.add((double) distance);
+            positions.add((double) distance);
 
 
-            /*
-            while (booleans.get(distance) && distance < distanceMax) {
-                distance++;
-                counter++;
 
-                if(distance +1 == distanceMax)
+            counter=0;
+            while (distance < distanceMax) {
+
+                if (booleans.get(distance)) {
+                    distance++;
+                    counter++;
+                }else
                     break;
-            } */
+            }
 
 
+            lengths.add(counter);
+/*
         for (int d = 0; d < distanceMax - 1; ++d) {
             counter = 0;
 
@@ -363,15 +368,16 @@ public class LevelCreator {
                 lengths.add(counter);
 
             }
-        }
+        }*/
 
 /*
             if(distance +1 == distanceMax)
                 break;
         }*/
 
-        System.out.println("positions: " + positions);
-        System.out.println("lengths: " + lengths);
+        }
+        //System.out.println("positions: " + positions);
+       // System.out.println("lengths: " + lengths);
 
     }
 

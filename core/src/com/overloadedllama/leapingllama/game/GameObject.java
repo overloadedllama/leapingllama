@@ -69,7 +69,7 @@ public class GameObject implements LlamaConstants {
 
         sprite = new Sprite(this.texture);
         sprite.setSize(w, h);
-        sprite.setOriginCenter();
+       // sprite.setOriginCenter();
         sprite.rotate90(true);
         setPosition(x,y, 0);
     }

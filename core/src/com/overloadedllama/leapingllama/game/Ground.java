@@ -24,7 +24,7 @@ public class Ground extends GameObject{
 
         sprite = new Sprite(textureRegion);
         sprite.setSize(w, h);
-
+        sprite.setPosition(x-w/2, y-w/2);
 
         PolygonShape shape = new PolygonShape();
 

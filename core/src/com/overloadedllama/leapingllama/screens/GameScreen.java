@@ -125,7 +125,7 @@ public class GameScreen extends MyAbstractScreen {
         world = new World(new Vector2(0f, -9.8f), true);
         world.setContactListener(new MyContactListener(this));
 
-        distance = llamaX;
+        distance = 0;
         llama = new Llama(llamaX, 1f, llamaH, world, gameApp.batch, assets);
         tube = new Tube(llamaX, 1f, llamaH);
 
@@ -174,7 +174,7 @@ public class GameScreen extends MyAbstractScreen {
 
                 updatePosition();
                 removeObjects();
-                loadLevel(distance % levelLength);
+                loadLevel(distance%CHUNK_LENGTH);
                 llama.preserveX(llamaX);
                 
                 break;
@@ -331,80 +331,50 @@ public class GameScreen extends MyAbstractScreen {
      */
     private void loadLevel(double distance) {
 
-        double loadLevelDistance = distance + METER_WIDTH;
 
-        if (loadLevelDistance <= 0.01 + METER_WIDTH && !levelLoaded) {
-            start = false;
+
+        if (distance <= 0.1 && !levelLoaded) {
             levelLoaded = true;
-            difficulty += 0.005f;
             levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
             queue.addAll(levelParser.getQueue());
-            //System.out.println("Added elements to the queue");
-        } else if (loadLevelDistance > 0.01 + METER_WIDTH) {
+        } else if (distance > 0.1) {
             levelLoaded = false;
         }
 
-        while(true) {
-            QueueObject queueObject = queue.peek();
+        QueueObject queueObject = queue.peek();
+        if (queueObject == null)
+            return;
+
+        if (queueObject.getX() < distance+METER_WIDTH) {
+            queueObject = queue.poll();
             if (queueObject == null)
                 return;
 
-            //if (queueObject.getX() - queueObject.getLength() / 2 < distance + METER_WIDTH || queueObject.getX()<METER_WIDTH) {
-            if (queueObject.getX() < loadLevelDistance) {
-                queueObject = queue.poll();
-                if (queueObject == null)
-                    return;
-
-                float xCreation;
-                float lCreation;
-               /*  if (queueObject.getX() < METER_WIDTH) {
-                   if (start) {
-                        System.out.println("queue object \""+queueObject.getClassObject()+"\" X: " + queueObject.getX());
-                        xCreation = (float) queueObject.getX();
-                        lCreation = (float) (queueObject.getLength() + METER_WIDTH - queueObject.getX());
-                    } else {
-                        xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
-                        lCreation = (float) queueObject.getLength();
-                    }
-                } else {*/
-                    xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
-                    lCreation = (float) queueObject.getLength();
-                //}
-                switch (queueObject.getClassObject()) {
-                    case GROUND:
-                        grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets));
-                        break;
-                    case PLATFORM1:
-                        platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets));
-                        break;
-                    case PLATFORM2:
-                        platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets));
-                        break;
-                    case ENEMIES:
-                        enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets));
-                        break;
-                    case AMMO:
-                        ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi));
-                        break;
-                    case COINS:
-                        coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi));
-                        break;
-                    case OBSTACLES:
-                        float yCreation = 1.7F;
-                        Random random = new Random();
-                        if (random.nextFloat() < 0.4) {
-                            yCreation = 4.2F;
-                        }
-                        obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity * 2, world, gameApp.batch, assets));
-                        break;
-                    default:
-                        // throws an exception or something else?
-                }
+            float xCreation;
+            float lCreation;
+            if (queueObject.getX() < METER_WIDTH) {
+                xCreation = (float) queueObject.getX();
+                lCreation = (float) (queueObject.getLength() + METER_WIDTH- queueObject.getX());
             } else {
-                break;
+                xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
+                lCreation = (float) queueObject.getLength();
+            }
+            switch (queueObject.getClassObject()) {
+                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets)); break;
+                case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
+                case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
+                case OBSTACLES:
+                    float yCreation = 1.7F;
+                    Random random = new Random();
+                    if (random.nextFloat()<0.4){
+                        yCreation = 4.2F;
+                    }
+                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, gameApp.batch, assets));
             }
         }
-
     }
 
     private void updatePosition() {
@@ -559,6 +529,7 @@ public class GameScreen extends MyAbstractScreen {
                     go.getBody().getPosition().y < 0;
         } else if (go instanceof Platform || go instanceof Ground) {
             //return go.getBody().getPosition().x + go.getW() < -viewport.getWorldWidth();
+            return false;
         } else if (go instanceof Llama) {
             return go.getY() < 0;
         }
