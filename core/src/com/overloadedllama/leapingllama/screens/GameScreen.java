@@ -331,14 +331,16 @@ public class GameScreen extends MyAbstractScreen {
      */
     private void loadLevel(double distance) {
 
-        if (distance <= 0.01 + METER_WIDTH && !levelLoaded) {
+        double loadLevelDistance = distance + METER_WIDTH;
+
+        if (loadLevelDistance <= 0.01 + METER_WIDTH && !levelLoaded) {
             start = false;
             levelLoaded = true;
             difficulty += 0.005f;
             levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
             queue.addAll(levelParser.getQueue());
             //System.out.println("Added elements to the queue");
-        } else if (distance > 0.01 + METER_WIDTH) {
+        } else if (loadLevelDistance > 0.01 + METER_WIDTH) {
             levelLoaded = false;
         }
 
@@ -347,26 +349,27 @@ public class GameScreen extends MyAbstractScreen {
             if (queueObject == null)
                 return;
 
-            if (queueObject.getX() - queueObject.getLength() / 2 < distance + METER_WIDTH) {
+            //if (queueObject.getX() - queueObject.getLength() / 2 < distance + METER_WIDTH || queueObject.getX()<METER_WIDTH) {
+            if (queueObject.getX() < loadLevelDistance) {
                 queueObject = queue.poll();
                 if (queueObject == null)
                     return;
 
                 float xCreation;
                 float lCreation;
-                if (queueObject.getX() < METER_WIDTH) {
-                    if (start) {
-                        //System.out.println("queue object X: " + queueObject.getX());
+               /*  if (queueObject.getX() < METER_WIDTH) {
+                   if (start) {
+                        System.out.println("queue object \""+queueObject.getClassObject()+"\" X: " + queueObject.getX());
                         xCreation = (float) queueObject.getX();
                         lCreation = (float) (queueObject.getLength() + METER_WIDTH - queueObject.getX());
                     } else {
                         xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
                         lCreation = (float) queueObject.getLength();
                     }
-                } else {
-                    xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
+                } else {*/
+                    xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
                     lCreation = (float) queueObject.getLength();
-                }
+                //}
                 switch (queueObject.getClassObject()) {
                     case GROUND:
                         grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets));
