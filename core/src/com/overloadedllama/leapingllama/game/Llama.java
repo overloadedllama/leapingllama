@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -8,13 +7,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
 import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.resources.BodyEditorLoader;
 
 public class Llama extends GameObject {
 
     private static final int FRAME_COLS = 4, FRAME_ROWS = 1;
-
-    private BodyEditorLoader loader;
 
     boolean isStanding;
     boolean isJumping = false;
@@ -26,28 +22,12 @@ public class Llama extends GameObject {
 
     public Llama(float x, float y, float h, World world, Batch batch, Assets assets) {
         super(assets.getTexture("llamaStanding"), x, y, h, world, batch);
-
         this.assets = assets;
 
         PolygonShape llamaShape = new PolygonShape();
         llamaShape.setAsBox(w / 2, h / 2);
         super.createBody(BodyDef.BodyType.DynamicBody, llamaShape, 1500, 0.05f, 0);
         llamaShape.dispose();
-
-        /*
-        BodyDef llamaBodyDef = new BodyDef();
-        llamaBodyDef.type = BodyDef.BodyType.DynamicBody;
-        llamaBodyDef.position.set(x, y);
-        body = world.createBody(llamaBodyDef);
-        loader = new BodyEditorLoader(Gdx.files.internal("llama/llamaStandingBody.json"));
-        fixtureDef = new FixtureDef();
-        fixtureDef.density = 1500f;
-        fixtureDef.friction = 0.05f;
-        fixtureDef.restitution = 0;
-        fixtureDef.filter.categoryBits = CATEGORY_LLAMA;
-        fixtureDef.filter.maskBits = MASK_LLAMA;
-        loader.attachFixture(body, "llamaStandingBody", fixtureDef, 1);
-         */
 
         isStanding = true;
 
@@ -136,11 +116,9 @@ public class Llama extends GameObject {
 
         this.body.destroyFixture(this.getBody().getFixtureList().first());
         newFixtureDef.shape = shape;
-
         body.createFixture(newFixtureDef).setUserData(this);
 
         shape.dispose();
-
         sprite.setPosition(x, y);
     }
 
@@ -148,21 +126,15 @@ public class Llama extends GameObject {
     public void setStanding(boolean value) { isStanding = value; }
 
     public boolean isPunching() { return isPunching; }
-    public void setPunching(boolean isPunching) { this.isPunching = isPunching; }
 
     public void preserveX(float llamaX) {
         body.setTransform(llamaX, body.getPosition().y, 0);
     }
 
     public void draw(float stateTime){
-
-
         if (isPunching || isCrouching ){
-
             draw();
         } else {
-
-
             TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             sprite = new Sprite(currentFrame);
 
@@ -170,7 +142,6 @@ public class Llama extends GameObject {
 
             sprite.setSize(w, h);
             sprite.setPosition(x - w / 2, y - h / 2);
-
             sprite.draw(batch);
         }
     }

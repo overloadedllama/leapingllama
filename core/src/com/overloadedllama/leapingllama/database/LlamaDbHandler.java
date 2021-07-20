@@ -5,14 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-
-
-/**
- * some ideas: inserting data/time of user's best score,
- *
- * REMAP ALL WITH SWITCH-CASE
- *
- */
+import android.database.sqlite.SQLiteException;
 
 public class LlamaDbHandler {
 
@@ -29,9 +22,11 @@ public class LlamaDbHandler {
 
     }
 
+    // PLAYER OPERATIONS
+
     /**
-     * inserts a new user, both in Player and Level tables
-     * Firs checks that the user not exists yet, and in case the function creates it
+     * insert a new user, with relative entries in Player, Setting and Levels tables
+     * Firs check that the user does not exists yet
      * @param user the user to create
      */
     public void insertNewUser(String user) {
@@ -107,27 +102,7 @@ public class LlamaDbHandler {
         return userBasic;
     }
 
-    public double getLevelBestScore(String user, int level) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        if (level < -1 || level > 5)
-            throw new IllegalArgumentException("Level " + level + " doesn't exists.");
-
-        String query =
-                        "SELECT " + LlamaDbContracts.Levels.SCORE +
-                        " FROM " + LlamaDbContracts.Levels.TABLE_NAME +
-                        " WHERE " + LlamaDbContracts.Levels.USER + " = ? " +
-                        " AND " + LlamaDbContracts.Levels.LEVEL + " = ?";
-
-        Cursor cursor = db.rawQuery(
-                query,
-                new String[]{user, String.valueOf(level)}
-        );
-
-        cursor.moveToFirst();
-        double score = cursor.getDouble(0);
-        cursor.close();
-        return score;
-    }
+    // LEVEL OPERATIONS
 
     public int getLevelStarNum(String user, int level) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -168,12 +143,42 @@ public class LlamaDbHandler {
         );
 
         if (count != 1) {
-            throw new SQLException("Update Star Num failed");
+            throw new SQLiteException("Update Star Num failed");
         }
 
     }
 
-    // check and set (eventually) the new user's best score
+    public double getLevelBestScore(String user, int level) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        if (level < -1 || level > 5)
+            throw new IllegalArgumentException("Level " + level + " doesn't exists.");
+
+        String query =
+                "SELECT " + LlamaDbContracts.Levels.SCORE +
+                        " FROM " + LlamaDbContracts.Levels.TABLE_NAME +
+                        " WHERE " + LlamaDbContracts.Levels.USER + " = ? " +
+                        " AND " + LlamaDbContracts.Levels.LEVEL + " = ?";
+
+        Cursor cursor = db.rawQuery(
+                query,
+                new String[]{user, String.valueOf(level)}
+        );
+
+        cursor.moveToFirst();
+        double score = cursor.getDouble(0);
+        cursor.close();
+        return score;
+    }
+
+    /**
+     * Check if the the last game score of a certain level is better than the current best score,
+     * in that case update it.
+     *
+     * @param user the player who made the score
+     * @param level the level relative of the last game
+     * @param score the last game score
+     * @return true if the last level score is grater than the best score of the same level, false otherwise
+     */
     public boolean checkSetNewUserBestScore(String user, int level, double score) {
         if (level < -1 || level > 5)
             throw new IllegalArgumentException("Level " + level + " doesn't exist");
@@ -244,7 +249,9 @@ public class LlamaDbHandler {
         }
     }
 
-    // set the new user level, which is the previous increased by 1
+    /**
+     * Set the max level the player can play
+     */
     public void setUserMaxLevel(String user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -257,36 +264,6 @@ public class LlamaDbHandler {
         db.update(
                 LlamaDbContracts.Player.TABLE_NAME,
                 nextLevel, selection, selectionArgs
-        );
-    }
-
-    // resets all the progresses (money earned, levels, guns unlocked...) of the user
-    public void resetProgresses(String user) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues resetPlayer = new ContentValues();
-        resetPlayer.put(LlamaDbContracts.Player.MAX_LEVEL, 0);
-        resetPlayer.put(LlamaDbContracts.Player.MONEY, 0);
-
-        ContentValues resetSetting = new ContentValues();
-        resetSetting.put(LlamaDbContracts.Settings.TAN, 0);
-        resetSetting.put(LlamaDbContracts.Settings.T_SHIRT, 0);
-        resetSetting.put(LlamaDbContracts.Settings.GUN, 0);
-
-        String selPlayer = LlamaDbContracts.Player.PRIMARY_KEY + " LIKE ?";
-        String[] selPlayerArgs = { user };
-
-        String selSettings = LlamaDbContracts.Settings.PRIMARY_KEY + " LIKE ?";
-        String[] selSettingsArgs = { user };
-
-        db.update(
-                LlamaDbContracts.Player.TABLE_NAME,
-                resetPlayer, selPlayer, selPlayerArgs
-        );
-
-        db.update(
-                LlamaDbContracts.Settings.TABLE_NAME,
-                resetSetting, selSettings, selSettingsArgs
         );
     }
 

@@ -45,13 +45,10 @@ public class GameObject implements LlamaConstants {
         this.h = h;
         this.w = h;
 
-
         this.world = world;
         this.batch = batch;
 
-
         destroyable = false;
-
 
     }
 
@@ -140,20 +137,6 @@ public class GameObject implements LlamaConstants {
         this.h = h;
     }
 
-    public Sprite getSprite() {
-        return sprite;
-    }
-    public void setSprite(Sprite sprite) {
-        this.sprite = sprite;
-    }
-
-    public Body getBody() {
-        return body;
-    }
-    public void setBody(Body body) {
-        this.body = body;
-    }
-
     public boolean isDestroyable() { return destroyable; }
     public void setDestroyable(boolean destroyable) { this.destroyable = destroyable; }
 
@@ -171,5 +154,8 @@ public class GameObject implements LlamaConstants {
         return world;
     }
 
+    public Body getBody() {
+        return body;
+    }
 }
 

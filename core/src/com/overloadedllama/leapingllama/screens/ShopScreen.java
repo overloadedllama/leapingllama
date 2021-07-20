@@ -87,7 +87,6 @@ public class ShopScreen extends MyAbstractScreen {
         rightArrow = assets.getSkin("rightArrow");
         justTextSkin = assets.getSkin("justText");
 
-
         backButton = new ImageButton(backButtonSkin);
         userMoney = Settings.getUserMoney();
         userMoneyText = new Label("COINS:\n" + userMoney, coinLabelSkin);
@@ -98,12 +97,9 @@ public class ShopScreen extends MyAbstractScreen {
         itemValue = shopItems[0].getValue();
         buyButton = new TextButton("", bigButtonSkin);
 
-
         itemCost = new Label("", justTextSkin);
         itemTitle = new Label("", justTextSkin);
         setButtons(0);
-
-
 
         float pad = 15f;
         float size = 120f;

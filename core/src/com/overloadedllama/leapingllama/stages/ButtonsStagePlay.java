@@ -70,7 +70,6 @@ public class ButtonsStagePlay extends MyAbstractStage {
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
         if (Settings.getGameMode().equals("GESTURES")) {
-            //todo setting for switch from only gesture to only buttons. Now everything is active but personally I don't like it
             inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
                 @Override
                 public void onLeft() {

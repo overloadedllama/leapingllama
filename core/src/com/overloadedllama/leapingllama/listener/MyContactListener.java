@@ -7,10 +7,8 @@ import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 
 public class MyContactListener implements ContactListener, LlamaConstants {
-
     final GameScreen parent;
 
-    // set the GameScreen parent in order to not use static method --> some noisy problems...
     public MyContactListener(final GameScreen parent) {
         this.parent = parent;
     }
@@ -24,14 +22,8 @@ public class MyContactListener implements ContactListener, LlamaConstants {
         if (fa == null || fb == null) return;
         if (fa.getUserData() == null || fb.getUserData() == null) return;
 
-        if (isBulletEnemyContact(fa, fb)) {
-
-        } else if (isLlamaEnemyContact(fa, fb)) {
-            //System.out.println("COLLISION LLAMA-ENEMY DETECTED!");
-        } else if (isLlamaGroundPlatformContact(fa, fb, contact)) {
-            System.out.println("COLLISION LLAMA-GROUND DETECTED!");
-        }
-
+        isBulletEnemyContact(fa, fb);
+        isLlamaEnemyContact(fa, fb);
         isAmmoCollected(fa, fb);
         isCoinCollected(fa, fb);
         isNotObstacleDodged(fa, fb);
@@ -92,21 +84,6 @@ public class MyContactListener implements ContactListener, LlamaConstants {
         return false;
     }
 
-    // at the moment this is is useless
-    private boolean isLlamaGroundPlatformContact(Fixture a, Fixture b, Contact contact) {
-
-        short bitsA = a.getFilterData().categoryBits;
-        short bitsB = b.getFilterData().categoryBits;
-
-        boolean llamaGroundCollision = (bitsA == CATEGORY_LLAMA && bitsB == CATEGORY_GROUND) || (bitsB == CATEGORY_LLAMA && bitsA == CATEGORY_GROUND);
-
-        if (llamaGroundCollision) {
-            System.out.println("COLLISION LLAMA-GROUND DETECTED!");
-        }
-
-        return false;
-    }
-
     private boolean isCoinCollected(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Coin)
                 || (a.getUserData() instanceof Coin && b.getUserData() instanceof Llama)) {
@@ -132,7 +109,6 @@ public class MyContactListener implements ContactListener, LlamaConstants {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ammo)
                 || (a.getUserData() instanceof Ammo && b.getUserData() instanceof Llama)) {
 
-
             if (a.getUserData() instanceof Ammo) {
                 ((Ammo) a.getUserData()).setDestroyable(true);
                 parent.setAmmunition(parent.getAmmunition()+((Ammo) a.getUserData()).getQuantity());
@@ -140,7 +116,6 @@ public class MyContactListener implements ContactListener, LlamaConstants {
             } else {
                 ((Ammo) b.getUserData()).setDestroyable(true);
                 parent.setAmmunition(parent.getAmmunition()+((Ammo) b.getUserData()).getQuantity());
-
 
             }
 
@@ -154,16 +129,7 @@ public class MyContactListener implements ContactListener, LlamaConstants {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Obstacle)
                 || (a.getUserData() instanceof Obstacle && b.getUserData() instanceof Llama)) {
 
-
-            if (a.getUserData() instanceof Llama) {
-                parent.gameOver();
-
-            } else {
-                parent.gameOver();
-
-            }
-
-
+            parent.gameOver();
             return true;
         }
         return false;

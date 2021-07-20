@@ -4,8 +4,6 @@ public interface LlamaConstants {
 
     int MAX_LEVEL = 5;
 
-    String LLAMA = "llama";
-
     String LEVEL_LENGTH = "levelLength";
 
     // main actor Strings
@@ -51,11 +49,5 @@ public interface LlamaConstants {
     String SOUND = "sound";
     String GORE = "gore";
     String GAME_MODE_ = "gameMode";
-
-    // Filter categories
-    short CATEGORY_LLAMA = 0x001;
-    short CATEGORY_ENEMY = 0x002;
-    short CATEGORY_GROUND = 0x004;
-    short CATEGORY_PLATFORM = 0x008;
 
 }

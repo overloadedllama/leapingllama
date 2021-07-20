@@ -12,7 +12,8 @@ import com.overloadedllama.leapingllama.LlamaConstants;
  * Assets are loaded here in Assets through LibGdx class AssetManager
  * Once loaded, they are actually accessed by getAsset() methods (such as getSkin(), getSound()...)
  *
- * Sounds are managed only in Settings class using playSound()
+ * Sounds and Musics are managed only in Settings class using playSound(),
+ * all other assets could be obtained from the methods below
  */
 public class Assets implements LlamaConstants {
     private final AssetManager manager;

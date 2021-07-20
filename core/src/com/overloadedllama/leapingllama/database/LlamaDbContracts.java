@@ -28,7 +28,7 @@ import android.provider.BaseColumns;
 public class LlamaDbContracts {
 
     // as Android Studio doc suggests, this class should not be
-    // instantiated, so make the constructor private
+    // instantiated, so the constructor is private
     private LlamaDbContracts() { }
 
     // By implementing the BaseColumns interface, your inner class

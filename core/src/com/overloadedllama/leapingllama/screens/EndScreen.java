@@ -14,7 +14,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.resources.Settings;
 
-
 public class EndScreen extends MyAbstractScreen {
     int level;
     int starNum;
@@ -36,6 +35,7 @@ public class EndScreen extends MyAbstractScreen {
 
     public EndScreen(final GameApp gameApp, int level, double lastScore, double totalLevelScore, boolean win) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
+        Runtime.getRuntime().gc(); // call the gc to free memory
         this.level = level;
         this.lastScore = lastScore;
         this.totalLevelScore = totalLevelScore;
@@ -59,6 +59,7 @@ public class EndScreen extends MyAbstractScreen {
 
             if (!win) {
                 scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE LEVEL %d: %.1f", lastScore, level, Settings.getLevelBestScore(level)), scoreLabelSkin);
+                //if (true) {
                 if (Settings.checkSetNewUserBestScore(level, lastScore)) {
                     System.out.println("NEW BEST SCORE: " + lastScore);
                 } else {
@@ -66,6 +67,7 @@ public class EndScreen extends MyAbstractScreen {
                 }
             } else {
                 Settings.checkSetNewUserBestScore(level, totalLevelScore);
+                Settings.updateUserMaxLevel();
                 scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
             }
         } else {
@@ -76,9 +78,6 @@ public class EndScreen extends MyAbstractScreen {
                 scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE: %.1f", lastScore, Settings.getLevelBestScore(-1)), scoreLabelSkin);
             }
         }
-
-        // use this to check next levels work fine
-        // Settings.updateUserMaxLevel();
 
         scoreLabel.setFontScale(1.2f);
         scoreLabel.setAlignment(Align.center);
@@ -98,7 +97,7 @@ public class EndScreen extends MyAbstractScreen {
                 }
             }
 
-            System.out.printf("Total level score: %.1f --- , last score: %.1f --- starNum: %d", totalLevelScore, lastScore, starNum);
+            //System.out.printf("Total level score: %.1f --- , last score: %.1f --- starNum: %d", totalLevelScore, lastScore, starNum);
 
             for (int i = 0; i < 3; ++i) {
                 if (i < starNum) {
@@ -140,27 +139,21 @@ public class EndScreen extends MyAbstractScreen {
         endTable.row();
         endTable.add(scoreLabel).width(1000f).height(180f).padTop(40f).colspan(3);
 
-
         endTable.row();
 
         mainMenuButton = new TextButton("MAIN MENU", optionButtonsSkin);
         retryButton = new TextButton("RETRY", optionButtonsSkin);
-        if (win && level < MAX_LEVEL) {
+        if (win && level < MAX_LEVEL)
             nextLevelButton = new TextButton("NEXT LEVEL", optionButtonsSkin);
-        }
 
         Table buttonTable = new Table();
         buttonTable.add(mainMenuButton);
         buttonTable.add(retryButton).padLeft(5);
-        if (win) {
+        if (nextLevelButton != null)
             buttonTable.add(nextLevelButton).padLeft(5f);
-        }
-
         endTable.add(buttonTable).colspan(3);
 
         endStage.addActor(endTable);
-
-
 
         Gdx.input.setInputProcessor(endStage);
 
@@ -169,11 +162,6 @@ public class EndScreen extends MyAbstractScreen {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
-                // gameApp.setScreen(new MainMenuScreen(gameApp));
-                // assets.unloadGameAssets();
-
-                dispose();
-
             }
         });
 
@@ -182,9 +170,6 @@ public class EndScreen extends MyAbstractScreen {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, level));
-                //gameApp.setScreen(new GameScreen(gameApp, level));
-                dispose();
-
             }
         });
 
@@ -201,13 +186,12 @@ public class EndScreen extends MyAbstractScreen {
 
     @Override
     public void render(float delta) {
-        super.render(delta);
-        //ScreenUtils.clear(new Color(Color.NAVY));
         ScreenUtils.clear(0.56f, 0.72f, 0.8f, 1);
 
         endStage.act();
         endStage.draw();
 
+        super.render(delta);
     }
 
     @Override

@@ -8,14 +8,6 @@ import com.overloadedllama.leapingllama.LlamaConstants;
 import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.database.LlamaDbHandler;
 
-/**
- *
- *
- * a class that contains all the game settings and methods used to change them on
- * the smartphone.
- *
- */
-//We can convert Settings into an Interface, more readable
 
 public final class Settings implements LlamaConstants {
     @SuppressLint("StaticFieldLeak")
@@ -26,10 +18,10 @@ public final class Settings implements LlamaConstants {
     private static String currentUser = TEST_USER;
 
     // if MUSIC/SOUND/GORE == true, then it is set ON, else OFF
+    // now SOUND volume can't be set
     private static boolean SOUND = true;
-    private static float SOUND_VOLUME = 1;
+    private static final float SOUND_VOLUME = 1;
     private static boolean MUSIC = true;
-    private static float MUSIC_VOLUME = 1;
     private static boolean GORE = true;
 
     private enum GAME_MODE
@@ -38,7 +30,6 @@ public final class Settings implements LlamaConstants {
         DX_LX,
         GESTURES
     }
-
     private static GAME_MODE gameMode = GAME_MODE.LX_DX;
 
     // Sounds
@@ -59,6 +50,7 @@ public final class Settings implements LlamaConstants {
 
 
     // METHODS
+
     public Settings(Context context, Assets assets) {
         llamaDbHandler = new LlamaDbHandler(context);
         Settings.assets = assets;
@@ -97,6 +89,11 @@ public final class Settings implements LlamaConstants {
     public static boolean isGORE() { return GORE; }
     public static void setGORE(boolean GORE) { Settings.GORE = GORE; }
 
+    /**
+     * Get a setting as a String and convert its boolean value as a String
+     * @param setting the setting needed
+     * @return the String version of the setting boolean value
+     */
     public static String getStringSetting(String setting) {
         final String ON = "ON", OFF = "OFF";
         switch (setting) {
@@ -108,9 +105,6 @@ public final class Settings implements LlamaConstants {
                 throw new IllegalArgumentException("Setting " + setting + " doesn't exist");
         }
     }
-
-
-
 
     /**
      * Checks if the username doesn't exist yet, and, in that case, creates it,
@@ -128,7 +122,7 @@ public final class Settings implements LlamaConstants {
 
     public static boolean checkSetUserMoney(int value) { return llamaDbHandler.checkSetUserMoney(currentUser, value); }
 
-    public static int getUserLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MAX_LEVEL); }
+    public static int getUserMaxLevel() { return (int) llamaDbHandler.getUserPlayerTableData(currentUser, llamaDbHandler.MAX_LEVEL); }
 
     public static void updateUserMaxLevel() { llamaDbHandler.setUserMaxLevel(currentUser); }
 
@@ -147,12 +141,6 @@ public final class Settings implements LlamaConstants {
     }
 
     public static double getLevelBestScore(int level) { return llamaDbHandler.getLevelBestScore(currentUser, level); }
-
-    public static void resetAllProgresses() {
-        llamaDbHandler.resetProgresses(currentUser);
-    }
-
-
 
 
     // SOUNDS AND MUSICS

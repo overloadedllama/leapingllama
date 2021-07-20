@@ -19,7 +19,7 @@ import com.overloadedllama.leapingllama.screens.ShopScreen;
 public class MainMenuStage extends MyAbstractStage {
     final int numLevels = 6;
     int maxUserLevel;
-    float defaultButtonWidth;
+    float defaultButtonWidth = 220f;
     float defaultButtonHeight = 100F;
 
     // Tables
@@ -64,7 +64,7 @@ public class MainMenuStage extends MyAbstractStage {
     public MainMenuStage(final GameApp game) {
         super(game);
 
-        maxUserLevel = Settings.getUserLevel();
+        maxUserLevel = Settings.getUserMaxLevel();
 
         mainMenuTable = new Table();
         moneyTable = new Table();
@@ -102,7 +102,6 @@ public class MainMenuStage extends MyAbstractStage {
         userNameLabel = new Label("", justTextSkin);
 
         float pad = 15f;
-        defaultButtonWidth = 220;
 
         // MONEY TABLE
         moneyTable.top().right();
@@ -137,7 +136,7 @@ public class MainMenuStage extends MyAbstractStage {
 
         scrollTable.row();
         scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(pad).colspan(1);
-        scrollTable.add(new Label("BEST SCORE: " + String.valueOf(Math.round(Settings.getLevelBestScore(-1)*10)/10), justTextSkin)).colspan(3);
+        scrollTable.add(new Label("BEST SCORE: " + Math.round(Settings.getLevelBestScore(-1) * 10) / 10, justTextSkin)).colspan(3);
         for (int i = 0; i < numLevels; ++i) {
             scrollTable.row();
             scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(pad);
