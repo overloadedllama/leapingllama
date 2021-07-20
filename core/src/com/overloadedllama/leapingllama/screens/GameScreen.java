@@ -353,8 +353,8 @@ public class GameScreen extends MyAbstractScreen {
             float xCreation;
             float lCreation;
             if (queueObject.getX() < METER_WIDTH) {
-                xCreation = (float) queueObject.getX();
-                lCreation = (float) (queueObject.getLength() + METER_WIDTH- queueObject.getX());
+                xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
+                lCreation = (float) (queueObject.getLength() + METER_WIDTH);
             } else {
                 xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
                 lCreation = (float) queueObject.getLength();
