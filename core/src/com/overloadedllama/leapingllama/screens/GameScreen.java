@@ -98,6 +98,7 @@ public class GameScreen extends MyAbstractScreen {
         enemies = new ArrayList<>();
         timeLastEnemies = 0;
 
+        //todo activate the next line for rendering the debug frames
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
@@ -221,7 +222,7 @@ public class GameScreen extends MyAbstractScreen {
         manageActions();
         stageUi.setActions(actions);
 
-        debugRenderer.render(world, camera.combined);
+       // debugRenderer.render(world, camera.combined);
 
         super.render(delta);
     }
@@ -294,7 +295,7 @@ public class GameScreen extends MyAbstractScreen {
     }
 
     private void jumps() {
-        //todo sometimes getLinearVelocity().y near -3.442763E-10...
+        // sometimes getLinearVelocity().y near -3.442763E-10...
         if (llama.getBody().getLinearVelocity().y < 0.001 && llama.getBody().getLinearVelocity().y > -0.001) {
             llama.jump();
             actions.put(JUMP, false);
@@ -356,7 +357,7 @@ public class GameScreen extends MyAbstractScreen {
                 xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
                 lCreation = (float) (queueObject.getLength() + METER_WIDTH);
             } else {
-                xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
+                xCreation = (float) (METER_WIDTH  + queueObject.getLength() / 2);
                 lCreation = (float) queueObject.getLength();
             }
             switch (queueObject.getClassObject()) {
