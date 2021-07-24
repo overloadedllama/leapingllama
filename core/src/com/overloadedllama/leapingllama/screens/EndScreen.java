@@ -35,7 +35,6 @@ public class EndScreen extends MyAbstractScreen {
 
     public EndScreen(final GameApp gameApp, int level, double lastScore, double totalLevelScore, boolean win) {
         super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
-        Runtime.getRuntime().gc(); // call the gc to free memory
         this.level = level;
         this.lastScore = lastScore;
         this.totalLevelScore = totalLevelScore;

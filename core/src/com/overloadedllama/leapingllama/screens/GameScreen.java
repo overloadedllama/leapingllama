@@ -33,7 +33,8 @@ public class GameScreen extends MyAbstractScreen {
     {
         PAUSE,
         RUN,
-        STOPPED
+        STOPPED,
+        END;
     }
     private State state = State.RUN;
 
@@ -71,6 +72,7 @@ public class GameScreen extends MyAbstractScreen {
     double distance;
     double levelLength;
 
+
     float llamaX = 3;
     float llamaH = 1.6f;
     float velocity = 2;
@@ -88,7 +90,11 @@ public class GameScreen extends MyAbstractScreen {
     double totalLevelScore;
 
 
+    //for ending camera movement
+    double cameraMovement = 0;
 
+
+    double llamaToEndScreenDistance = METER_WIDTH - llamaX;
 
     // METHODS
 
@@ -99,7 +105,6 @@ public class GameScreen extends MyAbstractScreen {
         enemies = new ArrayList<>();
         timeLastEnemies = 0;
 
-        //todo activate the next line for rendering the debug frames
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
@@ -150,8 +155,14 @@ public class GameScreen extends MyAbstractScreen {
             Settings.setBonusAmmo();
             stageUi.setBullets(5);
         }
+        loadLevel(distance);
 
+        //final ground, for ending the game with a good ux
+        if (levelNumber!=-1) {
+            grounds.add(new Ground((float) (levelLength + llamaToEndScreenDistance + 10), 0, 0.6f, 20, velocity, world, gameApp.batch, assets));
+        }
         Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
+
     }
 
     @Override
@@ -159,7 +170,13 @@ public class GameScreen extends MyAbstractScreen {
         ScreenUtils.clear(new Color(Color.BLACK));
 
         switch(state) {
-            case RUN:
+            case RUN: case END:
+                if(state == State.END){
+                    if (cameraMoves()> viewport.getScreenWidth())
+                        callEndScreen(true);
+
+
+                }
 
                 stepWorld();
                 
@@ -176,13 +193,18 @@ public class GameScreen extends MyAbstractScreen {
 
                 updatePosition();
                 removeObjects();
-                loadLevel(distance%CHUNK_LENGTH);
+                //loadLevel(distance%CHUNK_LENGTH);
                 llama.preserveX(llamaX);
-                
+
+
+
+
                 break;
 
             case PAUSE:
                 break;
+
+
         }
 
         gameApp.batch.begin();
@@ -223,9 +245,29 @@ public class GameScreen extends MyAbstractScreen {
         manageActions();
         stageUi.setActions(actions);
 
-       // debugRenderer.render(world, camera.combined);
+        if (levelNumber==-1){
+            if (distance%CHUNK_LENGTH <= 0.1 && !levelLoaded) {
+                levelLoaded = true;
+                levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
+                queue.addAll(levelParser.getQueue());
+                loadLevel(distance);
+            } else if (distance > 0.1) {
+                levelLoaded = false;
+            }
+        }
+
+
+        //todo activate the next line for rendering the debug frames
+
+        // debugRenderer.render(world, camera.combined);
 
         super.render(delta);
+    }
+
+    private double cameraMoves() {
+        camera.position.x = camera.position.x-.04f;
+        cameraMovement+=.04f;
+        return cameraMovement;
     }
 
     private void manageActions() {
@@ -320,20 +362,23 @@ public class GameScreen extends MyAbstractScreen {
                 stateTime += delta;
             }
 
-            //xSky += 1;
-            sky.update();
+                sky.update();
+
         }
     }
 
     /**
      * Load the level game objects (except llama) based on distance reached by llama
-     * @param distance the distance reached by llama
+     *
      */
-    private void loadLevel(double distance) {
+   /* private void loadLevel(double distance_llama) {
+        double distance = distance_llama + 8f;
         if (distance <= 0.1 && !levelLoaded) {
             levelLoaded = true;
             levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
             queue.addAll(levelParser.getQueue());
+
+            grounds.add(new Ground(0, 0, 0.6f, 8, velocity, world, gameApp.batch, assets));
         } else if (distance > 0.1) {
             levelLoaded = false;
         }
@@ -373,7 +418,53 @@ public class GameScreen extends MyAbstractScreen {
                     obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, gameApp.batch, assets));
             }
         }
+    }*/
+
+
+    private void loadLevel(double distance) {
+
+        while (queue.size()>0){
+
+
+            QueueObject queueObject = queue.peek();
+            if (queueObject == null)
+                return;
+
+
+                queueObject = queue.poll();
+                if (queueObject == null)
+                    return;
+
+                float xCreation;
+                float lCreation;
+               /* if (queueObject.getX() < METER_WIDTH) {
+                    xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
+                    lCreation = (float) (queueObject.getLength() + METER_WIDTH);
+                } else {*/
+                    xCreation = (float) (distance + queueObject.getX() + queueObject.getLength() / 2);
+                    lCreation = (float) queueObject.getLength();
+                //}
+
+                switch (queueObject.getClassObject()) {
+                    case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                    case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                    case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
+                    case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets)); break;
+                    case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
+                    case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
+                    case OBSTACLES:
+                        float yCreation = 1.7F;
+                        Random random = new Random();
+                        if (random.nextFloat()<0.4){
+                            yCreation = 4.2F;
+                        }
+                        obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, gameApp.batch, assets));
+                }
+
+        }
     }
+
+
 
     /**
      * Update the position of all the game objects in the world. Check also
@@ -475,6 +566,19 @@ public class GameScreen extends MyAbstractScreen {
             }
         }
 
+        for (Iterator<Ground> g = grounds.iterator(); g.hasNext(); ) {
+            final Ground ground = g.next();
+            if (ground.isDestroyable()) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        world.destroyBody(ground.getBody());
+                    }
+                });
+                g.remove();
+            }
+        }
+
         for (Iterator<Coin> c = coins.iterator(); c.hasNext(); ) {
             final Coin coin = c.next();
             if (coin.isDestroyable()) {
@@ -525,12 +629,9 @@ public class GameScreen extends MyAbstractScreen {
     public <T extends GameObject> boolean isOutOfBonds(T go) {
 
         if (go instanceof Enemy || go instanceof Bullet || go instanceof Ammo || go instanceof Coin) {
-            return go.getBody().getPosition().x < -viewport.getWorldWidth() ||
-                    //go.getBody().getPosition().x > viewport.getWorldWidth() * 2 ||
-                    go.getBody().getPosition().y < 0;
+            return go.getBody().getPosition().y + go.getW()/2 < 0;
         } else if (go instanceof Platform || go instanceof Ground) {
-            //return go.getBody().getPosition().x + go.getW() < distance - METER_WIDTH;
-            return false;
+            return go.getBody().getPosition().x + go.getW()/2 < 0;
         } else if (go instanceof Llama) {
             return go.getY() < 0;
         }
@@ -543,8 +644,9 @@ public class GameScreen extends MyAbstractScreen {
      * (the screen is 10 meter long and the llama is at 3 meters from the screen x origin)
       */
     private void checkWin() {
-        if (distance >= levelLength - 7) {
-            callEndScreen(true);
+        if (distance >= levelLength + llamaToEndScreenDistance + 10) {
+            state = State.END;
+            //callEndScreen(true);
         }
     }
 
