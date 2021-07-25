@@ -18,7 +18,7 @@ import java.util.*;
 
 public class GameScreen extends MyAbstractScreen {
     // Game Screen Constants
-    static final int CHUNK_LENGTH = 100;
+    static final int CHUNK_LENGTH = 50;
     static final float STEP_TIME = 1.0f / 60.0f;
     static final int VELOCITY_ITERATIONS = 6;
     static final int POSITION_ITERATIONS = 2;
@@ -171,19 +171,10 @@ public class GameScreen extends MyAbstractScreen {
 
         switch(state) {
             case RUN: case END:
-                if(state == State.END){
-                    if (cameraMoves()> viewport.getScreenWidth())
-                        callEndScreen(true);
-
-
-                }
 
                 stepWorld();
                 
-                if (levelNumber!=-1) {
-                    checkWin();
-                    // need to do anything?
-                }
+
 
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
@@ -194,9 +185,24 @@ public class GameScreen extends MyAbstractScreen {
                 updatePosition();
                 removeObjects();
                 //loadLevel(distance%CHUNK_LENGTH);
-                llama.preserveX(llamaX);
+                //llama.preserveX(llamaX);
 
+                if(state == State.END){
+                    if (cameraMovement > llamaToEndScreenDistance)
+                        callEndScreen(true);
 
+                    cameraMovement+=0.05;
+                    llamaX+=0.05;
+                    llama.preserveX(llamaX);
+
+                }else{
+                    llama.preserveX(llamaX);
+
+                    if (levelNumber!=-1) {
+                        checkWin();
+                        // need to do anything?
+                    }
+                }
 
 
                 break;
@@ -250,7 +256,7 @@ public class GameScreen extends MyAbstractScreen {
                 levelLoaded = true;
                 levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
                 queue.addAll(levelParser.getQueue());
-                loadLevel(distance);
+                loadLevel(distance + llamaToEndScreenDistance);
             } else if (distance > 0.1) {
                 levelLoaded = false;
             }
@@ -264,11 +270,7 @@ public class GameScreen extends MyAbstractScreen {
         super.render(delta);
     }
 
-    private double cameraMoves() {
-        camera.position.x = camera.position.x-.04f;
-        cameraMovement+=.04f;
-        return cameraMovement;
-    }
+
 
     private void manageActions() {
         if (actions.get(SHOT)) {

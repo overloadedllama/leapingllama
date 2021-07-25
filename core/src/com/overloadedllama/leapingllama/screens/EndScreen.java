@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.resources.Settings;
@@ -47,7 +48,7 @@ public class EndScreen extends MyAbstractScreen {
     public void show() {
         startTime = System.currentTimeMillis();
 
-        endStage = new Stage(new FitViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        endStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         endTable = new Table();
 
         scoreLabelSkin = assets.getSkin("justText");
