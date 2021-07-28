@@ -78,7 +78,7 @@ public class MainMenuStage extends MyAbstractStage {
         settingsButton = new TextButton("SETTINGS", textButtonFieldLabelSkin);
         creditsButton = new TextButton("CREDITS", textButtonFieldLabelSkin);
         quitButton = new TextButton("QUIT", textButtonFieldLabelSkin);
-        String userMoney = "" + Settings.getUserMoney();
+        String userMoney = "COINS:\n" + Settings.getUserMoney();
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
 
         levelButtons = new TextButton[numLevels];

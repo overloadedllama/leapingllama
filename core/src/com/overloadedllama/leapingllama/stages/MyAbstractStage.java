@@ -42,6 +42,8 @@ public abstract class MyAbstractStage extends Stage implements LlamaConstants {
         draw();
     }
 
+    public abstract void resizer();
+
     private void setUpButtons() {
         Gdx.input.setInputProcessor(this);
     }

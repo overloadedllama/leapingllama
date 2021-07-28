@@ -19,7 +19,6 @@ import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
 import com.overloadedllama.leapingllama.resources.Settings;
 
-
 public class CreditScreen extends MyAbstractScreen{
     Stage stage;
     Table mainTable, creditTable;

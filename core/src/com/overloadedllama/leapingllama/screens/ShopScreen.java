@@ -100,7 +100,7 @@ public class ShopScreen extends MyAbstractScreen {
 
         itemCost = new Label("", justTextSkin);
         itemTitle = new Label("", justTextSkin);
-        setButtons(0);
+        setItemButtons(0);
 
         float pad = 15f;
         float size = 120f;
@@ -123,6 +123,11 @@ public class ShopScreen extends MyAbstractScreen {
 
         shopStage.addActor(itemListTable);
 
+        setUpButtons();
+
+    }
+
+    private void setUpButtons() {
         Gdx.input.setInputProcessor(shopStage);
 
         backButton.addListener(new ClickListener() {
@@ -142,7 +147,7 @@ public class ShopScreen extends MyAbstractScreen {
                     index--;
                 }
                 image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
-                setButtons(index);
+                setItemButtons(index);
             }
         });
 
@@ -155,7 +160,7 @@ public class ShopScreen extends MyAbstractScreen {
                 else
                     index++;
                 image.setDrawable(new TextureRegionDrawable(new TextureRegion(shopItems[index].getTexture())));
-                setButtons(index);
+                setItemButtons(index);
 
             }
         });
@@ -177,14 +182,14 @@ public class ShopScreen extends MyAbstractScreen {
                         userMoneyText.setText("COINS:\n" + (userMoney - itemValue));
                         Settings.playSound("cash");
 
-                        setButtons(index);
+                        setItemButtons(index);
                     }
                 }
             }
         });
     }
 
-    private void setButtons(int i) {
+    private void setItemButtons(int i) {
         itemValue = shopItems[i].getValue();
         itemCost.setText("ITEM COST: " + itemValue);
         itemTitle.setText(shopItems[i].getName());
