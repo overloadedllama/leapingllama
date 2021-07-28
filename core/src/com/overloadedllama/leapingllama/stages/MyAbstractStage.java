@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.stages;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -44,7 +43,6 @@ public abstract class MyAbstractStage extends Stage implements LlamaConstants {
 
     public abstract void resizer();
 
-    private void setUpButtons() {
-        Gdx.input.setInputProcessor(this);
-    }
+    abstract void setUpButtons();
+
 }

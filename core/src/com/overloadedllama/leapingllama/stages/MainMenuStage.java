@@ -152,7 +152,7 @@ public class MainMenuStage extends MyAbstractStage {
 
     }
 
-    private void setUpButtons() {
+    void setUpButtons() {
         Gdx.input.setInputProcessor(this);
 
         userButton.addListener(new ClickListener() {

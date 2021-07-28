@@ -69,7 +69,7 @@ public class SettingStage extends MyAbstractStage {
         setUpButtons();
     }
 
-    private void setUpButtons() {
+    void setUpButtons() {
         Gdx.input.setInputProcessor(this);
 
         backButton.addListener(new ClickListener() {

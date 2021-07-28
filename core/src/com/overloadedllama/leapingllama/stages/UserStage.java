@@ -91,7 +91,7 @@ public class UserStage extends MyAbstractStage {
 
     }
 
-    private void setUpButtons() {
+    void setUpButtons() {
 
         Gdx.input.setInputProcessor(this);
 
