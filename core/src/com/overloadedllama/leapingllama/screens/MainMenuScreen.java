@@ -27,6 +27,7 @@ public class MainMenuScreen extends MyAbstractScreen {
         Settings.playMusic(gameApp.getAssets().MAIN_MENU_MUSIC);
 
         sky = new Sky(assets.getTexture("sky"));
+        sky.setXSky(Settings.getXSky());
         batch = new SpriteBatch();
 
     }
@@ -35,12 +36,12 @@ public class MainMenuScreen extends MyAbstractScreen {
     public void render(float delta) {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
-
         batch.begin();
         sky.draw(batch, viewport.getScreenWidth(), viewport.getScreenHeight());
         batch.end();
 
         sky.update();
+        Settings.setXSky(sky.getXSky());
 
         mainMenuStage.renderer();
 

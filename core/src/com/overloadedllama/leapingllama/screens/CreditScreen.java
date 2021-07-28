@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
+import com.overloadedllama.leapingllama.resources.Settings;
 
 
 public class CreditScreen extends MyAbstractScreen{
@@ -43,6 +44,7 @@ public class CreditScreen extends MyAbstractScreen{
         stage = new Stage(viewport, batch);
 
         sky = new Sky(assets.getTexture("sky"));
+        sky.setXSky(Settings.getXSky());
 
         credits = new Label(longCreditString, assets.getSkin("justText"));
         credits.setWrap(true);
@@ -120,6 +122,7 @@ public class CreditScreen extends MyAbstractScreen{
         stage.draw();
 
         sky.update();
+        Settings.setXSky(sky.getXSky());
 
     }
 

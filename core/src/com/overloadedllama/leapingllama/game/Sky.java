@@ -36,4 +36,12 @@ public class Sky {
     public void update(){
         xSky++;
     }
+
+    public float getXSky() {
+        return xSky;
+    }
+
+    public void setXSky(float xSky) {
+        this.xSky = xSky;
+    }
 }

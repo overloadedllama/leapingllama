@@ -67,8 +67,9 @@ public class ShopScreen extends MyAbstractScreen {
     public void show() {
         ScreenUtils.clear(0.1f, 0, 0.2f, 1);
 
-        sky = new Sky(assets.getTexture("sky"));
         batch = new SpriteBatch();
+        sky = new Sky(assets.getTexture("sky"));
+        sky.setXSky(Settings.getXSky());
 
         shopStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         upperTable = new Table();
@@ -223,6 +224,7 @@ public class ShopScreen extends MyAbstractScreen {
         batch.end();
 
         sky.update();
+        Settings.setXSky(sky.getXSky());
 
         shopStage.act();
         shopStage.draw();

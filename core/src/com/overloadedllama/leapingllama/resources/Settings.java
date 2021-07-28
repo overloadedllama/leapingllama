@@ -47,6 +47,8 @@ public final class Settings implements LlamaConstants {
     private static boolean bonusAmmos = false;
     private static boolean bonusLife = false;
 
+    // Background
+    private static float xSky = 0;
 
 
     // METHODS
@@ -217,6 +219,19 @@ public final class Settings implements LlamaConstants {
    public static void setBonusLife() {
        bonusLife = !bonusLife;
    }
+
+
+
+   // BACKGROUND
+    public static void setXSky(float xSky) {
+        Settings.xSky = xSky;
+    }
+
+    public static float getXSky() {
+        return xSky;
+    }
+
+
 
 }
 

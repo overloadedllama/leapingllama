@@ -47,8 +47,9 @@ public class SettingScreen extends MyAbstractScreen {
     @Override
     public void show() {
 
-        sky = new Sky(assets.getTexture("sky"));
         batch = new SpriteBatch();
+        sky = new Sky(assets.getTexture("sky"));
+        sky.setXSky(Settings.getXSky());
 
         settingsStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         settingTable = new Table();
@@ -158,6 +159,7 @@ public class SettingScreen extends MyAbstractScreen {
         batch.end();
 
         sky.update();
+        Settings.setXSky(sky.getXSky());
 
         settingsStage.act();
         settingsStage.draw();
