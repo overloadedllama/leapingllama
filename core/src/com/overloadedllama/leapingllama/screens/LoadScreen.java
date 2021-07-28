@@ -58,7 +58,6 @@ public class LoadScreen extends MyAbstractScreen {
             @Override
             public void run() {
                 Settings.insertNewUser(Settings.TEST_USER);
-
             }
         }));
 

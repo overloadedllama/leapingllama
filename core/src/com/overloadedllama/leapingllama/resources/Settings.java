@@ -60,6 +60,8 @@ public final class Settings implements LlamaConstants {
     public static String getCurrentUser() { return currentUser; }
     public static void setCurrentUser(String user) { currentUser = user; }
 
+    public static String[] getAllUsers() { return llamaDbHandler.getAllUsers(); }
+
     public static boolean isMUSIC() { return MUSIC; }
     public static void setMUSIC(boolean MUSIC) { Settings.MUSIC = MUSIC; }
 

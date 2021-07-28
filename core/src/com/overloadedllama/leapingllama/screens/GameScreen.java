@@ -89,12 +89,11 @@ public class GameScreen extends MyAbstractScreen {
     int enemiesKilled = 0;
     double totalLevelScore;
 
-
     //for ending camera movement
     double cameraMovement = 0;
 
-
     double llamaToEndScreenDistance = METER_WIDTH - llamaX;
+
 
     // METHODS
 
@@ -269,8 +268,6 @@ public class GameScreen extends MyAbstractScreen {
 
         super.render(delta);
     }
-
-
 
     private void manageActions() {
         if (actions.get(SHOT)) {

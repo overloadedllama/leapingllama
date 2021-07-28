@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class LlamaDbHelper extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 7;
+    public static final int DATABASE_VERSION = 8;
     public static final String DATABASE_NAME = "Llama.db";
 
 
@@ -30,7 +30,6 @@ public class LlamaDbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(LlamaDbContracts.SQL_PLAYER_DROP);
         db.execSQL(LlamaDbContracts.SQL_SETTINGS_DROP);
-        db.execSQL(LlamaDbContracts.SQL_LEVEL_DROP);
         db.execSQL(LlamaDbContracts.SQL_LEVELS_DROP);
         onCreate(db);
     }

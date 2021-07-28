@@ -102,6 +102,30 @@ public class LlamaDbHandler {
         return userBasic;
     }
 
+    public String[] getAllUsers() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        String[] projection = { LlamaDbContracts.Player.PRIMARY_KEY };
+
+        Cursor cursor = db.query(
+                LlamaDbContracts.Player.TABLE_NAME,
+                projection, null, null,
+                null, null, null
+        );
+
+        int n = cursor.getCount();
+        System.out.println("Total users: " + n);
+        String[] users = new String[n];
+
+        for (int i = 0; i < n; ++i) {
+            cursor.moveToNext();
+            users[i] = cursor.getString(0);
+            System.out.println("user " + i + ": " + users[i]);
+        }
+        cursor.close();
+        return users;
+    }
+
     // LEVEL OPERATIONS
 
     public int getLevelStarNum(String user, int level) {

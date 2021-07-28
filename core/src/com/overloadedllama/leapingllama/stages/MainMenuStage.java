@@ -11,14 +11,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.resources.Settings;
-import com.overloadedllama.leapingllama.screens.CreditScreen;
-import com.overloadedllama.leapingllama.screens.GameScreen;
-import com.overloadedllama.leapingllama.screens.SettingScreen;
-import com.overloadedllama.leapingllama.screens.ShopScreen;
+import com.overloadedllama.leapingllama.screens.*;
 
 public class MainMenuStage extends MyAbstractStage {
-    final int numLevels = 6;
     int maxUserLevel;
+    final int numLevels = 6;
     float defaultButtonWidth = 220f;
     float defaultButtonHeight = 100F;
 
@@ -26,16 +23,14 @@ public class MainMenuStage extends MyAbstractStage {
     private final Table mainMenuTable;
     private final Table moneyTable;
     private final Table levelTable;
-    private final Table chooseUserTable;
     private final Table scrollTable;
     private final Table howdyTable;
 
     // ScrollPane
-    private final ScrollPane scroller;
+    private final ScrollPane scrollPane;
 
     // ImageButton
     private final ImageButton backButton;
-    private final ImageButton backButton1;
 
     // TextButton
     private final TextButton settingsButton;
@@ -48,12 +43,9 @@ public class MainMenuStage extends MyAbstractStage {
     private final TextButton userButton;
     private final TextButton[] levelButtons;
 
-    // TextField
-    private final TextField userTextField;
-
     // Label
-    private final Label userLabel;
     private final Label userNameLabel;
+
     // Skin
     private final Skin textButtonFieldLabelSkin;
     private final Skin moneyButtonSkin;
@@ -69,11 +61,8 @@ public class MainMenuStage extends MyAbstractStage {
         mainMenuTable = new Table();
         moneyTable = new Table();
         levelTable = new Table();
-        chooseUserTable = new Table();
         howdyTable = new Table();
         scrollTable = new Table();
-
-
 
         // creation of Skins
         textButtonFieldLabelSkin = assets.getSkin("bigButton");
@@ -152,30 +141,11 @@ public class MainMenuStage extends MyAbstractStage {
             }
 
         }
-        scroller = new ScrollPane(scrollTable);
+        scrollPane = new ScrollPane(scrollTable);
         levelTable.setFillParent(true);
-        levelTable.add(scroller).fill().expand();
+        levelTable.add(scrollPane).fill().expand();
         levelTable.setVisible(false);
         addActor(levelTable);
-
-        // CHOOSE USER TABLE
-        backButton1 = new ImageButton(backButtonSkin);
-        userLabel = new Label("CURRENT USER: ", justTextSkin);
-        userLabel.setAlignment(Align.center);
-        userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
-        userTextField.setAlignment(Align.center);
-        chooseUserTable.top();
-        chooseUserTable.add(backButton1).padTop(pad).align(Align.left);
-
-        Label titleUserChooser = new Label("USERS", justTextSkin);
-        titleUserChooser.setFontScale(2);
-        chooseUserTable.add(titleUserChooser).align(Align.right);
-
-        chooseUserTable.row();
-        chooseUserTable.add(userLabel).size(defaultButtonWidth, defaultButtonHeight).padRight(15f).padTop(15f);
-        chooseUserTable.add(userTextField).size(defaultButtonWidth, defaultButtonHeight).padTop(15f);
-        chooseUserTable.setVisible(false);
-        addActor(chooseUserTable);
 
         // adds the button's listeners
         setUpButtons();
@@ -188,25 +158,7 @@ public class MainMenuStage extends MyAbstractStage {
         userButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                mainMenuTable.setVisible(false);
-                moneyTable.setVisible(false);
-                howdyTable.setVisible(false);
-                chooseUserTable.setVisible(true);
-            }
-        });
-
-        backButton1.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                chooseUserTable.setVisible(false);
-                Settings.insertNewUser(userTextField.getText());
-                Settings.setCurrentUser(userTextField.getText());
-                System.out.println("CURRENT USER: " + Settings.getCurrentUser());
-                mainMenuTable.setVisible(true);
-                moneyTable.setVisible(true);
-                howdyTable.setVisible(true);
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new UserScreen(gameApp));
             }
         });
 
@@ -315,9 +267,6 @@ public class MainMenuStage extends MyAbstractStage {
     }
 
     public void resizer() {
-
-        chooseUserTable.invalidateHierarchy();
-        chooseUserTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
 
         moneyTable.invalidateHierarchy();
         moneyTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);

@@ -3,6 +3,7 @@ package com.overloadedllama.leapingllama.database;
 import android.provider.BaseColumns;
 
 /**
+ *
  * Table Player:
  *      user VARCHAR(20) PK,
  *      money INT NOT NULL DEFAULT 0,
@@ -30,6 +31,7 @@ public class LlamaDbContracts {
     // as Android Studio doc suggests, this class should not be
     // instantiated, so the constructor is private
     private LlamaDbContracts() { }
+
 
     // By implementing the BaseColumns interface, your inner class
     // can inherit a primary key field called _ID that some Android classes
@@ -71,7 +73,6 @@ public class LlamaDbContracts {
                     Player.MONEY + " INT NOT NULL DEFAULT 0, " +
                     Player.MAX_LEVEL + " INT NOT NULL DEFAULT 0)";
 
-
     public static final String SQL_PLAYER_DROP =
             "DROP TABLE IF EXISTS " + Player.TABLE_NAME;
 
@@ -91,7 +92,6 @@ public class LlamaDbContracts {
             "DROP TABLE IF EXISTS " + Levels.TABLE_NAME;
 
 
-
     /**
      * Strings referred to Settings Table
      */
@@ -105,13 +105,5 @@ public class LlamaDbContracts {
 
     public static final String SQL_SETTINGS_DROP =
             "DROP TABLE IF EXISTS " + Settings.TABLE_NAME;
-
-
-
-
-    // old
-    public static final String SQL_LEVEL_DROP =
-            "DROP TABLE IF EXISTS " + "level";
-
 
 }
