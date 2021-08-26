@@ -21,7 +21,8 @@ allprojects {
     apply plugin: "idea"
 
 
-    version = '1.0'
+    version = '1'
+
     ext {
         appName = "leapingllama"
         gdxVersion = '1.10.0'
@@ -52,7 +53,11 @@ project(":android") {
     apply plugin: "com.android.application"
 
 
-    configurations { natives }
+    configurations { natives
+        compile.exclude group: 'com.google.android'
+    }
+
+
 
     dependencies {
         implementation project(":core")
