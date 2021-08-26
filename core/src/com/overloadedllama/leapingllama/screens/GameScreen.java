@@ -34,7 +34,7 @@ public class GameScreen extends MyAbstractScreen {
         PAUSE,
         RUN,
         STOPPED,
-        END;
+        END
     }
     private State state = State.RUN;
 
@@ -59,7 +59,7 @@ public class GameScreen extends MyAbstractScreen {
     static ArrayList<Ground> grounds;
     static ArrayList<Obstacle> obstacles;
     static ArrayList<EnemyDied> enemiesDead;
-    static  ArrayList<Coin> coins;
+    static ArrayList<Coin> coins;
     static ArrayList<Ammo> ammos;
 
     // Game variables
@@ -94,6 +94,7 @@ public class GameScreen extends MyAbstractScreen {
 
     double llamaToEndScreenDistance = METER_WIDTH - llamaX;
 
+    float initialGroundLength = 20;
 
     // METHODS
 
@@ -158,7 +159,7 @@ public class GameScreen extends MyAbstractScreen {
 
         //final ground, for ending the game with a good ux
         if (levelNumber!=-1) {
-            grounds.add(new Ground((float) (levelLength + llamaToEndScreenDistance + 10), 0, 0.6f, 20, velocity, world, gameApp.batch, assets));
+            grounds.add(new Ground((float) (levelLength + llamaToEndScreenDistance + initialGroundLength/2), 0, 0.6f, initialGroundLength, velocity, world, gameApp.batch, assets));
         }
         Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
 
@@ -253,17 +254,17 @@ public class GameScreen extends MyAbstractScreen {
         if (levelNumber==-1){
             if (distance%CHUNK_LENGTH <= 0.1 && !levelLoaded) {
                 levelLoaded = true;
+                difficulty+=0.005;
                 levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
                 queue.addAll(levelParser.getQueue());
-                loadLevel(distance + llamaToEndScreenDistance);
+                loadLevel(distance);
             } else if (distance > 0.1) {
                 levelLoaded = false;
             }
         }
 
 
-        //todo activate the next line for rendering the debug frames
-
+        // decomment next line for rendering the debug frames
         // debugRenderer.render(world, camera.combined);
 
         super.render(delta);
@@ -370,59 +371,10 @@ public class GameScreen extends MyAbstractScreen {
      * Load the level game objects (except llama) based on distance reached by llama
      *
      */
-   /* private void loadLevel(double distance_llama) {
-        double distance = distance_llama + 8f;
-        if (distance <= 0.1 && !levelLoaded) {
-            levelLoaded = true;
-            levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
-            queue.addAll(levelParser.getQueue());
 
-            grounds.add(new Ground(0, 0, 0.6f, 8, velocity, world, gameApp.batch, assets));
-        } else if (distance > 0.1) {
-            levelLoaded = false;
-        }
+    private void loadLevel(double distanceToCreate) {
 
-        QueueObject queueObject = queue.peek();
-        if (queueObject == null)
-            return;
-
-        if (queueObject.getX() < distance + METER_WIDTH) {
-            queueObject = queue.poll();
-            if (queueObject == null)
-                return;
-
-            float xCreation;
-            float lCreation;
-            if (queueObject.getX() < METER_WIDTH) {
-                xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
-                lCreation = (float) (queueObject.getLength() + METER_WIDTH);
-            } else {
-                xCreation = (float) (METER_WIDTH + queueObject.getLength() / 2);
-                lCreation = (float) queueObject.getLength();
-            }
-
-            switch (queueObject.getClassObject()) {
-                case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets)); break;
-                case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
-                case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
-                case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets)); break;
-                case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
-                case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
-                case OBSTACLES:
-                    float yCreation = 1.7F;
-                    Random random = new Random();
-                    if (random.nextFloat()<0.4){
-                        yCreation = 4.2F;
-                    }
-                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, gameApp.batch, assets));
-            }
-        }
-    }*/
-
-
-    private void loadLevel(double distance) {
-
-        while (queue.size()>0){
+        while (queue.size() > 0) {
 
 
             QueueObject queueObject = queue.peek();
@@ -430,35 +382,48 @@ public class GameScreen extends MyAbstractScreen {
                 return;
 
 
-                queueObject = queue.poll();
-                if (queueObject == null)
-                    return;
+            queueObject = queue.poll();
+            if (queueObject == null)
+                return;
 
-                float xCreation;
-                float lCreation;
-               /* if (queueObject.getX() < METER_WIDTH) {
-                    xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
-                    lCreation = (float) (queueObject.getLength() + METER_WIDTH);
-                } else {*/
-                    xCreation = (float) (distance + queueObject.getX() + queueObject.getLength() / 2);
-                    lCreation = (float) queueObject.getLength();
-                //}
+            float xCreation;
+            float lCreation;
 
-                switch (queueObject.getClassObject()) {
-                    case GROUND: grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets)); break;
-                    case PLATFORM1: platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
-                    case PLATFORM2: platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets)); break;
-                    case ENEMIES: enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets)); break;
-                    case AMMO: ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
-                    case COINS: coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi)); break;
-                    case OBSTACLES:
-                        float yCreation = 1.7F;
-                        Random random = new Random();
-                        if (random.nextFloat()<0.4){
-                            yCreation = 4.2F;
-                        }
-                        obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity*2, world, gameApp.batch, assets));
-                }
+            if (levelNumber == -1 && distanceToCreate != 0)
+                xCreation = (float) (METER_WIDTH + queueObject.getX() + queueObject.getLength() / 2);
+            else
+                xCreation = (float) (queueObject.getX() + queueObject.getLength() / 2);
+
+            lCreation = (float) queueObject.getLength();
+
+
+            switch (queueObject.getClassObject()) {
+                case GROUND:
+                    grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets));
+                    break;
+                case PLATFORM1:
+                    platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets));
+                    break;
+                case PLATFORM2:
+                    platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets));
+                    break;
+                case ENEMIES:
+                    enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets));
+                    break;
+                case AMMO:
+                    ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi));
+                    break;
+                case COINS:
+                    coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi));
+                    break;
+                case OBSTACLES:
+                    float yCreation = 1.7F;
+                    Random random = new Random();
+                    if (random.nextFloat() < 0.4) {
+                        yCreation = 4.2F;
+                    }
+                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity * 2, world, gameApp.batch, assets));
+            }
 
         }
     }
