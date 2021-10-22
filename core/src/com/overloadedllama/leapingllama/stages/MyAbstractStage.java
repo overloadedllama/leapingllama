@@ -3,33 +3,33 @@ package com.overloadedllama.leapingllama.stages;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.LlamaConstants;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
 /**
  * Abstract class to prevent its instantiation and to implement LlamaConstants
  */
 public abstract class MyAbstractStage extends Stage implements LlamaConstants {
-    GameApp gameApp;
-    Assets assets;
-
+    LlamaUtil llamaUtil;
+    String currentUser;
     float tableWidth, tableHeight;
 
-    public MyAbstractStage(GameApp gameApp) {
+    public MyAbstractStage(LlamaUtil llamaUtil) {
         super(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
-        this.gameApp = gameApp;
-        this.assets = gameApp.getAssets();
+        this.llamaUtil = llamaUtil;
+
+        currentUser = llamaUtil.getCurrentUser();
 
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;
 
     }
 
-    public MyAbstractStage(GameApp gameApp, Viewport viewport) {
+    public MyAbstractStage(LlamaUtil llamaUtil, Viewport viewport) {
         super(viewport);
-        this.gameApp = gameApp;
-        this.assets = gameApp.getAssets();
+        this.llamaUtil = llamaUtil;
 
         tableWidth = GameApp.WIDTH;
         tableHeight = GameApp.HEIGHT;

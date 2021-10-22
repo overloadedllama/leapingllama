@@ -8,18 +8,24 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
 public class LlamaDbHandler {
-
-    Context context;
+    private static LlamaDbHandler uniqueInstance;
 
     private final LlamaDbHelper dbHelper;
 
     public final String MONEY = "money";
     public final String MAX_LEVEL = "level";
 
-    public LlamaDbHandler(Context context) {
-        this.context = context;
+
+    private LlamaDbHandler(Context context) {
         dbHelper = LlamaDbHelper.getInstance(context);
 
+    }
+
+    public static LlamaDbHandler getUniqueInstance(Context context) {
+        if (uniqueInstance == null) {
+            uniqueInstance = new LlamaDbHandler(context);
+        }
+        return uniqueInstance;
     }
 
     // PLAYER OPERATIONS
@@ -69,10 +75,12 @@ public class LlamaDbHandler {
         // so method moveToFirst() will return true, else false
         boolean ret = cursor.moveToFirst();
         cursor.close();
+        if (ret)
+            System.out.println("User " + user + " exists.");
         return ret;
     }
 
-    public double getUserPlayerTableData(String user, String basic) {
+    private double getUserPlayerTableData(String user, String basic) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         String[] projection;
@@ -100,6 +108,14 @@ public class LlamaDbHandler {
         double userBasic = cursor.getDouble(0);
         cursor.close();
         return userBasic;
+    }
+
+    public int getUserMaxLevel(String user) {
+        return (int) getUserPlayerTableData(user, MAX_LEVEL);
+    }
+
+    public int getUserMoney(String user) {
+        return (int) getUserPlayerTableData(user, MONEY);
     }
 
     public String[] getAllUsers() {
@@ -223,7 +239,7 @@ public class LlamaDbHandler {
                     newBest, selection, selectionArgs);
 
             if (count != 1) {
-                throw new SQLException();
+                throw new SQLException("Affected " + count + " rows instead of 1.");
             }
             return true;
         }
@@ -266,7 +282,7 @@ public class LlamaDbHandler {
                     selectionArgs);
 
             if (count != 1) {
-                throw new SQLException();
+                throw new SQLException("Affected " + count + " rows instead of 1.");
             }
 
             return true;
@@ -276,7 +292,7 @@ public class LlamaDbHandler {
     /**
      * Set the max level the player can play
      */
-    public void setUserMaxLevel(String user) {
+    public void updateUserMaxLevel(String user) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
         ContentValues nextLevel = new ContentValues();

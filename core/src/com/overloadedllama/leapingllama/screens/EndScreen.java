@@ -1,6 +1,5 @@
 package com.overloadedllama.leapingllama.screens;
 
-import android.annotation.SuppressLint;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -11,10 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
+
+import java.util.Locale;
 
 public class EndScreen extends MyAbstractScreen {
+    private final String currentUser;
+
     int level;
     int starNum;
     long startTime;
@@ -33,16 +37,17 @@ public class EndScreen extends MyAbstractScreen {
     TextButton mainMenuButton, retryButton, nextLevelButton;
 
 
-    public EndScreen(final GameApp gameApp, int level, double lastScore, double totalLevelScore, boolean win) {
-        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
+    public EndScreen(LlamaUtil llamaUtil, int level, double lastScore, double totalLevelScore, boolean win) {
+        super(llamaUtil, GameApp.WIDTH, GameApp.HEIGHT);
         this.level = level;
         this.lastScore = lastScore;
         this.totalLevelScore = totalLevelScore;
         this.win = win;
 
+        this.currentUser = llamaUtil.getCurrentUser();
+
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public void show() {
         startTime = System.currentTimeMillis();
@@ -50,31 +55,32 @@ public class EndScreen extends MyAbstractScreen {
         endStage = new Stage(new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
         endTable = new Table();
 
-        scoreLabelSkin = assets.getSkin("justText");
-        optionButtonsSkin = assets.getSkin("bigButton");
+        scoreLabelSkin = llamaUtil.getAssetManager().getSkin("justText");
+        optionButtonsSkin = llamaUtil.getAssetManager().getSkin("bigButton");
 
         if (level > -1) {
             starArray = new Image[3];
 
             if (!win) {
-                scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE LEVEL %d: %.1f", lastScore, level, Settings.getLevelBestScore(level)), scoreLabelSkin);
-                //if (true) {
-                if (Settings.checkSetNewUserBestScore(level, lastScore)) {
+                scoreLabel = new Label(String.format(Locale.ENGLISH, "SCORE: %.1f - BEST SCORE LEVEL %d: %.1f",
+                        lastScore, level, llamaUtil.getLlamaDbHandler().getLevelBestScore(currentUser, level)), scoreLabelSkin);
+                if (llamaUtil.getLlamaDbHandler().checkSetNewUserBestScore(currentUser, level, lastScore)) {
                     System.out.println("NEW BEST SCORE: " + lastScore);
                 } else {
                     System.out.println("SCORE: " + lastScore);
                 }
             } else {
-                Settings.checkSetNewUserBestScore(level, totalLevelScore);
-                Settings.updateUserMaxLevel();
+                llamaUtil.getLlamaDbHandler().checkSetNewUserBestScore(currentUser, level, totalLevelScore);
+                llamaUtil.getLlamaDbHandler().updateUserMaxLevel(currentUser);
                 scoreLabel = new Label("LEVEL COMPLETED!", scoreLabelSkin);
             }
         } else {
             // check for new record in endless game mode
-            if (Settings.checkSetNewUserBestScore(-1, lastScore)) {
-                scoreLabel = new Label(String.format("NEW ENDLESS BEST SCORE! %.1f", lastScore), scoreLabelSkin);
+            if (llamaUtil.getLlamaDbHandler().checkSetNewUserBestScore(currentUser,-1, lastScore)) {
+                scoreLabel = new Label(String.format(Locale.ENGLISH, "NEW ENDLESS BEST SCORE! %.1f", lastScore), scoreLabelSkin);
             } else {
-                scoreLabel = new Label(String.format("SCORE: %.1f - BEST SCORE: %.1f", lastScore, Settings.getLevelBestScore(-1)), scoreLabelSkin);
+                scoreLabel = new Label(String.format(Locale.ENGLISH, "SCORE: %.1f - BEST SCORE: %.1f",
+                        lastScore, llamaUtil.getLlamaDbHandler().getLevelBestScore(currentUser,-1)), scoreLabelSkin);
             }
         }
 
@@ -96,13 +102,13 @@ public class EndScreen extends MyAbstractScreen {
                 }
             }
 
-            //System.out.printf("Total level score: %.1f --- , last score: %.1f --- starNum: %d", totalLevelScore, lastScore, starNum);
+            System.out.printf("Total level score: %.1f --- , last score: %.1f --- starNum: %d\n", totalLevelScore, lastScore, starNum);
 
             for (int i = 0; i < 3; ++i) {
                 if (i < starNum) {
-                    starArray[i] = new Image(assets.getTexture("starWon"));
+                    starArray[i] = new Image(llamaUtil.getAssetManager().getTexture("starWon"));
                 } else {
-                    starArray[i] = new Image(assets.getTexture("starLost"));
+                    starArray[i] = new Image(llamaUtil.getAssetManager().getTexture("starLost"));
                 }
             }
 
@@ -126,10 +132,10 @@ public class EndScreen extends MyAbstractScreen {
                 public void run() {
                     // DATABASE OPERATIONS - update level star Number and,
                     // if player got at least 2 stars, unlocks next level
-                    if (starNum > Settings.getLevelStarNum(level))
-                        Settings.setLevelStarNum(level, starNum);
+                    if (starNum > llamaUtil.getLlamaDbHandler().getLevelStarNum(currentUser, level))
+                        llamaUtil.getLlamaDbHandler().setLevelStarNum(currentUser, level, starNum);
                     if (starNum >= 2)
-                        Settings.updateUserMaxLevel();
+                        llamaUtil.getLlamaDbHandler().updateUserMaxLevel(currentUser);
                 }
             }));
 
@@ -160,7 +166,7 @@ public class EndScreen extends MyAbstractScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(llamaUtil));
             }
         });
 
@@ -168,7 +174,7 @@ public class EndScreen extends MyAbstractScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, level));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(llamaUtil, level));
             }
         });
 
@@ -177,7 +183,7 @@ public class EndScreen extends MyAbstractScreen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     super.clicked(event, x, y);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, level + 1));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(llamaUtil, level + 1));
                 }
             });
         }

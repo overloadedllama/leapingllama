@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.stages.UserStage;
 
 public class UserScreen extends MyAbstractScreen {
@@ -15,16 +15,16 @@ public class UserScreen extends MyAbstractScreen {
     Sky sky;
     Batch batch;
 
-    public UserScreen(GameApp gameApp) {
-        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
+    public UserScreen(LlamaUtil llamaUtil) {
+        super(llamaUtil, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
     public void show() {
-        userStage = new UserStage(gameApp);
+        userStage = new UserStage(llamaUtil);
 
-        sky = new Sky(assets.getTexture("sky"));
-        sky.setXSky(Settings.getXSky());
+        sky = new Sky(llamaUtil.getAssetManager().getTexture("sky"));
+        sky.setXSky(llamaUtil.getGameplayManager().getXSky());
         batch = new SpriteBatch();
     }
 
@@ -37,7 +37,7 @@ public class UserScreen extends MyAbstractScreen {
         batch.end();
 
         sky.update();
-        Settings.setXSky(sky.getXSky());
+        llamaUtil.getGameplayManager().setXSky(sky.getXSky());
 
         userStage.renderer();
 

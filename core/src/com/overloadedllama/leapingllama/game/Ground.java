@@ -1,24 +1,23 @@
 package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.physics.box2d.*;
-import com.overloadedllama.leapingllama.assetman.Assets;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
 
-public class Ground extends GameObject{
+public class Ground extends AbstractGameObject {
 
     TextureRegion textureRegion;
 
-    public Ground(float x, float y, float h,  float length, float v, World world, Batch batch, Assets assets) {
-        super(assets.getTexture("ground"), x, y, h, world, batch);
+    public Ground(float x, float y, float h, float length, float velocity, LlamaUtil llamaUtil) {
+        super(GROUND, x, y, h, llamaUtil);
 
         w=length;
 
         texture.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.ClampToEdge);
-
 
         textureRegion = new TextureRegion(texture, 0,0, w , h*2 );
 
@@ -34,7 +33,7 @@ public class Ground extends GameObject{
 
         shape.dispose();
 
-        body.setLinearVelocity(-v, 0f);
+        body.setLinearVelocity(-velocity, 0f);
 
     }
 

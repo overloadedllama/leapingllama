@@ -1,16 +1,18 @@
 package com.overloadedllama.leapingllama.listener;
 
 import com.badlogic.gdx.physics.box2d.*;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.LlamaConstants;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.screens.GameScreen;
 
 public class MyContactListener implements ContactListener, LlamaConstants {
     final GameScreen parent;
+    LlamaUtil llamaUtil;
 
-    public MyContactListener(final GameScreen parent) {
+    public MyContactListener(final GameScreen parent, LlamaUtil llamaUtil) {
         this.parent = parent;
+        this.llamaUtil = llamaUtil;
     }
 
 
@@ -39,29 +41,27 @@ public class MyContactListener implements ContactListener, LlamaConstants {
     public void postSolve(Contact contact, ContactImpulse impulse) {    }
 
 
-    private boolean isBulletEnemyContact(Fixture a, Fixture b) {
+    private void isBulletEnemyContact(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Bullet) && (b.getUserData() instanceof Enemy)) {
             ((Bullet) a.getUserData()).setDestroyable(true);
             ((Enemy) b.getUserData()).decreaseNumLife();
             parent.updateEnemiesKilled();
-            return true;
+            return;
         }
 
         if ((b.getUserData() instanceof Bullet) && (a.getUserData() instanceof Enemy)) {
             ((Bullet) b.getUserData()).setDestroyable(true);
             ((Enemy) a.getUserData()).decreaseNumLife();
             parent.updateEnemiesKilled();
-            return true;
         }
 
-        return false;
     }
 
     /**
      * if there is any llama-enemy contact, check llama is punching, and in that
      * case the enemy is destroyed, else game over
      */
-    private boolean isLlamaEnemyContact(Fixture a, Fixture b) {
+    private void isLlamaEnemyContact(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Enemy)
                 || (a.getUserData() instanceof Enemy && b.getUserData() instanceof Llama)) {
 
@@ -74,17 +74,16 @@ public class MyContactListener implements ContactListener, LlamaConstants {
                 } else {
                     ((Enemy) b.getUserData()).setDestroyable(true);
                 }
-                Settings.playSound("punch");
+                llamaUtil.getSoundManager().playSound(PUNCH);
             } else {
+                System.out.println("COLLISION LLAMA-ENEMY DETECTED");
                 parent.gameOver();
             }
 
-            return true;
         }
-        return false;
     }
 
-    private boolean isCoinCollected(Fixture a, Fixture b) {
+    private void isCoinCollected(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Coin)
                 || (a.getUserData() instanceof Coin && b.getUserData() instanceof Llama)) {
 
@@ -100,12 +99,10 @@ public class MyContactListener implements ContactListener, LlamaConstants {
 
             }
             parent.updateCoinsTaken();
-            return true;
         }
-        return false;
     }
 
-    private boolean isAmmoCollected(Fixture a, Fixture b) {
+    private void isAmmoCollected(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Ammo)
                 || (a.getUserData() instanceof Ammo && b.getUserData() instanceof Llama)) {
 
@@ -120,18 +117,15 @@ public class MyContactListener implements ContactListener, LlamaConstants {
             }
 
             parent.updateAmmosTaken();
-            return true;
         }
-        return false;
     }
 
-    private boolean isNotObstacleDodged(Fixture a, Fixture b) {
+    private void isNotObstacleDodged(Fixture a, Fixture b) {
         if ((a.getUserData() instanceof Llama && b.getUserData() instanceof Obstacle)
                 || (a.getUserData() instanceof Obstacle && b.getUserData() instanceof Llama)) {
 
+            System.out.println("COLLISION LLAMA-OBSTACLE DETECTED");
             parent.gameOver();
-            return true;
         }
-        return false;
     }
 }

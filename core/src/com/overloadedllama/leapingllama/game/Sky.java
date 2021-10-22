@@ -2,8 +2,6 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.viewport.Viewport;
-import com.overloadedllama.leapingllama.assetman.Assets;
 
 import static com.badlogic.gdx.graphics.Texture.TextureWrap.Repeat;
 

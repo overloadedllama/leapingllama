@@ -6,13 +6,25 @@ public interface LlamaConstants {
 
     String LEVEL_LENGTH = "levelLength";
 
+    // characters names
+    String LLAMA = "llama";
+    String ALIEN = "alien";
+    String ALIEN_CYAN = "alienCyan";
+    String ALIEN_CYAN_DEAD = "alienCyanDead";
+    String ALIEN_YELLOW = "alienYellow";
+    String ALIEN_YELLOW_DEAD = "alienYellowDead";
+    String ALIEN_ORANGE_FLYING = "alienOrangeFlying";
+    String PLATFORM = "platform";
+    String OBSTACLE = "obstacle";
+    String BULLET = "bullet";
+
     // main actor Strings
     String ENEMIES = "enemies";
     String COINS = "coins";
     String AMMO = "ammo";
     String PLATFORM1 = "platformI";
     String PLATFORM2 = "platformII";
-    String GROUND = "grounds";
+    String GROUNDS = "grounds";
     String OBSTACLES = "obstacles";
 
     // support element Strings
@@ -49,5 +61,12 @@ public interface LlamaConstants {
     String SOUND = "sound";
     String GORE = "gore";
     String GAME_MODE_ = "gameMode";
+
+    // Textures
+    String LLAMA_STANDING = "llamaStanding";
+    String GROUND = "ground";
+
+    // Skins
+    String COIN = "coin";
 
 }

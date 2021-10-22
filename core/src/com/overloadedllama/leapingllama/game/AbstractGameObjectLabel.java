@@ -1,24 +1,23 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.Align;
-import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
+import com.overloadedllama.leapingllama.stages.GameStage;
 
-public class GameObjectLabel extends GameObject {
+public abstract class AbstractGameObjectLabel extends AbstractGameObject {
 
     int quantity;
     Label actor;
     Skin skin;
 
-    ButtonsStagePlay stagePlay;
+    GameStage stagePlay;
 
-    public GameObjectLabel(Skin skin, float x, float y, float h, int quantity, World world, Batch batch, ButtonsStagePlay stage, String fontName) {
-        super(x, y, h, world, batch);
+    public AbstractGameObjectLabel(String name, float x, float y, float h, int quantity, GameStage stage, String fontName, LlamaUtil llamaUtil) {
+        super(name, x, y, h, llamaUtil);
         this.quantity = quantity;
-        this.skin = skin;
+        this.skin = llamaUtil.getAssetManager().getSkin(name);
         stagePlay = stage;
 
         skin.getFont(fontName).setUseIntegerPositions(false);
@@ -38,8 +37,6 @@ public class GameObjectLabel extends GameObject {
     public void setPosition (float x, float y) {
         this.x = x;
         this.y = y;
-
-
         actor.setPosition(x - w/2, y - h/2);
     }
 
@@ -47,15 +44,12 @@ public class GameObjectLabel extends GameObject {
     public void setPosition (float x, float y, float d) {
         this.x = x;
         this.y = y;
-
-
         actor.setPosition(x - w/2, y -h/2);
     }
 
 
     @Override
     public void draw() {
-
         actor.draw(batch, 1);
     }
 
@@ -63,7 +57,4 @@ public class GameObjectLabel extends GameObject {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
 }

@@ -6,8 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.screens.MainMenuScreen;
 
 import java.util.ArrayList;
@@ -44,20 +45,20 @@ public class UserStage extends MyAbstractStage {
     private Skin justTextSkin;
     private Skin textButtonFieldLabelSkin;
 
-    public UserStage(GameApp gameApp) {
-        super(gameApp);
+    public UserStage(LlamaUtil llamaUtil) {
+        super(llamaUtil);
 
         chooseUserTable = new Table();
         scrollTable = new Table();
 
-        justTextSkin = assets.getSkin("justText");
-        textButtonFieldLabelSkin = assets.getSkin("bigButton");
-        backButtonSkin = assets.getSkin("backButton");
+        justTextSkin = llamaUtil.getAssetManager().getSkin("justText");
+        textButtonFieldLabelSkin = llamaUtil.getAssetManager().getSkin("bigButton");
+        backButtonSkin = llamaUtil.getAssetManager().getSkin("backButton");
 
         backButton = new ImageButton(backButtonSkin);
         userLabel = new Label("CURRENT USER: ", justTextSkin);
         userLabel.setAlignment(Align.center);
-        userTextField = new TextField("" + Settings.getCurrentUser(), textButtonFieldLabelSkin);
+        userTextField = new TextField("" + currentUser, textButtonFieldLabelSkin);
         userTextField.setAlignment(Align.center);
         chooseUserTable.top();
         chooseUserTable.add(backButton).padTop(pad).align(Align.left);
@@ -72,7 +73,7 @@ public class UserStage extends MyAbstractStage {
 
         // Users
         deviceUsers = new TextButton("DEVICE USERS", textButtonFieldLabelSkin);
-        String[] users = Settings.getAllUsers();
+        String[] users = llamaUtil.getLlamaDbHandler().getAllUsers();
         userButtons = new ArrayList<>();
         for (String user : users) {
             userButtons.add(new TextButton(user, textButtonFieldLabelSkin));
@@ -99,9 +100,9 @@ public class UserStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                Settings.insertNewUser(userTextField.getText());
-                Settings.setCurrentUser(userTextField.getText());
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
+                llamaUtil.getLlamaDbHandler().insertNewUser(userTextField.getText());
+                llamaUtil.setCurrentUser(userTextField.getText());
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(llamaUtil));
             }
         });
 
@@ -119,8 +120,8 @@ public class UserStage extends MyAbstractStage {
                     super.clicked(event, x, y);
                     setUser = true;
                     System.out.println("STRING: " + button.getText().toString());
-                    Settings.setCurrentUser(button.getText().toString());
-                    System.out.println("CURRENT USER: " + Settings.getCurrentUser());
+                    llamaUtil.setCurrentUser(button.getText().toString());
+                    System.out.println("CURRENT USER: " + llamaUtil.getCurrentUser());
 
                 }
             });
@@ -130,7 +131,7 @@ public class UserStage extends MyAbstractStage {
     public void renderer() {
         super.renderer();
         if (setUser) {
-            userTextField.setText(Settings.getCurrentUser());
+            userTextField.setText(llamaUtil.getCurrentUser());
             setUser = false;
         }
     }

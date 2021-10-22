@@ -1,1 +1,1 @@
-![](/android/assets/gameLogo.png)
+![](/android/llamaAssetManager/gameLogo.png)

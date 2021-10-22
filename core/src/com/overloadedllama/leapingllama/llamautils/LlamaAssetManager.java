@@ -1,4 +1,4 @@
-package com.overloadedllama.leapingllama.assetman;
+package com.overloadedllama.leapingllama.llamautils;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.SkinLoader;
@@ -15,14 +15,26 @@ import com.overloadedllama.leapingllama.LlamaConstants;
  * Sounds and Musics are managed only in Settings class using playSound(),
  * all other assets could be obtained from the methods below
  */
-public class Assets implements LlamaConstants {
+public class LlamaAssetManager implements LlamaConstants {
     private final AssetManager manager;
+    private static LlamaAssetManager uniqueInstance = null;
 
-    public Assets() {
+    private final String ENEMIES__ = "enemies/";
+    private final String png = ".png";
+
+
+    private LlamaAssetManager() {
         this.manager = new AssetManager();
     }
 
-    public void loadGameAssets() {
+    public static LlamaAssetManager getUniqueInstance() {
+        if (uniqueInstance == null) {
+            uniqueInstance = new LlamaAssetManager();
+        }
+        return uniqueInstance;
+    }
+
+    public void loadGameTexturesSkins() {
         SkinLoader.SkinParameter crouchButton = new SkinLoader.SkinParameter("ui/crouchButton.atlas");
         SkinLoader.SkinParameter fistButton = new SkinLoader.SkinParameter("ui/fistButton.atlas");
         SkinLoader.SkinParameter jumpButton = new SkinLoader.SkinParameter("ui/jumpButton.atlas");
@@ -45,25 +57,17 @@ public class Assets implements LlamaConstants {
         manager.load("world/ground.png", Texture.class);
         manager.load("world/platform.png", Texture.class);
         manager.load("enemies/alienYellow.png", Texture.class);
+        manager.load(ENEMIES__ + ALIEN_YELLOW_DEAD + png, Texture.class);
+        manager.load(ENEMIES__ + ALIEN_CYAN_DEAD + png, Texture.class);
 
         manager.load("llama/llamaWalking.png", Texture.class);
         manager.load("enemies/alienYellowWalking.png", Texture.class);
         manager.load("enemies/alienCyanWalking.png", Texture.class);
         manager.load("enemies/alienOrangeFlyingMoving.png", Texture.class);
 
-        // loading sounds
-        manager.load("sounds/punch.wav", Sound.class);
-        manager.load("sounds/laser.wav", Sound.class);
-        manager.load("sounds/rifleLoad.wav", Sound.class);
-        manager.load("sounds/alienGrowl.wav", Sound.class);
-
-        // loading musics
-        manager.load("musics/gameMusic1.mp3", Music.class);
-
     }
 
-
-    public void unloadGameAssets() {
+    public void unloadGameTexturesSkins() {
         // unload skins
         manager.unload("ui/crouchButton.json");
         manager.unload("ui/fistButton.json");
@@ -87,19 +91,44 @@ public class Assets implements LlamaConstants {
         manager.unload("enemies/alienCyanWalking.png");
         manager.unload("enemies/alienYellowWalking.png");
         manager.unload("enemies/alienOrangeFlyingMoving.png");
+    }
 
+    public void loadSounds() {
+        // loading sounds
+        manager.load("sounds/cashRegister.wav", Sound.class);
+        manager.load("sounds/punch.wav", Sound.class);
+        manager.load("sounds/laser.wav", Sound.class);
+        manager.load("sounds/rifleLoad.wav", Sound.class);
+        manager.load("sounds/alienGrowl.wav", Sound.class);
+    }
+
+    public void unloadSounds() {
         // unload sounds
+        manager.unload("sounds/cashRegister.wav");
         manager.unload("sounds/punch.wav");
         manager.unload("sounds/laser.wav");
         manager.unload("sounds/rifleLoad.wav");
         manager.unload("sounds/alienGrowl.wav");
-
-        // unload musics
-        manager.unload("music/gameMusic.mp3");
-
     }
-    
-    public void loadBasicAssets() {
+
+    public void loadMainMenuMusic() {
+        manager.load("musics/mainMenuMusic.mp3", Music.class);
+    }
+
+    public void unloadMainMenuMusic() {
+        manager.unload("musics/mainMenuMusic.mp3");
+    }
+
+    public void loadGameMusic() {
+        manager.load("musics/gameMusic1.mp3", Music.class);
+    }
+
+    public void unloadGameMusic() {
+        manager.unload("music/gameMusic.mp3");
+    }
+
+
+    public void loadBasicTexturesSkins() {
         SkinLoader.SkinParameter bigButton = new SkinLoader.SkinParameter("ui/bigButton.atlas");
         SkinLoader.SkinParameter backButton = new SkinLoader.SkinParameter("ui/backButton.atlas");
         SkinLoader.SkinParameter coin = new SkinLoader.SkinParameter("ui/coin.atlas");
@@ -119,18 +148,11 @@ public class Assets implements LlamaConstants {
         manager.load("ui/rightArrow.json", Skin.class, rightArrow);
         manager.load("ui/hugeButton.json", Skin.class, hugeButton);
 
-
         // loading textures
         manager.load("world/sky.png", Texture.class);
         manager.load("screen_backgrounds/quiteBlack.png", Texture.class);
         manager.load("world/starWon.png", Texture.class);
         manager.load("world/starLost.png", Texture.class);
-
-        // loading sounds
-        manager.load("sounds/cashRegister.wav", Sound.class);
-
-        // loading musics
-        manager.load("musics/mainMenuMusic.mp3", Music.class);
 
     }
 
@@ -159,7 +181,9 @@ public class Assets implements LlamaConstants {
         switch (texture) {
             case "alienOrangeFlying": return manager.get("enemies/alienOrangeFlying.png");
             case "alienCyan": return manager.get("enemies/alienCyan.png");
+            case ALIEN_CYAN_DEAD: return manager.get(ENEMIES__ + ALIEN_CYAN_DEAD + png);
             case "alienYellow": return manager.get("enemies/alienYellow.png");
+            case ALIEN_YELLOW_DEAD: return manager.get(ENEMIES__ + ALIEN_YELLOW_DEAD + png);
             case "alienCyanWalking": return manager.get("enemies/alienCyanWalking.png");
             case "alienYellowWalking": return manager.get("enemies/alienYellowWalking.png");
             case "alienOrangeFlyingMoving": return manager.get("enemies/alienOrangeFlyingMoving.png");
@@ -175,7 +199,7 @@ public class Assets implements LlamaConstants {
             case "starWon": return manager.get("world/starWon.png");
             case "starLost": return manager.get("world/starLost.png");
             default:
-                throw new IllegalArgumentException("Texture " + texture + "doesn't exist.");
+                throw new IllegalArgumentException("Texture " + texture + " doesn't exist.");
         }
     }
 

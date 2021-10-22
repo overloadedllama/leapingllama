@@ -3,10 +3,10 @@ package com.overloadedllama.leapingllama.screens;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.ScreenUtils;
-import com.overloadedllama.leapingllama.GameApp;
 
+import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.stages.MainMenuStage;
 
 // todo fix screen size
@@ -17,17 +17,17 @@ public class MainMenuScreen extends MyAbstractScreen {
     Sky sky;
     Batch batch;
 
-    public MainMenuScreen(final GameApp gameApp) {
-        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
+    public MainMenuScreen(LlamaUtil llamaUtil) {
+        super(llamaUtil, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
     public void show() {
-        mainMenuStage = new MainMenuStage(gameApp);
-        Settings.playMusic(gameApp.getAssets().MAIN_MENU_MUSIC);
+        mainMenuStage = new MainMenuStage(llamaUtil);
+        llamaUtil.getMusicManager().playMusic(MAIN_MENU_MUSIC);
 
-        sky = new Sky(assets.getTexture("sky"));
-        sky.setXSky(Settings.getXSky());
+        sky = new Sky(llamaUtil.getAssetManager().getTexture("sky"));
+        sky.setXSky(llamaUtil.getGameplayManager().getXSky());
         batch = new SpriteBatch();
 
     }
@@ -41,7 +41,7 @@ public class MainMenuScreen extends MyAbstractScreen {
         batch.end();
 
         sky.update();
-        Settings.setXSky(sky.getXSky());
+        llamaUtil.getGameplayManager().setXSky(sky.getXSky());
 
         mainMenuStage.renderer();
 

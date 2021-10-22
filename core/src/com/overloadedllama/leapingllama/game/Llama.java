@@ -2,13 +2,12 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.*;
-import com.overloadedllama.leapingllama.assetman.Assets;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
-public class Llama extends GameObject {
+public class Llama extends AbstractGameObject {
 
     private static final int FRAME_COLS = 4, FRAME_ROWS = 1;
 
@@ -20,9 +19,8 @@ public class Llama extends GameObject {
     Animation<TextureRegion> walkAnimation; // Must declare frame type (TextureRegion)
     Texture walkSheet;
 
-    public Llama(float x, float y, float h, World world, Batch batch, Assets assets) {
-        super(assets.getTexture("llamaStanding"), x, y, h, world, batch);
-        this.assets = assets;
+    public Llama(float x, float y, float h, LlamaUtil llamaUtil) {
+        super(LLAMA_STANDING, x, y, h, llamaUtil);
 
         PolygonShape llamaShape = new PolygonShape();
         llamaShape.setAsBox(w / 2, h / 2);
@@ -32,7 +30,7 @@ public class Llama extends GameObject {
         isStanding = true;
 
         // initializing Llama Animation
-        walkSheet = assets.getTexture("llamaWalking");
+        walkSheet = llamaUtil.getAssetManager().getTexture("llamaWalking");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet,
                 walkSheet.getWidth() / FRAME_COLS,
                 walkSheet.getHeight() / FRAME_ROWS);
@@ -70,7 +68,7 @@ public class Llama extends GameObject {
 
             this.body.setTransform(x, y - h / 2, 0);
 
-            sprite.set(new Sprite(assets.getTexture("llamaCrouching")));
+            sprite.set(new Sprite(llamaUtil.getAssetManager().getTexture("llamaCrouching")));
 
         } else {
             // stands up
@@ -78,7 +76,7 @@ public class Llama extends GameObject {
 
             this.body.setTransform(x, y + h / 4, 0);
 
-            sprite.set(new Sprite(assets.getTexture("llamaStanding")));
+            sprite.set(new Sprite(llamaUtil.getAssetManager().getTexture("llamaStanding")));
         }
 
         sprite.setSize(w, h);
@@ -104,11 +102,11 @@ public class Llama extends GameObject {
 
         if (punch) {
             shape.setAsBox(w / 2 + 0.1f, h / 2);
-            sprite.set(new Sprite(assets.getTexture("llamaPunching")));
+            sprite.set(new Sprite(llamaUtil.getAssetManager().getTexture("llamaPunching")));
             isPunching = true;
         } else {
             shape.setAsBox(w / 2, h / 2);
-            sprite.set(new Sprite(assets.getTexture("llamaStanding")));
+            sprite.set(new Sprite(llamaUtil.getAssetManager().getTexture("llamaStanding")));
             isPunching = false;
         }
 

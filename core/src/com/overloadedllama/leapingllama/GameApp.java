@@ -5,25 +5,23 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.screens.LoadScreen;
 
 
 
 public class GameApp extends Game {
+	public final Context context;
 
 	public SpriteBatch batch;
 	public BitmapFont font;
-	private final Assets assets;
 
 	public final static float WIDTH = 1440f;
 	public final static float HEIGHT = 720f;
 
 
 	public GameApp(Context context) {
-		this.assets = new Assets();
-		new Settings(context, assets);
+		this.context = context;
 	}
 
 	@Override
@@ -32,7 +30,7 @@ public class GameApp extends Game {
 		font = new BitmapFont(Gdx.files.internal("vcrosdmono.fnt")); // using a free font downloaded from dafont.com and then converted into a .fnt (32bit, white text with alpha) using a free tool called bmfont.
 
 
-		this.setScreen(new LoadScreen(this));
+		setScreen(new LoadScreen(LlamaUtil.getUniqueInstance(this)));
 	}
 
 	@Override
@@ -45,8 +43,6 @@ public class GameApp extends Game {
 		batch.dispose();
 		font.dispose();
 	}
-
-	public Assets getAssets() { return assets; }
 
 }
 

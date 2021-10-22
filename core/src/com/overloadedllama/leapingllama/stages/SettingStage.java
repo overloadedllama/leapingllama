@@ -9,45 +9,45 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.screens.MainMenuScreen;
 
 public class SettingStage extends MyAbstractStage {
 
-    private Table settingTable;
-    private Table backButtonTable;
+    private final Table settingTable;
+    private final Table backButtonTable;
 
     private final String ON = "on";
     private final String OFF = "off";
 
-    private ImageButton backButton;
+    private final ImageButton backButton;
 
     // TextButtons
-    private TextButton musicButton;
-    private TextButton soundButton;
-    private TextButton lxDxButton;
-    private TextButton goreButton;
+    private final TextButton musicButton;
+    private final TextButton soundButton;
+    private final TextButton lxDxButton;
+    private final TextButton goreButton;
 
     // Skins
-    private Skin textButtonSkin;
-    private Skin backButtonSkin;
+    private final Skin textButtonSkin;
+    private final Skin backButtonSkin;
 
 
-    public SettingStage(GameApp gameApp) {
-        super(gameApp);
+    public SettingStage(LlamaUtil llamaUtil) {
+        super(llamaUtil);
 
         settingTable = new Table();
         backButtonTable = new Table();
 
         // creation of the Skins
-        textButtonSkin = assets.getSkin("bigButton");
-        backButtonSkin = assets.getSkin("backButton");
+        textButtonSkin = llamaUtil.getAssetManager().getSkin("bigButton");
+        backButtonSkin = llamaUtil.getAssetManager().getSkin("backButton");
 
         // creation of TextButtons
-        musicButton = new TextButton("MUSIC: " + Settings.getStringSetting(MUSIC), textButtonSkin);
-        soundButton = new TextButton("SOUND: " + Settings.getStringSetting(SOUND), textButtonSkin);
-        lxDxButton = new TextButton(Settings.getStringSetting(GAME_MODE_), textButtonSkin);
-        goreButton = new TextButton("GORE: " + Settings.getStringSetting(GORE), textButtonSkin);
+        musicButton = new TextButton("MUSIC: " + llamaUtil.getStringSetting(MUSIC), textButtonSkin);
+        soundButton = new TextButton("SOUND: " + llamaUtil.getStringSetting(SOUND), textButtonSkin);
+        lxDxButton = new TextButton(llamaUtil.getStringSetting(GAME_MODE_), textButtonSkin);
+        goreButton = new TextButton("GORE: " + llamaUtil.getStringSetting(GORE), textButtonSkin);
         backButton = new ImageButton(backButtonSkin);
         backButton.setDisabled(false);
 
@@ -75,20 +75,20 @@ public class SettingStage extends MyAbstractStage {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
+                ((Game)Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(llamaUtil));
             }
         });
 
         musicButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Settings.isMUSIC()) {
-                    Settings.setMUSIC(false);
-                    Settings.stopMusic(MAIN_MENU_MUSIC);
+                if (llamaUtil.getMusicManager().isMUSIC()) {
+                    llamaUtil.getMusicManager().setMUSIC(false);
+                    llamaUtil.getMusicManager().stopMusic(MAIN_MENU_MUSIC);
                     musicButton.getLabel().setText("MUSIC: " + OFF);
                 } else {
-                    Settings.setMUSIC(true);
-                    Settings.playMusic(MAIN_MENU_MUSIC);
+                    llamaUtil.getMusicManager().setMUSIC(true);
+                    llamaUtil.getMusicManager().playMusic(MAIN_MENU_MUSIC);
                     musicButton.getLabel().setText("MUSIC: " + ON);
                 }
             }
@@ -97,11 +97,11 @@ public class SettingStage extends MyAbstractStage {
         soundButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Settings.isSOUND()) {
-                    Settings.setSOUND(false);
+                if (llamaUtil.getSoundManager().isSOUND()) {
+                    llamaUtil.getSoundManager().setSOUND(false);
                     soundButton.getLabel().setText("SOUND: " + OFF);
                 } else {
-                    Settings.setSOUND(true);
+                    llamaUtil.getSoundManager().setSOUND(true);
                     soundButton.getLabel().setText("SOUND: " + ON);
                 }
             }
@@ -110,14 +110,14 @@ public class SettingStage extends MyAbstractStage {
         lxDxButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (Settings.getStringSetting(GAME_MODE_).equals("LEFT HANDED")) {
-                    Settings.setGameMode();
+                if (llamaUtil.getStringSetting(GAME_MODE_).equals("LEFT HANDED")) {
+                    llamaUtil.getGameplayManager().setGameMode();
                     lxDxButton.setText("RIGHT HANDED");
-                } else if (Settings.getStringSetting(GAME_MODE_).equals("RIGHT HANDED")){
-                    Settings.setGameMode();
+                } else if (llamaUtil.getStringSetting(GAME_MODE_).equals("RIGHT HANDED")){
+                    llamaUtil.getGameplayManager().setGameMode();
                     lxDxButton.setText("GESTURES");
                 } else {
-                    Settings.setGameMode();
+                    llamaUtil.getGameplayManager().setGameMode();
                     lxDxButton.setText("LEFT HANDED");
                 }
             }
@@ -127,11 +127,11 @@ public class SettingStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                if (Settings.isGORE()) {
-                    Settings.setGORE(false);
+                if (llamaUtil.getGameplayManager().isGORE()) {
+                    llamaUtil.getGameplayManager().setGORE(false);
                     goreButton.setText("GORE: " + OFF);
                 } else {
-                    Settings.setGORE(true);
+                    llamaUtil.getGameplayManager().setGORE(true);
                     goreButton.setText("GORE: " + ON);
                 }
             }

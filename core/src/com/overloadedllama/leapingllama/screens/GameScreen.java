@@ -6,17 +6,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.LlamaConstants;
+import com.overloadedllama.leapingllama.LlamaNumericConstants;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.listener.MyContactListener;
 import com.overloadedllama.leapingllama.game.*;
 import com.overloadedllama.leapingllama.jsonUtil.LevelParser;
 import com.overloadedllama.leapingllama.jsonUtil.QueueObject;
-import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
+import com.overloadedllama.leapingllama.stages.GameStage;
 
 import java.util.*;
 
 
-public class GameScreen extends MyAbstractScreen {
+public class GameScreen extends MyAbstractScreen implements LlamaNumericConstants {
     // Game Screen Constants
     static final int CHUNK_LENGTH = 50;
     static final float STEP_TIME = 1.0f / 60.0f;
@@ -43,7 +45,7 @@ public class GameScreen extends MyAbstractScreen {
     LevelParser levelParser;
     boolean levelLoaded = true;
 
-    ButtonsStagePlay stageUi;
+    GameStage stageUi;
     HashMap<String, Boolean> actions;
 
     World world;
@@ -52,6 +54,9 @@ public class GameScreen extends MyAbstractScreen {
     Box2DDebugRenderer debugRenderer;
 
     // Game Objects
+    private final GameObjectFactory goFactory;
+    private final LabelObjectFactory loFactory;
+
     Llama llama;
     static ArrayList<Enemy> enemies;
     static ArrayList<Bullet> bullets;
@@ -75,7 +80,6 @@ public class GameScreen extends MyAbstractScreen {
 
     float llamaX = 3;
     float llamaH = 1.6f;
-    float velocity = 2;
 
     int levelNumber;
     float difficulty = 0.05f;
@@ -98,9 +102,13 @@ public class GameScreen extends MyAbstractScreen {
 
     // METHODS
 
-    public GameScreen(final GameApp gameApp, int levelNumber) {
-        super(gameApp, GameApp.WIDTH / UNITS_PER_METER, GameApp.HEIGHT / UNITS_PER_METER);
+    public GameScreen(LlamaUtil llamaUtil, int levelNumber) {
+        super(llamaUtil, GameApp.WIDTH / UNITS_PER_METER, GameApp.HEIGHT / UNITS_PER_METER );
+        System.out.println("Init of GameScreen");
         this.levelNumber = levelNumber;
+
+        goFactory = new GameObjectFactory(llamaUtil);
+        loFactory = new LabelObjectFactory(llamaUtil, null);
 
         enemies = new ArrayList<>();
         timeLastEnemies = 0;
@@ -108,7 +116,7 @@ public class GameScreen extends MyAbstractScreen {
         debugRenderer = new Box2DDebugRenderer();
         camera.update();
 
-        sky = new Sky(gameApp.getAssets().getTexture("sky"));
+        sky = new Sky(llamaUtil.getAssetManager().getTexture("sky"));
 
         actions = new HashMap<>();
 
@@ -123,6 +131,8 @@ public class GameScreen extends MyAbstractScreen {
             queue = levelParser.getQueue();
 
         }
+
+        System.out.println("Init of GameScreen completed");
     }
 
     @Override
@@ -130,14 +140,18 @@ public class GameScreen extends MyAbstractScreen {
         Box2D.init();
 
         world = new World(new Vector2(0f, -9.8f), true);
-        world.setContactListener(new MyContactListener(this));
+        world.setContactListener(new MyContactListener(this, llamaUtil));
+
+        llamaUtil.getGameplayManager().setWorld(world);
 
         distance = 0;
-        llama = new Llama(llamaX, 1f, llamaH, world, gameApp.batch, assets);
+        llama = (Llama) goFactory.createGameObject(LLAMA, llamaX, 1f, llamaH, 0);
+
         tube = new Tube(llamaX, 1f, llamaH);
 
-        stageUi = new ButtonsStagePlay(gameApp);
+        stageUi = new GameStage(llamaUtil);
         stageUi.setUpButtons();
+        loFactory.setStage(stageUi);
 
         enemies = new ArrayList<>();
         timeLastEnemies = System.currentTimeMillis();
@@ -150,19 +164,22 @@ public class GameScreen extends MyAbstractScreen {
         obstacles = new ArrayList<>();
         enemiesDead = new ArrayList<>();
 
-        if (Settings.hasBonusAmmo()) {
+        if (llamaUtil.getGameplayManager().hasBonusAmmo()) {
             ammunition = 5;
-            Settings.setBonusAmmo();
+            llamaUtil.getGameplayManager().setBonusAmmo();
             stageUi.setBullets(5);
         }
         loadLevel(distance);
 
         //final ground, for ending the game with a good ux
         if (levelNumber!=-1) {
-            grounds.add(new Ground((float) (levelLength + llamaToEndScreenDistance + initialGroundLength/2), 0, 0.6f, initialGroundLength, velocity, world, gameApp.batch, assets));
+            //grounds.add(new Ground((float) (levelLength + llamaToEndScreenDistance + initialGroundLength/2), 0, 0.6f, initialGroundLength, VELOCITY, world, llamaUtil.getGameApp().batch, llamaUtil.getAssetManager()));
+            grounds.add((Ground) goFactory.createGameObject(GROUNDS, (float) (levelLength + llamaToEndScreenDistance + initialGroundLength/2),
+                    0, 0.6f, initialGroundLength));
         }
-        Settings.playMusic(gameApp.getAssets().GAME_MUSIC1);
+        llamaUtil.getMusicManager().playMusic(LlamaConstants.GAME_MUSIC1);
 
+        System.out.println("Show of GameScreen completed");
     }
 
     @Override
@@ -171,10 +188,7 @@ public class GameScreen extends MyAbstractScreen {
 
         switch(state) {
             case RUN: case END:
-
                 stepWorld();
-                
-
 
                 if (timePunching != 0) {
                     if (System.currentTimeMillis() - timePunching > 300 && llama.isStanding()){
@@ -184,19 +198,17 @@ public class GameScreen extends MyAbstractScreen {
 
                 updatePosition();
                 removeObjects();
-                //loadLevel(distance%CHUNK_LENGTH);
-                //llama.preserveX(llamaX);
+                llama.preserveX(llamaX);
 
                 if(state == State.END){
-                    if (cameraMovement > llamaToEndScreenDistance)
+                    if (cameraMovement > llamaToEndScreenDistance) {
                         callEndScreen(true);
+                    }
 
-                    cameraMovement+=0.05;
-                    llamaX+=0.05;
-                    llama.preserveX(llamaX);
+                    cameraMovement += 0.05;
+                    llamaX += 0.05;
 
-                }else{
-                    llama.preserveX(llamaX);
+                } else {
 
                     if (levelNumber!=-1) {
                         checkWin();
@@ -204,18 +216,12 @@ public class GameScreen extends MyAbstractScreen {
                     }
                 }
 
-
                 break;
-
-            case PAUSE:
-                break;
-
-
         }
 
-        gameApp.batch.begin();
+        llamaUtil.getGameApp().batch.begin();
 
-        sky.draw(gameApp.batch, viewport.getScreenWidth()/UNITS_PER_METER + 2, METER_HEIGHT);
+        sky.draw(llamaUtil.getGameApp().batch, viewport.getScreenWidth()/UNITS_PER_METER + 2, METER_HEIGHT);
 
         for (Ground ground : grounds)
             ground.draw();
@@ -234,16 +240,16 @@ public class GameScreen extends MyAbstractScreen {
         for (EnemyDied enemy: enemiesDead){
             enemy.draw(delta);
         }
-        if(tube.isAnimationFinished()){
+        if (tube.isAnimationFinished()) {
             llama.draw(stateTime);
         }
 
-        if(!tube.isAnimationFinished()){
+        if (!tube.isAnimationFinished()) {
             tube.update();
-            tube.draw(gameApp.batch);
+            tube.draw(llamaUtil.getGameApp().batch);
         }
 
-        gameApp.batch.end();
+        llamaUtil.getGameApp().batch.end();
 
         stageUi.renderer();
 
@@ -251,8 +257,8 @@ public class GameScreen extends MyAbstractScreen {
         manageActions();
         stageUi.setActions(actions);
 
-        if (levelNumber==-1){
-            if (distance%CHUNK_LENGTH <= 0.1 && !levelLoaded) {
+        if (levelNumber == -1){
+            if (distance % CHUNK_LENGTH <= 0.1 && !levelLoaded) {
                 levelLoaded = true;
                 difficulty+=0.005;
                 levelParser = new LevelParser(difficulty, CHUNK_LENGTH);
@@ -263,9 +269,8 @@ public class GameScreen extends MyAbstractScreen {
             }
         }
 
-
         // decomment next line for rendering the debug frames
-        // debugRenderer.render(world, camera.combined);
+        debugRenderer.render(world, camera.combined);
 
         super.render(delta);
     }
@@ -273,8 +278,8 @@ public class GameScreen extends MyAbstractScreen {
     private void manageActions() {
         if (actions.get(SHOT)) {
             if (ammunition > 0) {
-                bullets.add(new Bullet(llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, world, gameApp.batch, gameApp.getAssets()));
-                Settings.playSound(SHOT);
+                bullets.add((Bullet) goFactory.createGameObject(BULLET, llama.getX()+ llama.getW()/2+ 0.1f, llama.getY()-.1f, 0.1f, 0));
+                llamaUtil.getSoundManager().playSound(SHOT);
                 --ammunition;
                 stageUi.setBullets(ammunition);
             }
@@ -315,9 +320,9 @@ public class GameScreen extends MyAbstractScreen {
             //here there will be to develop the stuff for save the checkpoint;
             state = State.STOPPED;
             actions.put(EXIT, false);
-            Settings.stopMusic(gameApp.getAssets().GAME_MUSIC1);
+            llamaUtil.getMusicManager().stopMusic(GAME_MUSIC1);
             dispose();
-            gameApp.setScreen(new MainMenuScreen(gameApp));
+            llamaUtil.getGameApp().setScreen(new MainMenuScreen(llamaUtil));
         }
     }
 
@@ -354,7 +359,7 @@ public class GameScreen extends MyAbstractScreen {
             accumulator -= STEP_TIME;
 
 
-            if(tube.isAnimationFinished()) {
+            if (tube.isAnimationFinished()) {
                 world.step(STEP_TIME, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
 
                 distance += .05f;
@@ -362,25 +367,19 @@ public class GameScreen extends MyAbstractScreen {
                 stateTime += delta;
             }
 
-                sky.update();
+            sky.update();
 
         }
     }
 
-    /**
-     * Load the level game objects (except llama) based on distance reached by llama
-     *
-     */
+    Coin c;
 
     private void loadLevel(double distanceToCreate) {
 
         while (queue.size() > 0) {
-
-
             QueueObject queueObject = queue.peek();
             if (queueObject == null)
                 return;
-
 
             queueObject = queue.poll();
             if (queueObject == null)
@@ -396,25 +395,24 @@ public class GameScreen extends MyAbstractScreen {
 
             lCreation = (float) queueObject.getLength();
 
-
             switch (queueObject.getClassObject()) {
-                case GROUND:
-                    grounds.add(new Ground(xCreation, 0, 0.6f, lCreation, velocity, world, gameApp.batch, assets));
+                case GROUNDS:
+                    grounds.add((Ground) goFactory.createGameObject(GROUNDS, xCreation, 0, 0.6f, lCreation));
                     break;
                 case PLATFORM1:
-                    platforms.add(new Platform(xCreation, 2.5f, 0.2f, lCreation, velocity, world, gameApp.batch, assets));
+                    platforms.add((Platform) goFactory.createGameObject(PLATFORM, xCreation, 2.5f, 0.2f, lCreation));
                     break;
                 case PLATFORM2:
-                    platforms.add(new Platform(xCreation, 4.4f, 0.2f, lCreation, velocity, world, gameApp.batch, assets));
+                    platforms.add((Platform) goFactory.createGameObject(PLATFORM, xCreation, 4.4f, 0.2f, lCreation));
                     break;
                 case ENEMIES:
-                    enemies.add(new Enemy(xCreation, 4, 1f, world, gameApp.batch, assets));
+                    enemies.add((Enemy) goFactory.createGameObject(ALIEN, xCreation, 4, 1f, 0));
                     break;
                 case AMMO:
-                    ammos.add(new Ammo(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi));
+                    ammos.add((Ammo) loFactory.createLabelGameObject(AMMO, xCreation, 4.0f, 0.5f, queueObject.getNumItem()));
                     break;
                 case COINS:
-                    coins.add(new Coin(xCreation, 4.0f, 0.5f, queueObject.getNumItem(), world, gameApp.batch, assets, stageUi));
+                    coins.add((Coin) loFactory.createLabelGameObject(COIN, xCreation, 4.0f, 0.5f, queueObject.getNumItem()));
                     break;
                 case OBSTACLES:
                     float yCreation = 1.7F;
@@ -422,10 +420,17 @@ public class GameScreen extends MyAbstractScreen {
                     if (random.nextFloat() < 0.4) {
                         yCreation = 4.2F;
                     }
-                    obstacles.add(new Obstacle(xCreation, yCreation, 1f, velocity * 2, world, gameApp.batch, assets));
+                    //obstacles.add((Obstacle) goFactory.createGameObject(OBSTACLE, xCreation, yCreation, 1f, 0));
+                    break;
             }
-
         }
+
+        c = coins.get(0);
+        System.out.println("Coin c created");
+        System.out.println(c);
+        System.out.println("c.body.x = " + c.getBody().getPosition().x +
+                " --- c.body.y = " + c.getBody().getPosition().y);
+
     }
 
 
@@ -436,8 +441,10 @@ public class GameScreen extends MyAbstractScreen {
      */
     private void updatePosition() {
         llama.setPosition(llama.getBody().getPosition().x, llama.getBody().getPosition().y, llama.getBody().getAngle());
-        if (isOutOfBonds(llama))
+        if (isOutOfBonds(llama)) {
+            System.out.println("LLAMA IS OUT OF BOUNDS");
             gameOver();
+        }
 
         for (Enemy enemy : enemies) {
             enemy.setPosition(enemy.getBody().getPosition().x, enemy.getBody().getPosition().y, enemy.getBody().getAngle());
@@ -450,36 +457,39 @@ public class GameScreen extends MyAbstractScreen {
             }
         }
 
-        for (Platform platform : platforms){
+        for (Platform platform : platforms) {
             platform.setPosition(platform.getBody().getPosition().x, platform.getBody().getPosition().y, platform.getBody().getAngle());
             if (isOutOfBonds(platform)) {
                 platform.setDestroyable(true);
             }
         }
 
-        for(Ground ground : grounds){
+        for(Ground ground : grounds) {
             ground.setPosition(ground.getBody().getPosition().x, ground.getBody().getPosition().y, ground.getBody().getAngle());
-
         }
 
-        for(Coin coin : coins){
-            coin.setPosition(coin.getBody().getPosition().x, coin.getBody().getPosition().y, coin.getBody().getAngle());
-
+        if (tube.isAnimationFinished()) {
+            System.out.println("TUBE ANIMATION FINISHED");
         }
 
-        for(Ammo ammo : ammos){
+        for(Coin coin : coins) {
+            // coin.setPosition(coin.getBody().getPosition().x, coin.getBody().getPosition().y, coin.getBody().getAngle());
+        }
+        System.out.println(c);
+        System.out.println("c.body.x = " + c.getBody().getPosition().x +
+                " --- c.body.y = " + c.getBody().getPosition().y);
+
+        for(Ammo ammo : ammos) {
             ammo.setPosition(ammo.getBody().getPosition().x, ammo.getBody().getPosition().y, ammo.getBody().getAngle());
-
         }
 
-        for(Obstacle obstacle : obstacles){
+        for(Obstacle obstacle : obstacles) {
             obstacle.setPosition(obstacle.getBody().getPosition().x, obstacle.getBody().getPosition().y, obstacle.getBody().getAngle());
         }
 
         for (EnemyDied enemy : enemiesDead) {
-            enemy.setPosition(enemy.getX()-velocity*STEP_TIME, enemy.getY());
+            enemy.setPosition(enemy.getX()- VELOCITY * STEP_TIME, enemy.getY());
         }
-
     }
 
     /**
@@ -511,9 +521,10 @@ public class GameScreen extends MyAbstractScreen {
                     }
                 });
                 e.remove();
-                Settings.playSound(ALIEN_GROWL);
-                if (!Settings.hasBonusLife())
-                    enemiesDead.add(new EnemyDied(enemy.getTextureString(), enemy.getX(), enemy.getY(), enemy.getH(), gameApp.batch, assets));
+                llamaUtil.getSoundManager().playSound(ALIEN_GROWL);
+                if (!llamaUtil.getGameplayManager().hasBonusLife()) {
+                    enemiesDead.add((EnemyDied) goFactory.createGameObject(enemy.getName() + "Dead", enemy.getX(), enemy.getY(), enemy.getH(), 0));
+                }
             }
         }
 
@@ -552,6 +563,7 @@ public class GameScreen extends MyAbstractScreen {
                         world.destroyBody(coin.getBody());
                     }
                 });
+                System.out.println("coin removed");
                 c.remove();
             }
         }
@@ -565,6 +577,7 @@ public class GameScreen extends MyAbstractScreen {
                         world.destroyBody(ammo.getBody());
                     }
                 });
+                System.out.println("ammo removed");
                 a.remove();
             }
         }
@@ -590,7 +603,7 @@ public class GameScreen extends MyAbstractScreen {
      * @param <T> accepts all objects which extend GameObject class
      * @return true if the Object is out of bounds, else false
      */
-    public <T extends GameObject> boolean isOutOfBonds(T go) {
+    public <T extends AbstractGameObject> boolean isOutOfBonds(T go) {
 
         if (go instanceof Enemy || go instanceof Bullet || go instanceof Ammo || go instanceof Coin) {
             return go.getBody().getPosition().y + go.getW()/2 < 0;
@@ -606,11 +619,15 @@ public class GameScreen extends MyAbstractScreen {
     /**
      * check if the llama is arrived to 7 meter far from the end. 7 meter, in this way there will be ground on the entire screen for the entire level.
      * (the screen is 10 meter long and the llama is at 3 meters from the screen x origin)
-      */
+     */
     private void checkWin() {
         if (distance >= levelLength + llamaToEndScreenDistance + 10) {
             state = State.END;
-            //callEndScreen(true);
+            System.out.println("WIN");
+            System.out.printf(Locale.ENGLISH,
+                    "distance %f >= levelLength %f + llamaToEndScreenDistance %f + 10",
+                    distance, levelLength, llamaToEndScreenDistance);
+            callEndScreen(true);
         }
     }
 
@@ -619,8 +636,9 @@ public class GameScreen extends MyAbstractScreen {
      * all the enemies are destroyed
      */
     public void gameOver() {
-        if (!Settings.hasBonusLife()) {
-           callEndScreen(false);
+        if (!llamaUtil.getGameplayManager().hasBonusLife()) {
+            System.out.println("GAME OVER");
+            callEndScreen(false);
         } else {
             for (Enemy enemy : enemies) {
                 enemy.setDestroyable(true);
@@ -630,7 +648,7 @@ public class GameScreen extends MyAbstractScreen {
             }
             removeObjects();
 
-            Settings.setBonusLife();
+            llamaUtil.getGameplayManager().setBonusLife();
         }
     }
 
@@ -639,9 +657,9 @@ public class GameScreen extends MyAbstractScreen {
      * @param win if true llama has reached the level's end, false otherwise
      */
     private void callEndScreen(boolean win) {
-        Settings.stopMusic(GAME_MUSIC1);
-        Settings.checkSetUserMoney(money);
-        gameApp.setScreen(new EndScreen(gameApp, levelNumber, calculatePlayerLevelScore(), totalLevelScore, win));
+        llamaUtil.getMusicManager().stopMusic(GAME_MUSIC1);
+        llamaUtil.getLlamaDbHandler().checkSetUserMoney(llamaUtil.getCurrentUser(), money);
+        llamaUtil.getGameApp().setScreen(new EndScreen(llamaUtil, levelNumber, calculatePlayerLevelScore(), totalLevelScore, win));
         dispose();
     }
 
@@ -686,31 +704,27 @@ public class GameScreen extends MyAbstractScreen {
     public int getMoney() {
         return money;
     }
-
     public void setMoney(int money) {
         this.money = money;
         stageUi.setMoney(money);
-        Settings.playSound(CASH);
+        llamaUtil.getSoundManager().playSound(CASH);
     }
 
     public int getAmmunition() {
         return ammunition;
     }
-
     public void setAmmunition(int ammunition) {
         this.ammunition = ammunition;
         stageUi.setBullets(ammunition);
-        Settings.playSound(LOAD);
+        llamaUtil.getSoundManager().playSound(CASH);
     }
 
     public void updateEnemiesKilled() {
         enemiesKilled++;
     }
-
     public void updateCoinsTaken() {
         coinsCollected++;
     }
-
     public void updateAmmosTaken() {
         ammosCollected++;
     }

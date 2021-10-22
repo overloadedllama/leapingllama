@@ -9,11 +9,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.GdxRuntimeException;
+
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaAssetManager;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.screens.*;
 
+
 public class MainMenuStage extends MyAbstractStage {
+    boolean hasToGoGameScreen = false;
     int maxUserLevel;
     final int numLevels = 6;
     float defaultButtonWidth = 220f;
@@ -53,10 +57,11 @@ public class MainMenuStage extends MyAbstractStage {
     private final Skin justTextSkin;
     private final Skin hugeButtonSkin;
 
-    public MainMenuStage(final GameApp game) {
-        super(game);
+    public MainMenuStage(LlamaUtil llamaUtil) {
+        super(llamaUtil);
+        LlamaAssetManager llamaAssetManager = llamaUtil.getAssetManager();
 
-        maxUserLevel = Settings.getUserMaxLevel();
+        maxUserLevel = llamaUtil.getLlamaDbHandler().getUserMaxLevel(currentUser);
 
         mainMenuTable = new Table();
         moneyTable = new Table();
@@ -65,11 +70,11 @@ public class MainMenuStage extends MyAbstractStage {
         scrollTable = new Table();
 
         // creation of Skins
-        textButtonFieldLabelSkin = assets.getSkin("bigButton");
-        moneyButtonSkin = assets.getSkin("coin");
-        backButtonSkin = assets.getSkin("backButton");
-        justTextSkin = assets.getSkin("justText");
-        hugeButtonSkin = assets.getSkin("hugeButton");
+        textButtonFieldLabelSkin = llamaAssetManager.getSkin("bigButton");
+        moneyButtonSkin = llamaAssetManager.getSkin("coin");
+        backButtonSkin = llamaAssetManager.getSkin("backButton");
+        justTextSkin = llamaAssetManager.getSkin("justText");
+        hugeButtonSkin = llamaAssetManager.getSkin("hugeButton");
 
         // creation of TextButtons
         backButton = new ImageButton(backButtonSkin);
@@ -78,7 +83,7 @@ public class MainMenuStage extends MyAbstractStage {
         settingsButton = new TextButton("SETTINGS", textButtonFieldLabelSkin);
         creditsButton = new TextButton("CREDITS", textButtonFieldLabelSkin);
         quitButton = new TextButton("QUIT", textButtonFieldLabelSkin);
-        String userMoney = "COINS:\n" + Settings.getUserMoney();
+        String userMoney = "COINS:\n" + llamaUtil.getLlamaDbHandler().getUserMoney(currentUser);
         moneyButton = new TextButton(userMoney , moneyButtonSkin);
 
         levelButtons = new TextButton[numLevels];
@@ -125,17 +130,17 @@ public class MainMenuStage extends MyAbstractStage {
 
         scrollTable.row();
         scrollTable.add(endlessMode).width(defaultButtonWidth).height(defaultButtonHeight).padTop(pad).colspan(1);
-        scrollTable.add(new Label("BEST SCORE: " + Math.round(Settings.getLevelBestScore(-1) * 10) / 10, justTextSkin)).colspan(3);
+        scrollTable.add(new Label("BEST SCORE: " + Math.round(llamaUtil.getLlamaDbHandler().getLevelBestScore(currentUser,-1) * 10) / 10, justTextSkin)).colspan(3);
         for (int i = 0; i < numLevels; ++i) {
             scrollTable.row();
             scrollTable.add(levelButtons[i]).size(defaultButtonWidth, defaultButtonHeight).padTop(pad);
-            int starNum = Settings.getLevelStarNum(i);
+            int starNum = llamaUtil.getLlamaDbHandler().getLevelStarNum(currentUser, i);
             for (int j = 0; j < 3; ++j) {
                 Image star;
                 if (j < starNum) {
-                    star = new Image(assets.getTexture("starWon"));
+                    star = new Image(llamaAssetManager.getTexture("starWon"));
                 } else {
-                    star = new Image(assets.getTexture("starLost"));
+                    star = new Image(llamaAssetManager.getTexture("starLost"));
                 }
                 scrollTable.add(star).size(100f, 100f).padLeft(15f);
             }
@@ -158,7 +163,7 @@ public class MainMenuStage extends MyAbstractStage {
         userButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new UserScreen(gameApp));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new UserScreen(llamaUtil));
             }
         });
 
@@ -168,7 +173,8 @@ public class MainMenuStage extends MyAbstractStage {
                 addAction(Actions.run(new Runnable() {
                     @Override
                     public void run() {
-                        assets.loadGameAssets();
+                        llamaUtil.getAssetManager().loadGameTexturesSkins();
+                        llamaUtil.getAssetManager().loadGameMusic();
                     }
                 }));
 
@@ -182,21 +188,21 @@ public class MainMenuStage extends MyAbstractStage {
         settingsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingScreen(gameApp));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new SettingScreen(llamaUtil));
             }
         });
 
         shopButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new ShopScreen(gameApp));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new ShopScreen(llamaUtil));
             }
         });
 
         creditsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new CreditScreen(gameApp));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new CreditScreen(llamaUtil));
             }
         });
 
@@ -204,7 +210,7 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.exit();
-                assets.disposeAll();
+                llamaUtil.getAssetManager().disposeAll();
             }
         });
 
@@ -214,9 +220,9 @@ public class MainMenuStage extends MyAbstractStage {
                 super.clicked(event, x, y);
 
                 try {
-                    assets.unloadGameAssets();
+                    llamaUtil.getAssetManager().unloadGameTexturesSkins();
                 } catch (GdxRuntimeException e) {
-                    System.out.println("Game assets aren't totally loaded yet, loaded: " + assets.getProgress() * 100 + "%");
+                    System.out.println("Game assets aren't totally loaded yet, loaded: " + llamaUtil.getAssetManager().getProgress() * 100 + "%");
                 }
 
                 mainMenuTable.setVisible(true);
@@ -233,10 +239,15 @@ public class MainMenuStage extends MyAbstractStage {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         super.clicked(event, x, y);
-                        if (assets.update()) {
-                            Settings.setGameSoundsMusics();
-                            Settings.stopMusic(MAIN_MENU_MUSIC);
-                            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, finalI));
+                        hasToGoGameScreen = true;
+
+                        if (llamaUtil.getAssetManager().update()) {
+                            llamaUtil.getMusicManager().stopMusic(MAIN_MENU_MUSIC);
+                            llamaUtil.getMusicManager().setGameMusic();
+
+                            llamaUtil.getAssetManager().unloadMainMenuMusic();
+
+                            ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(llamaUtil, finalI));
                         }
                     }
                 });
@@ -247,12 +258,11 @@ public class MainMenuStage extends MyAbstractStage {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
+                if (llamaUtil.getAssetManager().update()) {
+                    llamaUtil.getMusicManager().stopMusic(MAIN_MENU_MUSIC);
+                    llamaUtil.getMusicManager().setGameMusic();
 
-                if (assets.update()) {
-                    Settings.setGameSoundsMusics();
-
-                    Settings.stopMusic(assets.MAIN_MENU_MUSIC);
-                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(gameApp, -1));
+                    ((Game) Gdx.app.getApplicationListener()).setScreen(new GameScreen(llamaUtil, -1));
                 }
             }
         });
@@ -260,10 +270,10 @@ public class MainMenuStage extends MyAbstractStage {
 
     public void renderer() {
         super.renderer();
-        assets.update();
+        llamaUtil.getAssetManager().update();
 
-        userNameLabel.setText("Howdy, " + Settings.getCurrentUser());
-        moneyButton.setText("" + Settings.getUserMoney());
+        userNameLabel.setText("Howdy, " + currentUser);
+        moneyButton.setText("" + currentUser);
     }
 
     public void resizer() {
@@ -282,10 +292,6 @@ public class MainMenuStage extends MyAbstractStage {
 
         scrollTable.invalidateHierarchy();
         scrollTable.setSize(GameApp.WIDTH, GameApp.HEIGHT);
-
-    }
-
-    public void dispose() {
 
     }
 

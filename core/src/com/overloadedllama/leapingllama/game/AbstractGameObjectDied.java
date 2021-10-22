@@ -3,20 +3,20 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.overloadedllama.leapingllama.resources.Settings;
 
-public class GameObjectDied extends  GameObject {
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
+
+public class AbstractGameObjectDied extends AbstractGameObject {
 
     ParticleEffect gore;
 
-    public GameObjectDied(Texture texture, float x, float y, float h, Batch batch) {
-        super(texture, x, y, h, batch);
+    public AbstractGameObjectDied(String name, float x, float y, float h, LlamaUtil llamaUtil) {
+        super(name, x, y, h, llamaUtil);
 
-        if (Settings.isGORE()) {
+        if (llamaUtil.getGameplayManager().isGORE()) {
             gore = new ParticleEffect();
             TextureAtlas textureAtlas = new TextureAtlas();
             textureAtlas.addRegion("reddishGore", new TextureRegion(new Texture("enemies/reddishGore.png")));

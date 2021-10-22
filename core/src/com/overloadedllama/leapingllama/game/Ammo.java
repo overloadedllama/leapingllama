@@ -1,18 +1,15 @@
 package com.overloadedllama.leapingllama.game;
 
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.overloadedllama.leapingllama.assetman.Assets;
-import com.overloadedllama.leapingllama.stages.ButtonsStagePlay;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
+import com.overloadedllama.leapingllama.stages.GameStage;
 
-public class Ammo extends GameObjectLabel {
+public class Ammo extends AbstractGameObjectLabel {
 
 
-    public Ammo(float x, float y, float h, int quantity, World world, Batch batch, Assets assets, ButtonsStagePlay stage){
-        super(assets.getSkin("ammo"), x, y, h, quantity, world, batch, stage, "pixeledWhite");
-
+    public Ammo(float x, float y, float h, int quantity, GameStage stage, LlamaUtil llamaUtil){
+        super(AMMO, x, y, h, quantity, stage, "pixeledWhite", llamaUtil);
 
         PolygonShape ammoShape = new PolygonShape();
         ammoShape.setAsBox(w/2, h/2);

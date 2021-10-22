@@ -39,7 +39,7 @@ public class LevelParser implements LlamaConstants {
             AMMO,
             PLATFORM1,
             PLATFORM2,
-            GROUND,
+            GROUNDS,
             OBSTACLES
     };
 
@@ -92,7 +92,7 @@ public class LevelParser implements LlamaConstants {
 
                 for (double d : doublesArray) {
                     switch (actorString) {
-                        case GROUND:
+                        case GROUNDS:
                             grounds.add(d);
                             break;
                         case PLATFORM1:
@@ -258,7 +258,7 @@ public class LevelParser implements LlamaConstants {
         switch (actorString) {
             case ENEMIES:
                 return enemies;
-            case GROUND:
+            case GROUNDS:
                 return grounds;
             case COINS:
                 return coins;
@@ -277,7 +277,7 @@ public class LevelParser implements LlamaConstants {
 
     private ArrayList<Double> getSupportArray(String actorString) {
         switch (actorString) {
-            case GROUND:
+            case GROUNDS:
                 return groundsLen;
             case COINS:
                 return coinsNum;
@@ -293,7 +293,7 @@ public class LevelParser implements LlamaConstants {
     }
 
     private boolean hasLength(String actorString) {
-        return actorString.equals(GROUND) || actorString.equals(PLATFORM1) || actorString.equals(PLATFORM2);
+        return actorString.equals(GROUNDS) || actorString.equals(PLATFORM1) || actorString.equals(PLATFORM2);
     }
 
     private boolean isBasicArray(String actorString) {

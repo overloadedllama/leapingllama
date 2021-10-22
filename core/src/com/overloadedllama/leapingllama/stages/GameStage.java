@@ -10,14 +10,16 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
+
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
 import com.overloadedllama.leapingllama.listener.MyGestureListener;
+import com.overloadedllama.leapingllama.llamautils.LlamaAssetManager;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
 import java.util.HashMap;
 
 
-public class ButtonsStagePlay extends MyAbstractStage {
+public class GameStage extends MyAbstractStage {
 
     final float buttonSize = 150f;
 
@@ -64,12 +66,13 @@ public class ButtonsStagePlay extends MyAbstractStage {
     HashMap<String, Boolean> actions;
 
 
-    public ButtonsStagePlay(final GameApp gameApp) {
-        super(gameApp, new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
+    public GameStage(LlamaUtil llamaUtil) {
+        super(llamaUtil, new ExtendViewport(GameApp.WIDTH, GameApp.HEIGHT));
+        System.out.println("Init of GameStage");
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(this);
-        if (Settings.getGameMode().equals("GESTURES")) {
+        if (llamaUtil.getGameplayManager().getGameMode().equals("GESTURES")) {
             inputMultiplexer.addProcessor(new MyGestureListener(new MyGestureListener.DirectionListener() {
                 @Override
                 public void onLeft() {
@@ -113,13 +116,14 @@ public class ButtonsStagePlay extends MyAbstractStage {
         labelsTable = new Table();
 
         // skins from Assets
-        buttonJumpSkin = assets.getSkin(JUMP);
-        buttonPauseSkin = assets.getSkin(PAUSE);
-        buttonCrouchSkin = assets.getSkin(CROUCH);
-        buttonShotSkin = assets.getSkin(SHOT);
-        buttonPunchSkin = assets.getSkin(PUNCH);
-        buttonSkin = assets.getSkin("bigButton");
-        justTextSkin = assets.getSkin("justText");
+        LlamaAssetManager llamaAssetManager = llamaUtil.getAssetManager();
+        buttonJumpSkin = llamaAssetManager.getSkin(JUMP);
+        buttonPauseSkin = llamaAssetManager.getSkin(PAUSE);
+        buttonCrouchSkin = llamaAssetManager.getSkin(CROUCH);
+        buttonShotSkin = llamaAssetManager.getSkin(SHOT);
+        buttonPunchSkin = llamaAssetManager.getSkin(PUNCH);
+        buttonSkin = llamaAssetManager.getSkin("bigButton");
+        justTextSkin = llamaAssetManager.getSkin("justText");
 
         // creation of ImageButtons,
         buttonJump = new ImageButton(buttonJumpSkin);
@@ -149,11 +153,11 @@ public class ButtonsStagePlay extends MyAbstractStage {
         buttonPauseTable.top().left();
         buttonPauseTable.add(buttonPause).width(buttonSize).height(buttonSize).padLeft(pad);
 
-        if (Settings.getGameMode().equals("LEFT HANDED")) {
+        if (llamaUtil.getGameplayManager().getGameMode().equals("LEFT HANDED")) {
             buttonsMovement.bottom().left();
             buttonsAction.bottom().right();
             gestures = false;
-        } else if (Settings.getGameMode().equals("RIGHT HANDED")){
+        } else if (llamaUtil.getGameplayManager().getGameMode().equals("RIGHT HANDED")){
             buttonsMovement.bottom().right();
             buttonsAction.bottom().left();
             gestures = false;
@@ -196,6 +200,7 @@ public class ButtonsStagePlay extends MyAbstractStage {
         actions.put(PLAY, false);
         actions.put(EXIT, false);
 
+        System.out.println("Init of GameStage completed.");
     }
 
     public void resizer() {
@@ -216,6 +221,7 @@ public class ButtonsStagePlay extends MyAbstractStage {
 
 
     public void setUpButtons() {
+        Gdx.input.setInputProcessor(this);
         for (String s : actions.keySet()){
             if (!s.equals(CROUCH))
                 actions.put(s, false);
@@ -228,7 +234,7 @@ public class ButtonsStagePlay extends MyAbstractStage {
                 super.clicked(event, x, y);
                 actions.put(PAUSE, true);
 
-                fadeoutBackground = new Image(assets.getTexture("quiteBlack"));
+                fadeoutBackground = new Image(llamaUtil.getAssetManager().getTexture("quiteBlack"));
                 fadeoutBackground.setBounds(0,0, getViewport().getScreenWidth(), tableHeight);
                 addActor(fadeoutBackground);
 

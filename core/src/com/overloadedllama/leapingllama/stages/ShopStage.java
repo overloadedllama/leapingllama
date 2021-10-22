@@ -10,7 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaAssetManager;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 import com.overloadedllama.leapingllama.resources.ShopItem;
 import com.overloadedllama.leapingllama.screens.MainMenuScreen;
 
@@ -52,8 +53,8 @@ public class ShopStage extends MyAbstractStage {
     private final Skin justTextSkin;
 
 
-    public ShopStage(GameApp gameApp) {
-        super(gameApp);
+    public ShopStage(LlamaUtil llamaUtil) {
+        super(llamaUtil);
 
         upperTable = new Table();
         itemListTable = new Table();
@@ -64,15 +65,16 @@ public class ShopStage extends MyAbstractStage {
         shopItems[1] = new ShopItem("Get a second chance for the next round.", BONUS_LIFE, new Texture(Gdx.files.internal("world/heart.png")), 10);
         image = new Image(shopItems[0].getTexture());
 
-        backButtonSkin = assets.getSkin("backButton");
-        coinLabelSkin = assets.getSkin("coin");
-        bigButtonSkin = assets.getSkin("bigButton");
-        leftArrow = assets.getSkin("leftArrow");
-        rightArrow = assets.getSkin("rightArrow");
-        justTextSkin = assets.getSkin("justText");
+        LlamaAssetManager llamaAssetManager = llamaUtil.getAssetManager();
+        backButtonSkin = llamaAssetManager.getSkin("backButton");
+        coinLabelSkin = llamaAssetManager.getSkin("coin");
+        bigButtonSkin = llamaAssetManager.getSkin("bigButton");
+        leftArrow = llamaAssetManager.getSkin("leftArrow");
+        rightArrow = llamaAssetManager.getSkin("rightArrow");
+        justTextSkin = llamaAssetManager.getSkin("justText");
 
         backButton = new ImageButton(backButtonSkin);
-        userMoney = Settings.getUserMoney();
+        userMoney = llamaUtil.getLlamaDbHandler().getUserMoney(currentUser);
         userMoneyText = new Label("COINS:\n" + userMoney, coinLabelSkin);
         userMoneyText.setAlignment(Align.center);
         previousItem = new Button(leftArrow);
@@ -115,7 +117,7 @@ public class ShopStage extends MyAbstractStage {
         backButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(gameApp));
+                ((Game) Gdx.app.getApplicationListener()).setScreen(new MainMenuScreen(llamaUtil));
             }
         });
 
@@ -152,17 +154,17 @@ public class ShopStage extends MyAbstractStage {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 if(!buyButton.isDisabled()) {
-                    if (Settings.checkSetUserMoney(-itemValue)) {       // set itemValue negative
-                        if (Settings.isSOUND())
-                            Settings.playSound(CASH);
+                    if (llamaUtil.getLlamaDbHandler().checkSetUserMoney(currentUser, -itemValue)) {       // set itemValue negative
+                        if (llamaUtil.getSoundManager().isSOUND())
+                            llamaUtil.getSoundManager().playSound(CASH);
                         if (shopItems[index].getId().equals(BONUS_AMMO)) {
-                            Settings.setBonusAmmo();
+                            llamaUtil.getGameplayManager().setBonusAmmo();
                         } else if (shopItems[index].getId().equals(BONUS_LIFE)) {
-                            Settings.setBonusLife();
+                            llamaUtil.getGameplayManager().setBonusLife();
                         }
 
                         userMoneyText.setText("COINS:\n" + (userMoney - itemValue));
-                        Settings.playSound("cash");
+                        llamaUtil.getSoundManager().playSound(CASH);
 
                         setItemButtons(index);
                     }
@@ -177,7 +179,7 @@ public class ShopStage extends MyAbstractStage {
         itemTitle.setText(shopItems[i].getName());
 
         if (shopItems[i].getId().equals(BONUS_AMMO)) {
-            if (Settings.hasBonusAmmo()) {
+            if (llamaUtil.getGameplayManager().hasBonusAmmo()) {
                 buyButton.setDisabled(true);
                 buyButton.setText("BOUGHT!");
             } else {
@@ -185,7 +187,7 @@ public class ShopStage extends MyAbstractStage {
                 buyButton.setText("BUY!");
             }
         } else if (shopItems[i].getId().equals(BONUS_LIFE)) {
-            if (Settings.hasBonusLife()) {
+            if (llamaUtil.getGameplayManager().hasBonusLife()) {
                 buyButton.setDisabled(true);
                 buyButton.setText("BOUGHT!");
             } else {
@@ -194,7 +196,7 @@ public class ShopStage extends MyAbstractStage {
             }
         }
 
-        if (Settings.getUserMoney() < itemValue) {
+        if (llamaUtil.getLlamaDbHandler().getUserMoney(currentUser) < itemValue) {
             buyButton.setDisabled(true);
             buyButton.setText("U R 2 POOR");
         }

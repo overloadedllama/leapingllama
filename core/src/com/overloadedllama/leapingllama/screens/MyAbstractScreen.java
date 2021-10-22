@@ -1,17 +1,14 @@
 package com.overloadedllama.leapingllama.screens;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.overloadedllama.leapingllama.GameApp;
-import com.overloadedllama.leapingllama.assetman.Assets;
 import com.overloadedllama.leapingllama.LlamaConstants;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
 public abstract class MyAbstractScreen implements Screen, LlamaConstants {
-    final GameApp gameApp;
-    final Assets assets;
+    final LlamaUtil llamaUtil;
 
     OrthographicCamera camera;
     ExtendViewport viewport;
@@ -19,12 +16,11 @@ public abstract class MyAbstractScreen implements Screen, LlamaConstants {
     final float SCREEN_WIDTH, SCREEN_HEIGHT;
 
 
-    protected MyAbstractScreen(GameApp gameApp, float WIDTH, float HEIGHT) {
-        this.gameApp = gameApp;
+    protected MyAbstractScreen(LlamaUtil llamaUtil, float WIDTH, float HEIGHT) {
+        this.llamaUtil = llamaUtil;
         this.SCREEN_WIDTH = WIDTH;
         this.SCREEN_HEIGHT = HEIGHT;
 
-        assets = gameApp.getAssets();
 
         ScreenUtils.clear(0.56f, 0.72f, 0.8f, 1);
 
@@ -42,7 +38,7 @@ public abstract class MyAbstractScreen implements Screen, LlamaConstants {
     @Override
     public void render(float delta) {
         camera.update();
-        gameApp.batch.setProjectionMatrix(camera.combined);
+        llamaUtil.getGameApp().batch.setProjectionMatrix(camera.combined);
 
     }
 

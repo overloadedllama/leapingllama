@@ -3,39 +3,34 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.overloadedllama.leapingllama.assetman.Assets;
+
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
 import java.util.Random;
 
-public class Enemy extends GameObject{
+public class Enemy extends AbstractGameObject {
 
     private static final int FRAME_COLS = 4, FRAME_ROWS = 1;
     private int numLife = 1;
-
-    private final String ALIEN_CYAN = "alienCyan";
-    private final String ALIEN_YELLOW = "alienYellow";
 
     Animation<TextureRegion> walkAnimation;
     Texture walkSheet;
 
     String textureString = ALIEN_CYAN;
 
-    public Enemy(float x, float y, float h, World world, Batch batch, Assets assets){
-        super(assets.getTexture("alienCyan"), x, y, h, world, batch);
+    public Enemy(float x, float y, float h, LlamaUtil llamaUtil){
+        super(ALIEN_CYAN, x, y, h, llamaUtil);
 
-        this.assets = assets;
         Random random = new Random();
         int randomNumber = random.nextInt(2);
 
         if (randomNumber == 1) {
             textureString = ALIEN_YELLOW;
-            texture = assets.getTexture(textureString);
+            texture = llamaUtil.getAssetManager().getTexture(textureString);
             sprite.setTexture(texture);
             numLife = 2;
         }
@@ -47,7 +42,6 @@ public class Enemy extends GameObject{
 
         enemyShape.dispose();
 
-       // body.setLinearVelocity(-3f, 0);
         body.setFixedRotation(true);
 
         setAnimation();
@@ -55,7 +49,7 @@ public class Enemy extends GameObject{
     }
 
     private void setAnimation() {
-        walkSheet = assets.getTexture(textureString + "Walking");
+        walkSheet = llamaUtil.getAssetManager().getTexture(textureString + "Walking");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet,
                 walkSheet.getWidth() / FRAME_COLS,
                 walkSheet.getHeight() / FRAME_ROWS);
@@ -78,13 +72,9 @@ public class Enemy extends GameObject{
             TextureRegion currentFrame = walkAnimation.getKeyFrame(stateTime, true);
             sprite = new Sprite(currentFrame);
 
-            //sprite = new Sprite(new Texture(Gdx.files.internal("llama/llamaStanding.png")));
-
             sprite.setSize(w, h);
             sprite.setPosition(x - w / 2, y - h / 2);
-
             sprite.draw(batch);
-
     }
 
 
@@ -100,10 +90,8 @@ public class Enemy extends GameObject{
             body.applyForceToCenter(-100000000, 0, true);
             body.setLinearVelocity(0, 0f);
 
-
             textureString = ALIEN_CYAN;
             setAnimation();
         }
     }
-
 }

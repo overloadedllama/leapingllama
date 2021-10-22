@@ -2,18 +2,13 @@ package com.overloadedllama.leapingllama.game;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
-import com.badlogic.gdx.physics.box2d.World;
-import com.overloadedllama.leapingllama.assetman.Assets;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
-import java.util.Random;
-
-public class Obstacle extends GameObject{
+public class Obstacle extends AbstractGameObject {
 
     //alienOrangeFlyingMoving
     private static final int FRAME_COLS = 2, FRAME_ROWS = 1;
@@ -23,8 +18,8 @@ public class Obstacle extends GameObject{
     Texture walkSheet;
 
 
-    public Obstacle(float x, float y, float h, float velocity, World world, Batch batch, Assets assets){
-        super(assets.getTexture("alienOrangeFlying"), x, y, h, world, batch);
+    public Obstacle(float x, float y, float h, float velocity, LlamaUtil llamaUtil){
+        super(ALIEN_ORANGE_FLYING, x, y, h, llamaUtil);
 
 
         CircleShape enemyShape = new CircleShape();
@@ -36,7 +31,7 @@ public class Obstacle extends GameObject{
 
         body.setLinearVelocity(-velocity, 0f);
 
-        walkSheet = assets.getTexture("alienOrangeFlyingMoving");
+        walkSheet = llamaUtil.getAssetManager().getTexture("alienOrangeFlyingMoving");
         TextureRegion[][] tmp = TextureRegion.split(walkSheet,
                 walkSheet.getWidth() / FRAME_COLS,
                 walkSheet.getHeight() / FRAME_ROWS);

@@ -10,9 +10,10 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+
 import com.overloadedllama.leapingllama.GameApp;
 import com.overloadedllama.leapingllama.game.Sky;
-import com.overloadedllama.leapingllama.resources.Settings;
+import com.overloadedllama.leapingllama.llamautils.LlamaUtil;
 
 public class LoadScreen extends MyAbstractScreen {
 
@@ -31,8 +32,8 @@ public class LoadScreen extends MyAbstractScreen {
     Batch batch;
 
 
-    public LoadScreen(final GameApp gameApp) {
-        super(gameApp, GameApp.WIDTH, GameApp.HEIGHT);
+    public LoadScreen(LlamaUtil llamaUtil) {
+        super(llamaUtil, GameApp.WIDTH, GameApp.HEIGHT);
     }
 
     @Override
@@ -46,18 +47,18 @@ public class LoadScreen extends MyAbstractScreen {
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
-                assets.loadBasicAssets();
+                llamaUtil.getAssetManager().loadBasicTexturesSkins();
+                llamaUtil.getAssetManager().loadSounds();
+                llamaUtil.getAssetManager().loadMainMenuMusic();
                 startLoading = true;
             }
         }));
 
-        // used just for debug now
-        //Settings.resetAllProgresses();
 
         loadScreenStage.addAction(Actions.run(new Runnable() {
             @Override
             public void run() {
-                Settings.insertNewUser(Settings.TEST_USER);
+                llamaUtil.getLlamaDbHandler().insertNewUser(llamaUtil.getCurrentUser());
             }
         }));
 
@@ -83,11 +84,12 @@ public class LoadScreen extends MyAbstractScreen {
 
 
         // only if there isn't any asset on loading queue yet the button works
-        if (assets.update() && startLoading) {
-            Settings.setBasicSoundsMusics();
-            gameApp.setScreen(new MainMenuScreen(gameApp));
+        if (llamaUtil.getAssetManager().update() && startLoading) {
+            llamaUtil.getSoundManager().setSounds();
+            llamaUtil.getMusicManager().setMainMenuMusic();
+            llamaUtil.getGameApp().setScreen(new MainMenuScreen(llamaUtil));
         } else {
-            progressBar.setValue(assets.getProgress() * 100);
+            progressBar.setValue(llamaUtil.getAssetManager().getProgress() * 100);
         }
 
         loadScreenStage.act();
@@ -95,11 +97,11 @@ public class LoadScreen extends MyAbstractScreen {
 
         super.render(delta);
 
-        gameApp.batch.begin();
-        gameApp.font.setColor(0 , 255, 0, 1);
-        gameApp.batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/8, GameApp.HEIGHT/2 - (float) logo.getHeight()/8, (float) logo.getWidth()/4, (float) logo.getHeight()/4);
+        llamaUtil.getGameApp().batch.begin();
+        llamaUtil.getGameApp().font.setColor(0 , 255, 0, 1);
+        llamaUtil.getGameApp().batch.draw(logo,GameApp.WIDTH/2 - (float) logo.getWidth()/8, GameApp.HEIGHT/2 - (float) logo.getHeight()/8, (float) logo.getWidth()/4, (float) logo.getHeight()/4);
         //the divisions for 4 in the x and y above are due to the resize of the w and h
-        gameApp.batch.end();
+        llamaUtil.getGameApp().batch.end();
 
         sky.update();
 
